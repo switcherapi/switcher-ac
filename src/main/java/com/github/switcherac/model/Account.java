@@ -1,0 +1,68 @@
+package com.github.switcherac.model;
+
+import java.util.Date;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
+@Document(collection = "plans")
+public class Account {
+	
+	@Id
+	private String id;
+	
+	private String adminId;
+	
+	@DBRef
+	private Plan plan;
+	
+	private Date lastLogin;
+	
+	private int currentDailyExecution;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
+	}
+
+	public Plan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(Plan plan) {
+		this.plan = plan;
+	}
+	
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
+	}
+
+	public int getCurrentDailyExecution() {
+		return currentDailyExecution;
+	}
+
+	public void setCurrentDailyExecution(int currentDailyExecution) {
+		this.currentDailyExecution = currentDailyExecution;
+	}
+	
+}
