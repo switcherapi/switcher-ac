@@ -3,6 +3,7 @@ package com.github.switcherac.model;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,12 +11,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
-@Document(collection = "plans")
+@Document(collection = "accounts")
 public class Account {
 	
 	@Id
 	private String id;
 	
+	@Indexed(unique = true)
 	private String adminId;
 	
 	@DBRef

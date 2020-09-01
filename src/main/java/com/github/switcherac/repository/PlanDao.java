@@ -23,6 +23,12 @@ public class PlanDao {
 		return mongoTemplate.findOne(query, Plan.class);
 	}
 	
+	public void deleteByName(String planName) {
+		final Query query = new Query();
+		query.addCriteria(Criteria.where("name").is(planName));
+		mongoTemplate.remove(query, Plan.class);
+	}
+	
 	public PlanRepository getPlanRepository() {
 		return planRepository;
 	}

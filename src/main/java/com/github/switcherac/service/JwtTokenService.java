@@ -7,9 +7,16 @@ import org.springframework.stereotype.Service;
 public class JwtTokenService {
 	
 	@Value("${service.api.token}")
-	private String token;
+	private String apiToken;
 	
-	public Boolean validateToken(String token) {
-		return token.equals(token);
+	@Value("${service.relay.token}")
+	private String relayToken;
+	
+	public Boolean validateAdminToken(String token) {
+		return apiToken.equals(token);
+	}
+	
+	public Boolean validateRelayToken(String token) {
+		return relayToken.equals(token);
 	}
 }

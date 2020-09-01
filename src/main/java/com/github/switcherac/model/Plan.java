@@ -1,6 +1,7 @@
 package com.github.switcherac.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,6 +14,7 @@ public class Plan {
 	@Id
 	private String id;
 	
+	@Indexed(unique = true)
 	private String name;
 	
 	private Integer maxDomains;
@@ -29,6 +31,19 @@ public class Plan {
 	
 	private Integer maxDailyExecution;
 	
+	public static Plan loadDefault() {
+		Plan plan = new Plan();
+		plan.setName(PlanType.DEFAULT.name());
+		plan.setMaxDomains(1);
+		plan.setMaxGroups(2);
+		plan.setMaxSwitchers(10);
+		plan.setMaxEnvironments(2);
+		plan.setMaxComponents(5);
+		plan.setMaxTeams(1);
+		plan.setMaxDailyExecution(100);
+		return plan;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -45,11 +60,11 @@ public class Plan {
 		this.name = name;
 	}
 
-	public int getMaxDomains() {
+	public Integer getMaxDomains() {
 		return maxDomains;
 	}
 
-	public void setMaxDomains(int maxDomains) {
+	public void setMaxDomains(Integer maxDomains) {
 		this.maxDomains = maxDomains;
 	}
 
@@ -99,10 +114,6 @@ public class Plan {
 
 	public void setMaxDailyExecution(Integer maxDailyExecution) {
 		this.maxDailyExecution = maxDailyExecution;
-	}
-
-	public void setMaxDomains(Integer maxDomains) {
-		this.maxDomains = maxDomains;
 	}
 	
 }

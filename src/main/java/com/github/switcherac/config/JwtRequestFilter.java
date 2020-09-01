@@ -9,6 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +28,8 @@ import io.jsonwebtoken.SignatureException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 	
+	private static final Logger logger = LogManager.getLogger(JwtRequestFilter.class);
+	
 	public static final String SWITCHER_AC = "SWITCHER_AC";
 	
 	public static final String AUTHORIZATION = "Authorization";
@@ -40,9 +44,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		
 		final Optional<String> jwt = getJwtFromRequest(request);
+		
 		jwt.ifPresent(token -> {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Token {}", token);
+			}
+			
 			try {
-				if (jwtTokenService.validateToken(token)) {
+				if (validateToken(token, request)) {
 					final UsernamePasswordAuthenticationToken authUser = 
 							new UsernamePasswordAuthenticationToken(SWITCHER_AC, null, new ArrayList<>());
 					authUser.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -55,6 +64,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		});
 		
 		filterChain.doFilter(request, response);
+	}
+	
+	private boolean validateToken(String token, HttpServletRequest request) {
+		if (request.getRequestURI().startsWith("/switcher"))
+			return jwtTokenService.validateRelayToken(token);
+		return jwtTokenService.validateAdminToken(token);
 	}
 	
 	private static Optional<String> getJwtFromRequest(HttpServletRequest request) {
