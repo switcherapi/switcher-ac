@@ -1,5 +1,9 @@
 package com.github.switcherac.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class ResponseRelay {
 	
 	private boolean result;

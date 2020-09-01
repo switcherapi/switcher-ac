@@ -1,5 +1,9 @@
 package com.github.switcherac.model.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class RequestRelay {
 	
 	private String value;

@@ -23,7 +23,7 @@ public class Account {
 	@DBRef
 	private Plan plan;
 	
-	private Date lastLogin;
+	private Date lastReset = new Date();
 	
 	private int currentDailyExecution;
 
@@ -51,12 +51,12 @@ public class Account {
 		this.plan = plan;
 	}
 	
-	public Date getLastLogin() {
-		return lastLogin;
+	public Date getLastReset() {
+		return lastReset;
 	}
 
-	public void setLastLogin(Date lastLogin) {
-		this.lastLogin = lastLogin;
+	public void setLastReset(Date lastReset) {
+		this.lastReset = lastReset;
 	}
 
 	public int getCurrentDailyExecution() {
