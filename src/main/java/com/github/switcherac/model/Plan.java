@@ -31,16 +31,22 @@ public class Plan {
 	
 	private Integer maxDailyExecution;
 	
+	private boolean enableMetrics;
+	
+	private boolean enableHistory;
+	
 	public static Plan loadDefault() {
 		Plan plan = new Plan();
 		plan.setName(PlanType.DEFAULT.name());
 		plan.setMaxDomains(1);
 		plan.setMaxGroups(2);
-		plan.setMaxSwitchers(10);
+		plan.setMaxSwitchers(3);
 		plan.setMaxEnvironments(2);
-		plan.setMaxComponents(5);
+		plan.setMaxComponents(2);
 		plan.setMaxTeams(1);
 		plan.setMaxDailyExecution(100);
+		plan.setEnableHistory(false);
+		plan.setEnableMetrics(false);
 		return plan;
 	}
 
@@ -114,6 +120,22 @@ public class Plan {
 
 	public void setMaxDailyExecution(Integer maxDailyExecution) {
 		this.maxDailyExecution = maxDailyExecution;
+	}
+
+	public boolean isEnableMetrics() {
+		return enableMetrics;
+	}
+
+	public void setEnableMetrics(boolean enableMetrics) {
+		this.enableMetrics = enableMetrics;
+	}
+
+	public boolean isEnableHistory() {
+		return enableHistory;
+	}
+
+	public void setEnableHistory(boolean enableHistory) {
+		this.enableHistory = enableHistory;
 	}
 	
 }

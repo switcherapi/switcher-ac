@@ -23,7 +23,7 @@ public class AccountControlService {
 		final Account account = accountDao.findByAdminId(adminId);
 		
 		if (account != null) {
-			if (account.getPlan().getMaxDomains() <= total) {
+			if (validate(account.getPlan().getMaxDomains(), total)) {
 				return new ResponseRelay(false, "Domain limit has been reached");
 			}
 		} else {
@@ -37,7 +37,7 @@ public class AccountControlService {
 		final Account account = accountDao.findByAdminId(adminId);
 		
 		if (account != null) {
-			if (account.getPlan().getMaxGroups() <= total) {
+			if (validate(account.getPlan().getMaxGroups(), total)) {
 				return new ResponseRelay(false, "Group limit has been reached");
 			}
 		} else {
@@ -51,7 +51,7 @@ public class AccountControlService {
 		final Account account = accountDao.findByAdminId(adminId);
 		
 		if (account != null) {
-			if (account.getPlan().getMaxSwitchers() <= total) {
+			if (validate(account.getPlan().getMaxSwitchers(), total)) {
 				return new ResponseRelay(false, "Switcher limit has been reached");
 			}
 		} else {
@@ -65,7 +65,7 @@ public class AccountControlService {
 		final Account account = accountDao.findByAdminId(adminId);
 		
 		if (account != null) {
-			if (account.getPlan().getMaxEnvironments() <= total) {
+			if (validate(account.getPlan().getMaxEnvironments(), total)) {
 				return new ResponseRelay(false, "Environment limit has been reached");
 			}
 		} else {
@@ -79,7 +79,7 @@ public class AccountControlService {
 		final Account account = accountDao.findByAdminId(adminId);
 		
 		if (account != null) {
-			if (account.getPlan().getMaxComponents() <= total) {
+			if (validate(account.getPlan().getMaxComponents(), total)) {
 				return new ResponseRelay(false, "Component limit has been reached");
 			}
 		} else {
@@ -93,7 +93,7 @@ public class AccountControlService {
 		final Account account = accountDao.findByAdminId(adminId);
 		
 		if (account != null) {
-			if (account.getPlan().getMaxTeams() <= total) {
+			if (validate(account.getPlan().getMaxTeams(), total)) {
 				return new ResponseRelay(false, "Team limit has been reached");
 			}
 		} else {
@@ -116,7 +116,7 @@ public class AccountControlService {
 				account.setLastReset(dateTime.toDate());
 			}
 			
-			if (account.getCurrentDailyExecution() <= account.getPlan().getMaxDailyExecution()) {
+			if (validate(account.getCurrentDailyExecution(), account.getPlan().getMaxDailyExecution())) {
 				account.setCurrentDailyExecution(account.getCurrentDailyExecution() + 1);
 				accountDao.getAccountRepository().save(account);				
 			} else {
@@ -127,6 +127,40 @@ public class AccountControlService {
 		}
 		
 		return new ResponseRelay(true);
+	}
+	
+	public ResponseRelay checkMetrics(String adminId) {
+		final Account account = accountDao.findByAdminId(adminId);
+		
+		if (account != null) {
+			if (!account.getPlan().isEnableMetrics()) {
+				return new ResponseRelay(false, "Metrics is not available");
+			}
+		} else {
+			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+		}
+		
+		return new ResponseRelay(true);
+	}
+	
+	public ResponseRelay checkHistory(String adminId) {
+		final Account account = accountDao.findByAdminId(adminId);
+		
+		if (account != null) {
+			if (!account.getPlan().isEnableHistory()) {
+				return new ResponseRelay(false, "History is not available");
+			}
+		} else {
+			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+		}
+		
+		return new ResponseRelay(true);
+	}
+	
+	private boolean validate(int planValue, int accountValue) {
+		if (planValue == -1)
+			return false;
+		return planValue <= accountValue;
 	}
 
 }

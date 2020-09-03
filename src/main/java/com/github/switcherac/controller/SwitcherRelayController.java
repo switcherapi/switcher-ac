@@ -87,6 +87,12 @@ public class SwitcherRelayController {
 				return ResponseEntity.ok(
 						accountControlService.checkTeam(
 								args[1], Integer.parseInt(request.getNumeric())));
+			case "metrics":
+				return ResponseEntity.ok(
+						accountControlService.checkMetrics(args[1]));
+			case "history":
+				return ResponseEntity.ok(
+						accountControlService.checkHistory(args[1]));
 			default:
 				return ResponseEntity.ok(
 						new ResponseRelay(false, 

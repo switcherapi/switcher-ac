@@ -1,5 +1,6 @@
 package com.github.switcherac.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,23 @@ public class AccountService {
 					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
 		}
 		
-		Account account = new Account();
-		account.setAdminId(adminId);
+		Account account = accountDao.findByAdminId(adminId);
+		if (account == null) {
+			account = new Account();
+			account.setAdminId(adminId);
+		}
+		
 		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
 		
+		return account;
+	}
+	
+	public Account resetDailyExecution(String adminId) {
+		Account account = getAccountByAdminId(adminId);
+		account.setCurrentDailyExecution(0);
+		account.setLastReset(new Date());
+		accountDao.getAccountRepository().save(account);
 		return account;
 	}
 	

@@ -23,11 +23,12 @@ public class PlanService {
 	@Autowired
 	private AccountService accountService;
 	
-	public void createPlan(Plan plan) {
+	public Plan createPlan(Plan plan) {
 		Plan newPlan = planDao.findByName(plan.getName());
 		newPlan = newPlan != null ? newPlan : new Plan();
 		loadAttributes(plan, newPlan);
 		planDao.getPlanRepository().save(newPlan);
+		return plan;
 	}
 	
 	public Plan updatePlan(String planName, Plan plan) {
