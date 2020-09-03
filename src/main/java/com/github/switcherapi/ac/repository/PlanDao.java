@@ -1,4 +1,4 @@
-package com.github.switcherac.repository;
+package com.github.switcherapi.ac.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import com.github.switcherac.model.Plan;
+import com.github.switcherapi.ac.model.Plan;
 
 @Component
 public class PlanDao {

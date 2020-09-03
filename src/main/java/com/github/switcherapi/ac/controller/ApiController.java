@@ -1,4 +1,4 @@
-package com.github.switcherac.controller;
+package com.github.switcherapi.ac.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

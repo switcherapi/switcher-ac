@@ -1,4 +1,4 @@
-package com.github.switcherac.model.response;
+package com.github.switcherapi.ac.model.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

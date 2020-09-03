@@ -1,4 +1,4 @@
-package com.github.switcherac.controller;
+package com.github.switcherapi.ac.controller;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherac.model.Account;
-import com.github.switcherac.model.Plan;
-import com.github.switcherac.service.AccountService;
-import com.github.switcherac.service.PlanService;
+import com.github.switcherapi.ac.model.Account;
+import com.github.switcherapi.ac.model.Plan;
+import com.github.switcherapi.ac.service.AccountService;
+import com.github.switcherapi.ac.service.PlanService;
 
 @CrossOrigin
 @RestController

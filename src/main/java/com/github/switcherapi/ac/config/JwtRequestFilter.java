@@ -1,4 +1,4 @@
-package com.github.switcherac.config;
+package com.github.switcherapi.ac.config;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.github.switcherac.service.JwtTokenService;
+import com.github.switcherapi.ac.service.JwtTokenService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

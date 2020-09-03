@@ -1,4 +1,4 @@
-package com.github.switcherac.model;
+package com.github.switcherapi.ac.model;
 
 import java.util.Date;
 

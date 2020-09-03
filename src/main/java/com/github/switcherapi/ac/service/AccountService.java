@@ -1,4 +1,4 @@
-package com.github.switcherac.service;
+package com.github.switcherapi.ac.service;
 
 import java.util.Date;
 import java.util.List;
@@ -8,11 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherac.model.Account;
-import com.github.switcherac.model.Plan;
-import com.github.switcherac.model.PlanType;
-import com.github.switcherac.repository.AccountDao;
-import com.github.switcherac.repository.PlanDao;
+import com.github.switcherapi.ac.model.Account;
+import com.github.switcherapi.ac.model.Plan;
+import com.github.switcherapi.ac.model.PlanType;
+import com.github.switcherapi.ac.repository.AccountDao;
+import com.github.switcherapi.ac.repository.PlanDao;
 
 @Service
 public class AccountService {

@@ -1,4 +1,4 @@
-package com.github.switcherac.service;
+package com.github.switcherapi.ac.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

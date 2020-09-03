@@ -1,7 +1,4 @@
-package com.github.switcherac.config;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
+package com.github.switcherapi.ac.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@Value("${service.endpoint.allowed-addresses}")
-	private String allowedAddresses;
-	
 	@Value("${service.endpoint.healthchecker}")
 	private String healthChecker;
 	
@@ -35,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers(healthChecker).permitAll()
-				.antMatchers("/**").access("isAuthenticated() and (" + buildAllowedIpList() + ")")
+				.antMatchers("/**").access("isAuthenticated()")
 			
 			.and()
 				.exceptionHandling()
@@ -49,15 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrf().disable();
 		
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-	}
-	
-	private String buildAllowedIpList() {
-		final String[] addresses = allowedAddresses.split(",");
-		final String accessIpAddress = Arrays.stream(addresses)
-				.map(address -> "hasIpAddress('" + address.trim() + "') or ")
-				.collect(Collectors.joining());
-
-		return accessIpAddress.substring(0, accessIpAddress.length() - 4);
 	}
 
 }

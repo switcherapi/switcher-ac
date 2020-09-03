@@ -1,8 +1,8 @@
-package com.github.switcherac.repository;
+package com.github.switcherapi.ac.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.github.switcherac.model.Account;
+import com.github.switcherapi.ac.model.Account;
 
 public interface AccountRepository extends MongoRepository<Account, String> {
 	

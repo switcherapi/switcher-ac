@@ -1,4 +1,4 @@
-package com.github.switcherac.service;
+package com.github.switcherapi.ac.service;
 
 import java.util.Date;
 
@@ -7,9 +7,9 @@ import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.switcherac.model.Account;
-import com.github.switcherac.model.response.ResponseRelay;
-import com.github.switcherac.repository.AccountDao;
+import com.github.switcherapi.ac.model.Account;
+import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.repository.AccountDao;
 
 @Service
 public class AccountControlService {

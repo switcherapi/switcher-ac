@@ -1,4 +1,4 @@
-package com.github.switcherac.config;
+package com.github.switcherapi.ac.config;
 
 import java.io.IOException;
 import java.io.Serializable;

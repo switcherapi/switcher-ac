@@ -1,4 +1,4 @@
-package com.github.switcherac;
+package com.github.switcherapi.ac;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.github.switcherac;
+package com.github.switcherapi.ac;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,12 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.github.switcherac.model.Plan;
-import com.github.switcherac.model.PlanType;
-import com.github.switcherac.service.PlanService;
+import com.github.switcherapi.ac.model.Plan;
+import com.github.switcherapi.ac.model.PlanType;
+import com.github.switcherapi.ac.service.PlanService;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.github.switcherac" })
+@ComponentScan(basePackages = { "com.github.switcherapi.ac" })
 public class SwitcherAcApplication implements CommandLineRunner {
 	
 	private static final Logger logger = LogManager.getLogger(SwitcherAcApplication.class);

@@ -1,4 +1,4 @@
-package com.github.switcherac.model;
+package com.github.switcherapi.ac.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

@@ -1,4 +1,4 @@
-package com.github.switcherac.controller;
+package com.github.switcherapi.ac.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.switcherac.model.request.RequestRelay;
-import com.github.switcherac.model.response.ResponseRelay;
-import com.github.switcherac.service.AccountControlService;
-import com.github.switcherac.service.AccountService;
+import com.github.switcherapi.ac.model.request.RequestRelay;
+import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.service.AccountControlService;
+import com.github.switcherapi.ac.service.AccountService;
 
 @CrossOrigin
 @RestController
