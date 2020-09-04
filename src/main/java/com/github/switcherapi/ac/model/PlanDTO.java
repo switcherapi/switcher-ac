@@ -1,20 +1,7 @@
 package com.github.switcherapi.ac.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_NULL)
-@Document(collection = "plans")
-public class Plan {
+public class PlanDTO {
 	
-	@Id
-	private String id;
-	
-	@Indexed(unique = true)
 	private String name;
 	
 	private Integer maxDomains;
@@ -31,32 +18,9 @@ public class Plan {
 	
 	private Integer maxDailyExecution;
 	
-	private boolean enableMetrics;
+	private Boolean enableMetrics;
 	
-	private boolean enableHistory;
-	
-	public static PlanDTO loadDefault() {
-		PlanDTO plan = new PlanDTO();
-		plan.setName(PlanType.DEFAULT.name());
-		plan.setMaxDomains(1);
-		plan.setMaxGroups(2);
-		plan.setMaxSwitchers(3);
-		plan.setMaxEnvironments(2);
-		plan.setMaxComponents(2);
-		plan.setMaxTeams(1);
-		plan.setMaxDailyExecution(100);
-		plan.setEnableHistory(false);
-		plan.setEnableMetrics(false);
-		return plan;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
+	private Boolean enableHistory;
 
 	public String getName() {
 		return name;
@@ -122,20 +86,20 @@ public class Plan {
 		this.maxDailyExecution = maxDailyExecution;
 	}
 
-	public boolean isEnableMetrics() {
+	public Boolean isEnableMetrics() {
 		return enableMetrics;
 	}
 
-	public void setEnableMetrics(boolean enableMetrics) {
+	public void setEnableMetrics(Boolean enableMetrics) {
 		this.enableMetrics = enableMetrics;
 	}
 
-	public boolean isEnableHistory() {
+	public Boolean isEnableHistory() {
 		return enableHistory;
 	}
 
-	public void setEnableHistory(boolean enableHistory) {
+	public void setEnableHistory(Boolean enableHistory) {
 		this.enableHistory = enableHistory;
 	}
-	
+
 }

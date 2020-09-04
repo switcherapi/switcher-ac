@@ -3,9 +3,10 @@ package com.github.switcherapi.ac.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ import com.github.switcherapi.ac.service.AccountService;
 @RequestMapping("switcher")
 public class SwitcherRelayController {
 	
-	private final String VALIDATE_SEPARATOR = "#";
+	private static final String SEPARATOR = "#";
 	
 	@Autowired
 	private AccountService accountService;
@@ -27,7 +28,7 @@ public class SwitcherRelayController {
 	@Autowired
 	private AccountControlService accountControlService;
 	
-	@RequestMapping(value = "/v1/create", method = RequestMethod.POST)
+	@PostMapping(value = "/v1/create")
 	public ResponseEntity<ResponseRelay> loadAccount(@RequestBody RequestRelay request) {
 		try {
 			accountService.createAccount(request.getValue());
@@ -37,7 +38,7 @@ public class SwitcherRelayController {
 		}
 	}
 
-	@RequestMapping(value = "/v1/remove", method = RequestMethod.POST)
+	@PostMapping(value = "/v1/remove")
 	public ResponseEntity<ResponseRelay> removeAccount(@RequestBody RequestRelay request) {
 		try {
 			accountService.deleteAccount(request.getValue());
@@ -47,7 +48,7 @@ public class SwitcherRelayController {
 		}
 	}
 	
-	@RequestMapping(value = "/v1/execution", method = RequestMethod.GET)
+	@GetMapping(value = "/v1/execution")
 	public ResponseEntity<ResponseRelay> execution(@RequestParam String value) {
 		try {
 			return ResponseEntity.ok(
@@ -57,10 +58,10 @@ public class SwitcherRelayController {
 		}
 	}
 	
-	@RequestMapping(value = "/v1/validate", method = RequestMethod.POST)
+	@PostMapping(value = "/v1/validate")
 	public ResponseEntity<ResponseRelay> validate(@RequestBody RequestRelay request) {
 		try {
-			final String[] args = request.getValue().split(VALIDATE_SEPARATOR);
+			final String[] args = request.getValue().split(SEPARATOR);
 			
 			switch (args[0]) {
 			case "domain":

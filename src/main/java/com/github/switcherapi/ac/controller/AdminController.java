@@ -5,16 +5,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.github.switcherapi.ac.model.Account;
 import com.github.switcherapi.ac.model.Plan;
+import com.github.switcherapi.ac.model.PlanDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
 
@@ -29,69 +32,40 @@ public class AdminController {
 	@Autowired
 	private AccountService accountService;
 	
-	@RequestMapping(value = "/account/v1/change/{adminId}", method = RequestMethod.PATCH)
+	@PatchMapping(value = "/account/v1/change/{adminId}")
 	public ResponseEntity<Account> changeAccountPlan(@PathVariable(value="adminId") 
 		String adminId, @RequestParam String plan) {
-		try {
-			return ResponseEntity.ok(accountService.createAccount(adminId, plan));
-		} catch (ResponseStatusException e) {
-			throw e;
-		}
+		return ResponseEntity.ok(accountService.createAccount(adminId, plan));
 	}
 	
-	@RequestMapping(value = "/account/v1/reset/{adminId}", method = RequestMethod.PATCH)
+	@PatchMapping(value = "/account/v1/reset/{adminId}")
 	public ResponseEntity<Account> changeAccountPlan(@PathVariable(value="adminId") String adminId) {
-		try {
-			return ResponseEntity.ok(accountService.resetDailyExecution(adminId));
-		} catch (ResponseStatusException e) {
-			throw e;
-		}
+		return ResponseEntity.ok(accountService.resetDailyExecution(adminId));
 	}
 	
-	@RequestMapping(value = "/plan/v1", method = RequestMethod.POST)
-	public ResponseEntity<Plan> createPlan(@RequestBody Plan plan) {
-		try {
-			return ResponseEntity.ok(planService.createPlan(plan));
-		} catch (ResponseStatusException e) {
-			throw e;
-		}
+	@PostMapping(value = "/plan/v1")
+	public ResponseEntity<Plan> createPlan(@RequestBody PlanDTO plan) {
+		return ResponseEntity.ok(planService.createPlan(plan));
 	}
 	
-	@RequestMapping(value = "/plan/v1", method = RequestMethod.PATCH)
-	public ResponseEntity<Plan> updatePlan(@RequestBody Plan plan) {
-		try {
-			planService.updatePlan(plan.getName(), plan);
-			return ResponseEntity.ok(plan);
-		} catch (ResponseStatusException e) {
-			throw e;
-		}
+	@PatchMapping(value = "/plan/v1")
+	public ResponseEntity<Plan> updatePlan(@RequestBody PlanDTO plan) {
+		return ResponseEntity.ok(planService.updatePlan(plan.getName(), plan));
 	}
 	
-	@RequestMapping(value = "/plan/v1", method = RequestMethod.DELETE)
+	@DeleteMapping(value = "/plan/v1")
 	public ResponseEntity<String> deletePlan(@RequestParam String plan) {
-		try {
-			planService.deletePlan(plan);
-			return ResponseEntity.ok("Plan deleted");
-		} catch (ResponseStatusException e) {
-			throw e;
-		}
+		planService.deletePlan(plan);
+		return ResponseEntity.ok("Plan deleted");
 	}
 	
-	@RequestMapping(value = "/plan/v1/list", method = RequestMethod.GET)
+	@GetMapping(value = "/plan/v1/list")
 	public ResponseEntity<List<Plan>> listPlans() {
-		try {
-			return ResponseEntity.ok(planService.listAll());
-		} catch (ResponseStatusException e) {
-			throw e;
-		}
+		return ResponseEntity.ok(planService.listAll());
 	}
 	
-	@RequestMapping(value = "/plan/v1/get", method = RequestMethod.GET)
+	@GetMapping(value = "/plan/v1/get")
 	public ResponseEntity<Plan> listPlans(@RequestParam String plan) {
-		try {
-			return ResponseEntity.ok(planService.getPlanByName(plan));
-		} catch (ResponseStatusException e) {
-			throw e;
-		}
+		return ResponseEntity.ok(planService.getPlanByName(plan));
 	}
 }

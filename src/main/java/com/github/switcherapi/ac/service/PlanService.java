@@ -1,6 +1,5 @@
 package com.github.switcherapi.ac.service;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.github.switcherapi.ac.model.Plan;
+import com.github.switcherapi.ac.model.PlanDTO;
 import com.github.switcherapi.ac.model.PlanType;
 import com.github.switcherapi.ac.repository.PlanDao;
 
 @Service
 public class PlanService {
 	
-	private final String PLAN_NOT_FOUND = "Unable to find plan %s";
+	private static final String PLAN_NOT_FOUND = "Unable to find plan %s";
 	
 	@Autowired
 	private PlanDao planDao;
@@ -23,15 +23,14 @@ public class PlanService {
 	@Autowired
 	private AccountService accountService;
 	
-	public Plan createPlan(Plan plan) {
+	public Plan createPlan(PlanDTO plan) {
 		Plan newPlan = planDao.findByName(plan.getName());
 		newPlan = newPlan != null ? newPlan : new Plan();
 		loadAttributes(plan, newPlan);
-		planDao.getPlanRepository().save(newPlan);
-		return plan;
+		return planDao.getPlanRepository().save(newPlan);
 	}
 	
-	public Plan updatePlan(String planName, Plan plan) {
+	public Plan updatePlan(String planName, PlanDTO plan) {
 		Plan planFound = getPlanByName(planName);
 		loadAttributes(plan, planFound);
 		planDao.getPlanRepository().save(planFound);
@@ -45,9 +44,8 @@ public class PlanService {
 					HttpStatus.BAD_REQUEST, "Invalid plan name");
 		}
 		
-		accountService.getAccountsByPlanName(planName).forEach(account -> {
-			accountService.updateAccountPlan(account.getAdminId(), PlanType.DEFAULT.name());
-		});
+		accountService.getAccountsByPlanName(planName).forEach(account ->
+			accountService.updateAccountPlan(account.getAdminId(), PlanType.DEFAULT.name()));
 		
 		planDao.deleteByName(planName);
 	}
@@ -67,22 +65,17 @@ public class PlanService {
 		return plan;
 	}
 	
-	private void loadAttributes(Plan from, Plan to) {
-		for (Field field : Plan.class.getDeclaredFields()) {
-			try {
-				field.setAccessible(true);
-				if (field.get(from) != null) {
-					field.setAccessible(true);
-					field.set(to, field.get(from));
-				}
-			} catch (Exception e) {
-				throw new ResponseStatusException(
-						HttpStatus.INTERNAL_SERVER_ERROR, 
-						"Something went wrong while attempting to load attributes", e);
-			} finally {
-				field.setAccessible(false);
-			}
-		}
+	private void loadAttributes(PlanDTO from, Plan to) {
+		to.setName(from.getName() != null ? from.getName() : to.getName());
+		to.setMaxDomains(from.getMaxDomains() != null ? from.getMaxDomains() : to.getMaxDomains());
+		to.setMaxGroups(from.getMaxGroups() != null ? from.getMaxGroups() : to.getMaxGroups());
+		to.setMaxSwitchers(from.getMaxSwitchers() != null ? from.getMaxSwitchers() : to.getMaxSwitchers());
+		to.setMaxComponents(from.getMaxComponents() != null ? from.getMaxComponents() : to.getMaxComponents());
+		to.setMaxEnvironments(from.getMaxEnvironments() != null ? from.getMaxEnvironments() : to.getMaxEnvironments());
+		to.setMaxDailyExecution(from.getMaxDailyExecution() != null ? from.getMaxDailyExecution() : to.getMaxDailyExecution());
+		to.setMaxTeams(from.getMaxTeams() != null ? from.getMaxTeams() : to.getMaxTeams());
+		to.setEnableHistory(from.isEnableHistory() != null ? from.isEnableHistory() : to.isEnableHistory());
+		to.setEnableMetrics(from.isEnableMetrics() != null ? from.isEnableMetrics() : to.isEnableMetrics());
 	}
 
 }

@@ -27,7 +27,7 @@ public class SwitcherAcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		logger.info(String.format("Loading %s Plan...", PlanType.DEFAULT.name()));
+		logger.info("Loading {} Plan...", PlanType.DEFAULT.name());
 		planService.createPlan(Plan.loadDefault());
 		logger.info("DEFAULT Plan loaded");
 	}

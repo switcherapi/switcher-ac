@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.github.switcherapi.ac.model.Plan;
+import com.github.switcherapi.ac.model.PlanDTO;
 import com.github.switcherapi.ac.model.PlanType;
 import com.github.switcherapi.ac.service.PlanService;
 import com.google.gson.Gson;
@@ -55,7 +56,7 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldCreateNewPlan() throws Exception {
 		//given
-		Plan planObj = Plan.loadDefault();
+		PlanDTO planObj = Plan.loadDefault();
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		
@@ -66,13 +67,13 @@ class AdminPlanControllerTests {
 			.content(json))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(json)));
+			.andExpect(content().string(containsString(PlanType.DEFAULT.name())));
 	}
 	
 	@Test
 	void shouldUpdatePlan() throws Exception {
 		//given
-		Plan planObj = Plan.loadDefault();
+		PlanDTO planObj = Plan.loadDefault();
 		planObj.setName(PlanType.DEFAULT.name());
 		planObj.setEnableHistory(true);
 		
@@ -89,7 +90,7 @@ class AdminPlanControllerTests {
 			.content(json))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(json)));
+			.andExpect(content().string(containsString(PlanType.DEFAULT.name())));
 		
 		final Plan planUpdated = planService.getPlanByName(PlanType.DEFAULT.name());
 		assertEquals(true, planUpdated.isEnableHistory());
@@ -98,7 +99,7 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldNotUpdatePlan_planNotFound() throws Exception {
 		//given
-		Plan planObj = Plan.loadDefault();
+		PlanDTO planObj = Plan.loadDefault();
 		planObj.setName("NOT_FOUND");
 		
 		Gson gson = new Gson();
@@ -116,7 +117,7 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldDeletePlan() throws Exception {
 		//given
-		final Plan planObj = Plan.loadDefault();
+		final PlanDTO planObj = Plan.loadDefault();
 		planObj.setName("DELETE_ME");
 		
 		Gson gson = new Gson();

@@ -16,7 +16,7 @@ import com.github.switcherapi.ac.repository.AccountDao;
 @Service
 public class AccountControlService {
 	
-	private final String ACCOUNT_NOT_FOUND = "Account not found";
+	private static final String ACCOUNT_NOT_FOUND = "Account not found";
 	
 	@Autowired
 	private AccountDao accountDao;

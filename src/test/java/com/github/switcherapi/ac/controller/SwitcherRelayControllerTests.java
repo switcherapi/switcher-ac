@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.switcherapi.ac.model.Plan;
+import com.github.switcherapi.ac.model.PlanDTO;
 import com.github.switcherapi.ac.model.PlanType;
 import com.github.switcherapi.ac.model.request.RequestRelay;
 import com.github.switcherapi.ac.model.response.ResponseRelay;
@@ -167,7 +168,8 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_execution() throws Exception {
 		//given
-		Plan plan = accountService.createAccount("adminid").getPlan();
+		accountService.createAccount("adminid");
+		PlanDTO plan = Plan.loadDefault();
 		plan.setMaxDailyExecution(0);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
 		ResponseRelay expectedResponse = new ResponseRelay(false, "Daily execution limit has been reached");
@@ -188,8 +190,8 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldBeOkWhenValidate_unlimitedUseFeature() throws Exception {
 		//given
-		Plan plan = accountService.createAccount("masteradminid").getPlan();
-		plan.setId(null);
+		accountService.createAccount("masteradminid");
+		PlanDTO plan = Plan.loadDefault();
 		plan.setMaxSwitchers(-1);
 		plan.setName("ILIMITED");
 		planService.createPlan(plan);
@@ -324,7 +326,8 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldBeOkWhenValidate_metric() throws Exception {
 		//given
-		Plan plan = accountService.createAccount("adminid").getPlan();
+		accountService.createAccount("adminid");
+		PlanDTO plan = Plan.loadDefault();
 		plan.setEnableMetrics(true);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
 		ResponseRelay expectedResponse = new ResponseRelay(true);
@@ -336,7 +339,8 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_metric() throws Exception {
 		//given
-		Plan plan = accountService.createAccount("adminid").getPlan();
+		accountService.createAccount("adminid");
+		PlanDTO plan = Plan.loadDefault();
 		plan.setEnableMetrics(false);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
 		ResponseRelay expectedResponse = new ResponseRelay(false, "Metrics is not available");
@@ -348,7 +352,8 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldBeOkWhenValidate_history() throws Exception {
 		//given
-		Plan plan = accountService.createAccount("adminid").getPlan();
+		accountService.createAccount("adminid");
+		PlanDTO plan = Plan.loadDefault();
 		plan.setEnableHistory(true);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
 		ResponseRelay expectedResponse = new ResponseRelay(true);
@@ -360,7 +365,8 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_history() throws Exception {
 		//given
-		Plan plan = accountService.createAccount("adminid").getPlan();
+		accountService.createAccount("adminid");
+		PlanDTO plan = Plan.loadDefault();
 		plan.setEnableHistory(false);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
 		ResponseRelay expectedResponse = new ResponseRelay(false, "History is not available");

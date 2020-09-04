@@ -17,9 +17,9 @@ import com.github.switcherapi.ac.repository.PlanDao;
 @Service
 public class AccountService {
 	
-	private final String PLAN_NOT_FOUND = "Unable to find plan named %s";
+	private static final String PLAN_NOT_FOUND = "Unable to find plan named %s";
 	
-	private final String ACCOUNT_NOT_FOUND = "Unable to find account %s";
+	private static final String ACCOUNT_NOT_FOUND = "Unable to find account %s";
 	
 	@Autowired
 	private PlanDao planDao;

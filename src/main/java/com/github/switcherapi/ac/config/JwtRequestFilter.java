@@ -28,7 +28,7 @@ import io.jsonwebtoken.SignatureException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 	
-	private static final Logger logger = LogManager.getLogger(JwtRequestFilter.class);
+	private static final Logger jwtLogger = LogManager.getLogger(JwtRequestFilter.class);
 	
 	public static final String SWITCHER_AC = "SWITCHER_AC";
 	
@@ -46,8 +46,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		final Optional<String> jwt = getJwtFromRequest(request);
 		
 		jwt.ifPresent(token -> {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Token {}", token);
+			if (jwtLogger.isDebugEnabled()) {
+				jwtLogger.debug("Token {}", token);
 			}
 			
 			try {

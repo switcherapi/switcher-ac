@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.switcherapi.ac.model.Account;
 import com.github.switcherapi.ac.model.Plan;
+import com.github.switcherapi.ac.model.PlanDTO;
 import com.github.switcherapi.ac.model.PlanType;
 import com.github.switcherapi.ac.service.AccountControlService;
 import com.github.switcherapi.ac.service.AccountService;
@@ -41,10 +42,10 @@ class AdminAccountControllerTests {
 	
 	@BeforeEach
 	void setup() {
-		final Plan plan1 = Plan.loadDefault();
+		final PlanDTO plan1 = Plan.loadDefault();
 		planService.createPlan(plan1);
 		
-		final Plan plan2 = Plan.loadDefault();
+		final PlanDTO plan2 = Plan.loadDefault();
 		plan2.setName("BASIC");
 		planService.createPlan(plan2);
 		
@@ -122,7 +123,7 @@ class AdminAccountControllerTests {
 			.andExpect(status().isOk());
 		
 		account = accountService.getAccountByAdminId("mock_account1");
-		assertThat(account.getCurrentDailyExecution()).isEqualTo(0);
+		assertThat(account.getCurrentDailyExecution()).isZero();
 	}
 
 }
