@@ -41,6 +41,43 @@ class SwitcherRelayControllerTests {
 	
 	private final Gson GSON = new Gson();
 	
+	private void executeTestValidate(String adminId, String featureName, 
+			String value, ResponseRelay expectedResponse, int expectedStatus) throws Exception {
+		//given
+		RequestRelay request = new RequestRelay();
+		request.setValue(String.format("%s#%s", featureName, adminId));
+		
+		if (value != null)
+			request.setNumeric(value);
+		
+		String jsonRequest = GSON.toJson(request);
+		String jsonResponse = GSON.toJson(expectedResponse);
+		
+		//test
+		this.mockMvc.perform(post("/switcher/v1/validate")
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("Authorization", "Bearer relay_token")
+			.content(jsonRequest))
+			.andDo(print())
+			.andExpect(status().is(expectedStatus))
+			.andExpect(content().string(containsString(jsonResponse)));
+	}
+	
+	private void executeTestExecution(String value, ResponseRelay expectedResponse, 
+			int expectedStatus) throws Exception {
+		//given
+		String jsonResponse = GSON.toJson(expectedResponse);
+		
+		//test
+		this.mockMvc.perform(get("/switcher/v1/execution")
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("Authorization", "Bearer relay_token")
+			.queryParam("value", value))
+			.andDo(print())
+			.andExpect(status().is(expectedStatus))
+			.andExpect(content().string(containsString(jsonResponse)));
+	}
+	
 	@Test
 	void shoutNotCreate_notAuthenticated() throws Exception {
 		this.mockMvc.perform(delete("/switcher/v1/create")
@@ -121,18 +158,10 @@ class SwitcherRelayControllerTests {
 	void shouldBeOkWhenValidate_execution() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(true);
 		
 		//test
-		this.mockMvc.perform(get("/switcher/v1/execution")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.queryParam("value", "adminid"))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestExecution("adminid", expectedResponse, 200);
 	}
 	
 	@Test
@@ -141,34 +170,19 @@ class SwitcherRelayControllerTests {
 		Plan plan = accountService.createAccount("adminid").getPlan();
 		plan.setMaxDailyExecution(0);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		
-		ResponseRelay response = new ResponseRelay(false, "Daily execution limit has been reached");
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Daily execution limit has been reached");
+
 		//test
-		this.mockMvc.perform(get("/switcher/v1/execution")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.queryParam("value", "adminid"))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestExecution("adminid", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_execution_accountNotFound() throws Exception {
 		//given
-		ResponseRelay response = new ResponseRelay(false, "404 NOT_FOUND \"Account not found\"");
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(false, "404 NOT_FOUND \"Account not found\"");
 		
 		//test
-		this.mockMvc.perform(get("/switcher/v1/execution")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.queryParam("value", "NOT_FOUND"))
-			.andDo(print())
-			.andExpect(status().is5xxServerError())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestExecution("NOT_FOUND", expectedResponse, 500);
 	}
 	
 	@Test
@@ -181,298 +195,130 @@ class SwitcherRelayControllerTests {
 		planService.createPlan(plan);
 		accountService.updateAccountPlan("masteradminid", "ILIMITED");
 		
-		RequestRelay request = new RequestRelay();
-		request.setValue("switcher#masteradminid");
-		request.setNumeric("10000");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(true);
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("masteradminid", "switcher", "10000", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldBeOkWhenValidate_domain() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("domain#adminid");
-		request.setNumeric("0");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(true);
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "domain", "0", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_domain() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("domain#adminid");
-		request.setNumeric("2"); // limit of 1
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "Domain limit has been reached");
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Domain limit has been reached");
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "domain", "2", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldBeOkWhenValidate_group() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("group#adminid");
-		request.setNumeric("1");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(true);
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "group", "1", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_group() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("group#adminid");
-		request.setNumeric("5"); // limit of 2
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "Group limit has been reached");
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Group limit has been reached");
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "group", "5", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldBeOkWhenValidate_switcher() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("switcher#adminid");
-		request.setNumeric("1");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(true);
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "switcher", "1", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_switcher() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("switcher#adminid");
-		request.setNumeric("4"); // limit of 3
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "Switcher limit has been reached");
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Switcher limit has been reached");
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "switcher", "4", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldBeOkWhenValidate_component() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("component#adminid");
-		request.setNumeric("1");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(true);
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "component", "1", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_component() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("component#adminid");
-		request.setNumeric("3"); // limit of 2
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "Component limit has been reached");
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Component limit has been reached");
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "component", "3", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldBeOkWhenValidate_environment() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("environment#adminid");
-		request.setNumeric("1");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(true);
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "environment", "1", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_environment() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("environment#adminid");
-		request.setNumeric("3"); // limit of 2
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "Environment limit has been reached");
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Environment limit has been reached");
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "environment", "3", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldBeOkWhenValidate_team() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("team#adminid");
-		request.setNumeric("0");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(true);
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "team", "0", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_team() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("team#adminid");
-		request.setNumeric("2"); // limit of 1
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "Team limit has been reached");
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Team limit has been reached");
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "team", "2", expectedResponse, 200);
 	}
 	
 	@Test
@@ -481,22 +327,10 @@ class SwitcherRelayControllerTests {
 		Plan plan = accountService.createAccount("adminid").getPlan();
 		plan.setEnableMetrics(true);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("metrics#adminid");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(true);
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "metrics", null, expectedResponse, 200);
 	}
 	
 	@Test
@@ -505,22 +339,10 @@ class SwitcherRelayControllerTests {
 		Plan plan = accountService.createAccount("adminid").getPlan();
 		plan.setEnableMetrics(false);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("metrics#adminid");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "Metrics is not available");
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Metrics is not available");
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "metrics", null, expectedResponse, 200);
 	}
 	
 	@Test
@@ -529,22 +351,10 @@ class SwitcherRelayControllerTests {
 		Plan plan = accountService.createAccount("adminid").getPlan();
 		plan.setEnableHistory(true);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("history#adminid");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(true);
-		String jsonResponse = GSON.toJson(response);
-		
+		ResponseRelay expectedResponse = new ResponseRelay(true);
+
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "history", null, expectedResponse, 200);
 	}
 	
 	@Test
@@ -553,77 +363,35 @@ class SwitcherRelayControllerTests {
 		Plan plan = accountService.createAccount("adminid").getPlan();
 		plan.setEnableHistory(false);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		
-		RequestRelay request = new RequestRelay();
-		request.setValue("history#adminid");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "History is not available");
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(false, "History is not available");
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "history", null, expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_accountNotFound() throws Exception {
 		//given
-		RequestRelay request = new RequestRelay();
-		request.setNumeric("0");
-		
-		ResponseRelay response = new ResponseRelay(false, "404 NOT_FOUND \"Account not found\"");
-		String jsonResponse = GSON.toJson(response);
-		String jsonRequest;
-		
+		ResponseRelay expectedResponse = new ResponseRelay(false, "404 NOT_FOUND \"Account not found\"");
 		final String[] features = new String[] {
-				"domain#NOT_FOUND",
-				"group#NOT_FOUND",
-				"switcher#NOT_FOUND",
-				"component#NOT_FOUND",
-				"environment#NOT_FOUND",
-				"team#NOT_FOUND",
-				"metrics#NOT_FOUND",
-				"history#NOT_FOUND"
+				"domain", "group", "switcher", "component",
+				"environment", "team", "metrics", "history"
 		};
 		
 		//test
 		for (String feature : features) {
-			request.setValue(feature);
-			jsonRequest = GSON.toJson(request);
-			this.mockMvc.perform(post("/switcher/v1/validate")
-				.contentType(MediaType.APPLICATION_JSON)
-				.header("Authorization", "Bearer relay_token")
-				.content(jsonRequest))
-				.andExpect(status().is5xxServerError())
-				.andExpect(content().string(containsString(jsonResponse)));
+			this.executeTestValidate("NOT_FOUND", feature, "0", expectedResponse, 500);
 		}
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_invalidFeatureName() throws Exception {
 		//given
-		RequestRelay request = new RequestRelay();
-		request.setValue("INVALID_FEATURE#adminid");
-		request.setNumeric("0");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelay response = new ResponseRelay(false, "Invalid arguments - value INVALID_FEATURE#adminid - numeric 0");
-		String jsonResponse = GSON.toJson(response);
+		ResponseRelay expectedResponse = new ResponseRelay(false, 
+				"Invalid arguments - value INVALID_FEATURE#adminid - numeric 0");
 		
 		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().is5xxServerError())
-			.andExpect(content().string(containsString(jsonResponse)));
+		this.executeTestValidate("adminid", "INVALID_FEATURE", "0", expectedResponse, 500);
 	}
 
 }
