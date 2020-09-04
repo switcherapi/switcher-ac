@@ -23,12 +23,15 @@ No authorization required.
 Admin authorization token is required.
 
 - **List plans** - /admin/plan/v1/list [GET]
+
 Return all registered plans
 
 - **Get plan** - /admin/plan/v1/get?plan={PLAN_NAME} [GET]
+
 Return a specific plan
 
 - **Create plan** - /admin/plan/v1 [POST]
+
 Create new plan
 ```json
 {
@@ -44,18 +47,22 @@ Create new plan
 ```
 
 - **Delete plan** - /admin/plan/v1?plan={PLAN_NAME} [POST]
+
 Delete a specific plan
 
 - **Change account plan** - /admin/account/v1/change/:externalId?plan={PLAN_NAME} [PATCH]
+
 Change account plan to the one especified
 
 - **Reset account execution daily limit** - /admin/account/v1/reset/:externalId [PATCH]
+
 Reset the number of executions for a specific account
 
 ### Switcher
 Switcher authorization token is required.
 
 - **Create account** - /switcher/v1/create [POST]
+
 Create new account with defatul plan
 ```json
 {
@@ -64,6 +71,7 @@ Create new account with defatul plan
 ```
 
 - **Remove account** - /switcher/v1/remove [POST]
+
 Remove account
 ```json
 {
@@ -72,15 +80,17 @@ Remove account
 ```
 
 - **Feature validation** - /switcher/v1/validate [POST]
+
 Execute the validation based on the name of the feature and account externalId.
   - **value**: string containing one of the features: domain, group, switcher, component, environment, team, metrics, history
   - **numeric**: optional string value, not used for metrics and history
 ```json
 {
-    "value": "{featureName}#{externalId}"
+    "value": "{featureName}#{externalId}",
     "numeric": "0"
 }
 ```
 
 - **Usage validation** - /switcher/v1/execution?value={externalId} [POST]
+
 Verify account usage
