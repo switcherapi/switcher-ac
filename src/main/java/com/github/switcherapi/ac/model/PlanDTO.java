@@ -90,7 +90,7 @@ public class PlanDTO {
 	}
 
 	public Boolean isEnableMetrics() {
-		return enableMetrics;
+		return enableMetrics.booleanValue();
 	}
 
 	public void setEnableMetrics(Boolean enableMetrics) {
@@ -98,7 +98,7 @@ public class PlanDTO {
 	}
 
 	public Boolean isEnableHistory() {
-		return enableHistory;
+		return enableHistory.booleanValue();
 	}
 
 	public void setEnableHistory(Boolean enableHistory) {

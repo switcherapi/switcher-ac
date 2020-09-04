@@ -12,7 +12,8 @@ cache:
 deploy:
   provider: heroku
   app: switcher-ac
-  api_key: ${HEROKU_KEY}
-  
+  api_key:
+    secure: ${HEROKU_KEY}
+
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=switcher-ac

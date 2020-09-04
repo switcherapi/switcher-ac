@@ -12,11 +12,11 @@ public class JwtTokenService {
 	@Value("${service.relay.token}")
 	private String relayToken;
 	
-	public Boolean validateAdminToken(String token) {
+	public boolean validateAdminToken(String token) {
 		return apiToken.equals(token);
 	}
 	
-	public Boolean validateRelayToken(String token) {
+	public boolean validateRelayToken(String token) {
 		return relayToken.equals(token);
 	}
 }
