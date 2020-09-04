@@ -142,7 +142,7 @@ public class AccountControlService {
 		final Account account = accountDao.findByAdminId(adminId);
 		
 		if (account != null) {
-			if (!account.getPlan().isEnableMetrics()) {
+			if (!account.getPlan().isEnableMetrics().booleanValue()) {
 				return new ResponseRelay(false, "Metrics is not available");
 			}
 		} else {
@@ -157,7 +157,7 @@ public class AccountControlService {
 		final Account account = accountDao.findByAdminId(adminId);
 		
 		if (account != null) {
-			if (!account.getPlan().isEnableHistory()) {
+			if (!account.getPlan().isEnableHistory().booleanValue()) {
 				return new ResponseRelay(false, "History is not available");
 			}
 		} else {

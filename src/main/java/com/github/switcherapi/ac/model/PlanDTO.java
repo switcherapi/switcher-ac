@@ -89,16 +89,16 @@ public class PlanDTO {
 		this.maxDailyExecution = maxDailyExecution;
 	}
 
-	public boolean isEnableMetrics() {
-		return enableMetrics.booleanValue();
+	public Boolean isEnableMetrics() {
+		return enableMetrics;
 	}
 
 	public void setEnableMetrics(Boolean enableMetrics) {
 		this.enableMetrics = enableMetrics;
 	}
 
-	public boolean isEnableHistory() {
-		return enableHistory.booleanValue();
+	public Boolean isEnableHistory() {
+		return enableHistory;
 	}
 
 	public void setEnableHistory(Boolean enableHistory) {
