@@ -51,7 +51,7 @@ public class AdminController {
 	@RequestMapping(value = "/plan/v1", method = RequestMethod.POST)
 	public ResponseEntity<Plan> createPlan(@RequestBody Plan plan) {
 		try {
-			return ResponseEntity.ok(planService.createPlan(planService.createPlan(plan)));
+			return ResponseEntity.ok(planService.createPlan(plan));
 		} catch (ResponseStatusException e) {
 			throw e;
 		}
