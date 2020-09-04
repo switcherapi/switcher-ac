@@ -1,0 +1,21 @@
+language: java
+jdk:
+ - oraclejdk8
+ 
+addons:
+  sonarcloud:
+    organization: "petruki"
+    token: ${SONAR_TOKEN}
+    
+cache:
+  directories:
+  - $HOME/.m2
+  
+deploy:
+  provider: heroku
+    api-key: 
+    secure: $HEROKU_API_KEY
+  app: switcher-ac
+  
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=switcher-ac
