@@ -7,7 +7,7 @@
 
 	<groupId>com.github.switcherac</groupId>
 	<artifactId>switcher-ac</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	
 	<name>Switcher Account Control</name>
 	<description>Account Control Service for Switcher API</description>
@@ -22,10 +22,10 @@
 		</developer>
  	</developers>
  	
- 	<scm>
-		<connection></connection>
-		<developerConnection></developerConnection>
-		<url></url>
+	<scm>
+		<connection>scm:git:git://github.com:switcherapi/switcher-ac.git</connection>
+		<developerConnection>scm:git:ssh://github.com:switcherapi/switcher-ac.git</developerConnection>
+		<url>https://github.com/switcherapi/switcher-ac</url>
 	</scm>
 
 	<parent>
@@ -43,6 +43,13 @@
 		
 		<joda-time.version>2.10.6</joda-time.version>
 		<jjwt.version>0.9.1</jjwt.version>
+		
+		<!-- Sonar -->
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.jacoco.reportPath>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.jacoco.reportPath>
+		<sonar.language>java</sonar.language>
+		<sonar.coverage.exclusions>com/github/switcherapi/ac/model/*</sonar.coverage.exclusions>
 	</properties>
 	
 	<profiles>
@@ -137,10 +144,56 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>3.6.0.1398</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.4</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			
+			<!-- Tells Sonar to pick up testing results -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<destFile>${sonar.jacoco.reportPath}</destFile>
+					<dataFile>${sonar.jacoco.reportPath}</dataFile>
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>jacoco-initialize</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
