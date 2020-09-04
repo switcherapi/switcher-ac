@@ -89,7 +89,7 @@ public class PlanDTO {
 		this.maxDailyExecution = maxDailyExecution;
 	}
 
-	public Boolean isEnableMetrics() {
+	public boolean isEnableMetrics() {
 		return enableMetrics.booleanValue();
 	}
 
@@ -97,7 +97,7 @@ public class PlanDTO {
 		this.enableMetrics = enableMetrics;
 	}
 
-	public Boolean isEnableHistory() {
+	public boolean isEnableHistory() {
 		return enableHistory.booleanValue();
 	}
 
