@@ -80,10 +80,6 @@ public class AccountService {
 		}	
 	}
 	
-	public List<Account> listAll() {
-		return accountDao.getAccountRepository().findAll();
-	}
-	
 	public Account getAccountByAdminId(String adminId) {
 		final Account account = accountDao.findByAdminId(adminId);
 		

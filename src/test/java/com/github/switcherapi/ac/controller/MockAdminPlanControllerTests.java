@@ -39,13 +39,13 @@ class MockAdminPlanControllerTests {
 	private MockMvc mockMvc;
 	
 	@BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
     }
 	
 	@Test
-	public void shouldNotCreateNewPlan() throws Exception {
+	void shouldNotCreateNewPlan() throws Exception {
 		//mock
         Mockito.when(mockPlanService.createPlan(Mockito.any(Plan.class)))
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -65,7 +65,7 @@ class MockAdminPlanControllerTests {
 	}
 	
 	@Test
-	public void shouldNotListPlans() throws Exception {
+	void shouldNotListPlans() throws Exception {
 		//mock
         Mockito.when(mockPlanService.listAll())
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));

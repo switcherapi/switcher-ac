@@ -5,7 +5,9 @@ import java.util.Date;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.github.switcherapi.ac.model.Account;
 import com.github.switcherapi.ac.model.response.ResponseRelay;
@@ -27,7 +29,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "Domain limit has been reached");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);
@@ -41,7 +44,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "Group limit has been reached");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);
@@ -55,7 +59,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "Switcher limit has been reached");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);
@@ -69,7 +74,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "Environment limit has been reached");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);
@@ -83,7 +89,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "Component limit has been reached");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);
@@ -97,7 +104,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "Team limit has been reached");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);
@@ -123,7 +131,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "Daily execution limit has been reached");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);
@@ -137,7 +146,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "Metrics is not available");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);
@@ -151,7 +161,8 @@ public class AccountControlService {
 				return new ResponseRelay(false, "History is not available");
 			}
 		} else {
-			return new ResponseRelay(false, ACCOUNT_NOT_FOUND);
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
 		}
 		
 		return new ResponseRelay(true);

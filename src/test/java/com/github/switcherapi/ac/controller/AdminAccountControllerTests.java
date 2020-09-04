@@ -40,7 +40,7 @@ class AdminAccountControllerTests {
 	private MockMvc mockMvc;
 	
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		final Plan plan1 = Plan.loadDefault();
 		planService.createPlan(plan1);
 		

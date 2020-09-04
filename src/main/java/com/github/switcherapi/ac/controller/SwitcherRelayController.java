@@ -94,7 +94,7 @@ public class SwitcherRelayController {
 				return ResponseEntity.ok(
 						accountControlService.checkHistory(args[1]));
 			default:
-				return ResponseEntity.ok(
+				return ResponseEntity.status(500).body(
 						new ResponseRelay(false, 
 								String.format(
 										"Invalid arguments - value %s - numeric %s", 

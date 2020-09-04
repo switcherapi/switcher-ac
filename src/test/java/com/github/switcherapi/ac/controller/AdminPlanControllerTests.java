@@ -45,6 +45,14 @@ class AdminPlanControllerTests {
 	}
 	
 	@Test
+	void shoutNotDelete_notAuthenticated() throws Exception {
+		this.mockMvc.perform(delete("/admin/plan/v1")
+			.contentType(MediaType.APPLICATION_JSON)
+			.queryParam("plan", "BASIC"))
+			.andExpect(status().isUnauthorized());
+	}
+	
+	@Test
 	void shouldCreateNewPlan() throws Exception {
 		//given
 		Plan planObj = Plan.loadDefault();

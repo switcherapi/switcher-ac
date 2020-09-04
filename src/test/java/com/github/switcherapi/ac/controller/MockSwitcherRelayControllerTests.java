@@ -1,6 +1,6 @@
 package com.github.switcherapi.ac.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -19,16 +19,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.controller.AdminController;
+import com.github.switcherapi.ac.model.request.RequestRelay;
 import com.github.switcherapi.ac.service.AccountService;
+import com.google.gson.Gson;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
-class MockAdminAccountControllerTests {
+class MockSwitcherRelayControllerTests {
 	
 	@InjectMocks
-    private AdminController adminController;
+    private SwitcherRelayController switcherRelayController;
 	
 	@Mock
 	private AccountService mockAccountService;
@@ -38,19 +39,25 @@ class MockAdminAccountControllerTests {
 	@BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(switcherRelayController).build();
     }
 	
 	@Test
-	void shouldNotResetDailyExecution() throws Exception {
+	void shouldNotCreateAccount() throws Exception {
 		//mock
-        Mockito.when(mockAccountService.resetDailyExecution(Mockito.any(String.class)))
+        Mockito.when(mockAccountService.createAccount(Mockito.any(String.class)))
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
+        //given
+  		RequestRelay request = new RequestRelay();
+  		request.setValue("adminid");
+  		String jsonRequest = new Gson().toJson(request);
+        
 		//test
-		this.mockMvc.perform(patch("/admin/account/v1/reset/{adminId}", "mock_account1")
+		this.mockMvc.perform(post("/switcher/v1/create")
 				.contentType(MediaType.APPLICATION_JSON)
-				.header("Authorization", "Bearer api_token"))
+				.header("Authorization", "Bearer relay_token")
+				.content(jsonRequest))
 				.andDo(print())
 				.andExpect(status().is5xxServerError());
 	}
