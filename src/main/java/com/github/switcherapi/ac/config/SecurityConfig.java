@@ -29,7 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers(healthChecker).permitAll()
-				.antMatchers("/**").access("isAuthenticated()")
+				.antMatchers("/switcher/**").hasRole("SWITCHER")
+				.antMatchers("/admin/**").hasRole("ADMIN")
 			
 			.and()
 				.exceptionHandling()
@@ -37,10 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			
 			.and()
 				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			
-			.and()
-				.csrf().disable();
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}

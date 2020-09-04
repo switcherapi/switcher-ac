@@ -2,7 +2,6 @@ package com.github.switcherapi.ac.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +14,6 @@ import com.github.switcherapi.ac.model.response.ResponseRelay;
 import com.github.switcherapi.ac.service.AccountControlService;
 import com.github.switcherapi.ac.service.AccountService;
 
-@CrossOrigin
 @RestController
 @RequestMapping("switcher")
 public class SwitcherRelayController {

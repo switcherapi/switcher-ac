@@ -1,6 +1,7 @@
 package com.github.switcherapi.ac.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -69,6 +70,7 @@ class AdminAccountControllerTests {
 		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer api_token")
+			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andDo(print())
 			.andExpect(status().isOk());
@@ -89,6 +91,7 @@ class AdminAccountControllerTests {
 		this.mockMvc.perform(delete("/admin/plan/v1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer api_token")
+			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andExpect(status().isOk());
 		
@@ -101,6 +104,7 @@ class AdminAccountControllerTests {
 		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer api_token")
+			.with(csrf())
 			.queryParam("plan", "NOT_FOUND"))
 			.andDo(print())
 			.andExpect(status().isNotFound());
@@ -118,7 +122,8 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(patch("/admin/account/v1/reset/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer api_token"))
+			.header("Authorization", "Bearer api_token")
+			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());
 		

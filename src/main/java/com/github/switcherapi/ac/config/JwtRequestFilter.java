@@ -2,6 +2,7 @@ package com.github.switcherapi.ac.config;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -51,9 +53,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			}
 			
 			try {
-				if (validateToken(token, request)) {
+				List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+				if (validateToken(token, request, authorities)) {
 					final UsernamePasswordAuthenticationToken authUser = 
-							new UsernamePasswordAuthenticationToken(SWITCHER_AC, null, new ArrayList<>());
+							new UsernamePasswordAuthenticationToken(SWITCHER_AC, null, authorities);
 					authUser.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					
 					SecurityContextHolder.getContext().setAuthentication(authUser);
@@ -66,10 +69,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 	
-	private boolean validateToken(String token, HttpServletRequest request) {
-		if (request.getRequestURI().startsWith("/switcher"))
-			return jwtTokenService.validateRelayToken(token);
-		return jwtTokenService.validateAdminToken(token);
+	private boolean validateToken(String token, HttpServletRequest request, 
+			List<SimpleGrantedAuthority> authorities) {
+		
+		if (request.getRequestURI().startsWith("/switcher")) {
+			if (jwtTokenService.validateRelayToken(token)) {
+				authorities.add(new SimpleGrantedAuthority("ROLE_SWITCHER"));
+				return true;
+			}
+		} else {
+			if (jwtTokenService.validateAdminToken(token)) {
+				authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	private static Optional<String> getJwtFromRequest(HttpServletRequest request) {

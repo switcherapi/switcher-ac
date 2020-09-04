@@ -2,6 +2,7 @@ package com.github.switcherapi.ac.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,6 +59,7 @@ class SwitcherRelayControllerTests {
 		this.mockMvc.perform(post("/switcher/v1/validate")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer relay_token")
+			.with(csrf())
 			.content(jsonRequest))
 			.andDo(print())
 			.andExpect(status().is(expectedStatus))
@@ -73,6 +75,7 @@ class SwitcherRelayControllerTests {
 		this.mockMvc.perform(get("/switcher/v1/execution")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer relay_token")
+			.with(csrf())
 			.queryParam("value", value))
 			.andDo(print())
 			.andExpect(status().is(expectedStatus))
@@ -83,6 +86,7 @@ class SwitcherRelayControllerTests {
 	void shoutNotCreate_notAuthenticated() throws Exception {
 		this.mockMvc.perform(delete("/switcher/v1/create")
 			.contentType(MediaType.APPLICATION_JSON)
+			.with(csrf())
 			.content(""))
 			.andExpect(status().isUnauthorized());
 	}
@@ -106,6 +110,7 @@ class SwitcherRelayControllerTests {
 		this.mockMvc.perform(post("/switcher/v1/create")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer relay_token")
+			.with(csrf())
 			.content(jsonRequest))
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -129,6 +134,7 @@ class SwitcherRelayControllerTests {
 		this.mockMvc.perform(post("/switcher/v1/remove")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer relay_token")
+			.with(csrf())
 			.content(jsonRequest))
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -149,6 +155,7 @@ class SwitcherRelayControllerTests {
 		this.mockMvc.perform(post("/switcher/v1/remove")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer relay_token")
+			.with(csrf())
 			.content(jsonRequest))
 			.andDo(print())
 			.andExpect(status().is5xxServerError())

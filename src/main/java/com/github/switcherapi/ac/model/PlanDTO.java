@@ -1,26 +1,29 @@
 package com.github.switcherapi.ac.model;
 
+import org.springframework.data.mongodb.core.index.Indexed;
+
 public class PlanDTO {
 	
-	private String name;
+	@Indexed(unique = true)
+	protected String name;
 	
-	private Integer maxDomains;
+	protected Integer maxDomains;
 	
-	private Integer maxGroups;
+	protected Integer maxGroups;
 	
-	private Integer maxSwitchers;
+	protected Integer maxSwitchers;
 	
-	private Integer maxComponents;
+	protected Integer maxComponents;
 	
-	private Integer maxEnvironments;
+	protected Integer maxEnvironments;
 	
-	private Integer maxTeams;
+	protected Integer maxTeams;
 	
-	private Integer maxDailyExecution;
+	protected Integer maxDailyExecution;
 	
-	private Boolean enableMetrics;
+	protected Boolean enableMetrics;
 	
-	private Boolean enableHistory;
+	protected Boolean enableHistory;
 
 	public String getName() {
 		return name;
