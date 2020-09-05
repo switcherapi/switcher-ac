@@ -100,6 +100,17 @@ class AdminAccountControllerTests {
 	}
 	
 	@Test
+	void shouldNotChangeAccountPlan_invalidAuthorizationKey() throws Exception {
+		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("Authorization", "Bearer INVALID_KEY")
+			.with(csrf())
+			.queryParam("plan", "BASIC"))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+	}
+	
+	@Test
 	void shouldNotChangeAccountPlan_planNotFound() throws Exception {
 		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
