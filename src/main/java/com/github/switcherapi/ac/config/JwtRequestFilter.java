@@ -23,10 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.github.switcherapi.ac.service.JwtTokenService;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
-
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 	
@@ -52,17 +48,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				jwtLogger.debug("Token {}", token);
 			}
 			
-			try {
-				List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-				if (validateToken(token, request, authorities)) {
-					final UsernamePasswordAuthenticationToken authUser = 
-							new UsernamePasswordAuthenticationToken(SWITCHER_AC, null, authorities);
-					authUser.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-					
-					SecurityContextHolder.getContext().setAuthentication(authUser);
-				}
-			} catch (IllegalArgumentException | MalformedJwtException | ExpiredJwtException | SignatureException e) {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+			if (validateToken(token, request, authorities)) {
+				final UsernamePasswordAuthenticationToken authUser = 
+						new UsernamePasswordAuthenticationToken(SWITCHER_AC, null, authorities);
+				authUser.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				
+				SecurityContextHolder.getContext().setAuthentication(authUser);
 			}
 		});
 		
