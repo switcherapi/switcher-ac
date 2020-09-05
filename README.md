@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/switcherapi/switcher-ac.svg?branch=master)](https://travis-ci.com/switcherapi/switcher-ac)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=switcherapi_switcher-ac&metric=alert_status)](https://sonarcloud.io/dashboard?id=switcherapi_switcher-ac)
+[![Known Vulnerabilities](https://snyk.io/test/github/petruki/switcher-ac/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/petruki/switcher-ac?targetFile=pom.xml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Slack: Switcher-HQ](https://img.shields.io/badge/slack-@switcher/hq-blue.svg?logo=slack)](https://switcher-hq.slack.com/)
 
