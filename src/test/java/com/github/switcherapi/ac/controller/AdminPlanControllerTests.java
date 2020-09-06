@@ -85,7 +85,7 @@ class AdminPlanControllerTests {
 		
 		//test
 		final Plan old = planService.getPlanByName(PlanType.DEFAULT.name());
-		assertEquals(false, old.isEnableHistory());
+		assertEquals(false, old.getEnableHistory());
 		
 		this.mockMvc.perform(patch("/admin/plan/v1")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +97,7 @@ class AdminPlanControllerTests {
 			.andExpect(content().string(containsString(PlanType.DEFAULT.name())));
 		
 		final Plan planUpdated = planService.getPlanByName(PlanType.DEFAULT.name());
-		assertEquals(true, planUpdated.isEnableHistory());
+		assertEquals(true, planUpdated.getEnableHistory());
 	}
 	
 	@Test
