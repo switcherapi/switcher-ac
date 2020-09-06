@@ -9,10 +9,10 @@ import com.github.switcherapi.ac.model.PlanDTO;
 import com.github.switcherapi.ac.model.PlanType;
 import com.github.switcherapi.ac.service.util.PlanUtils;
 
-public class PlanUtilsTests {
+class PlanUtilsTests {
 	
 	@Test
-	void shouldConvertDTO() throws Exception {
+	void shouldConvertDTO() {
 		//given
 		final Plan to = new Plan();
 		to.setName(PlanType.DEFAULT.name());
@@ -33,6 +33,19 @@ public class PlanUtilsTests {
 		PlanUtils.loadAttributes(from, to);
 		assertThat(to.getMaxDomains()).isEqualTo(new Integer(2));
 		assertThat(to.getEnableHistory()).isEqualTo(new Boolean(false));
+	}
+	
+	@Test
+	void shouldPopulatePlan() {
+		//given
+		final PlanDTO from = Plan.loadDefault();
+		Plan to = new Plan();
+		
+		//test
+		PlanUtils.loadAttributes(from, to);
+		assertThat(from.getName()).isEqualTo(to.getName());
+		assertThat(from.getMaxDomains()).isEqualTo(to.getMaxDomains());
+		assertThat(from.getEnableHistory()).isEqualTo(to.getEnableHistory());
 	}
 
 }
