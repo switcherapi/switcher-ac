@@ -12,6 +12,8 @@ import com.github.switcherapi.ac.model.PlanDTO;
 
 public class PlanUtils {
 	
+	private PlanUtils() {}
+	
 	public static void loadAttributes(PlanDTO from, Plan to) {
 		BeanUtils.copyProperties(from, to, getNullPropertyNames(from));
 	}
