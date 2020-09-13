@@ -7,7 +7,7 @@
 
 	<groupId>com.github.switcherac</groupId>
 	<artifactId>switcher-ac</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	
 	<name>Switcher Account Control</name>
 	<description>Account Control Service for Switcher API</description>
@@ -41,6 +41,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		
+		<switcher-client.version>1.0.8</switcher-client.version>
+		<jsonwebtoken.version>0.11.2</jsonwebtoken.version>
 		<joda-time.version>2.10.6</joda-time.version>
 		
 		<!-- Sonar -->
@@ -70,14 +72,10 @@
     </profiles>
 
 	<dependencies>
+		<!-- Spring dependencies -->
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 		
 		<dependency>
@@ -90,6 +88,44 @@
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 		
+		<!-- JWT dependencies-->
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-api</artifactId>
+		    <version>${jsonwebtoken.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-impl</artifactId>
+		    <version>${jsonwebtoken.version}</version>
+		    <scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-jackson</artifactId>
+		    <version>${jsonwebtoken.version}</version>
+		    <scope>runtime</scope>
+		</dependency>
+				
+		<!-- Jersey dependencies -->
+		<dependency>
+		    <groupId>org.glassfish.jersey.core</groupId>
+		    <artifactId>jersey-client</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.glassfish.jersey.inject</groupId>
+		    <artifactId>jersey-hk2</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.glassfish.jersey.media</groupId>
+		    <artifactId>jersey-media-json-jackson</artifactId>
+		</dependency>
+		
+		<!-- Utils dependencies -->
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
@@ -97,17 +133,35 @@
 		</dependency>
 		
 		<dependency>
-	        <groupId>org.springframework.security</groupId>
-	        <artifactId>spring-security-test</artifactId>
-	        <scope>test</scope>
-	    </dependency>
+			<groupId>com.github.switcherapi</groupId>
+			<artifactId>switcher-client</artifactId>
+			<version>${switcher-client.version}</version>
+		</dependency>
 			
 		<dependency>
 		    <groupId>com.google.code.gson</groupId>
 		    <artifactId>gson</artifactId>
+		</dependency>
+		
+		<!-- Test dependencies -->
+		<dependency>
+		    <groupId>com.squareup.okhttp3</groupId>
+		    <artifactId>okhttp</artifactId>
 		    <scope>test</scope>
 		</dependency>
 		
+		<dependency>
+		    <groupId>com.squareup.okhttp3</groupId>
+		    <artifactId>mockwebserver</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+	        <groupId>org.springframework.security</groupId>
+	        <artifactId>spring-security-test</artifactId>
+	        <scope>test</scope>
+	    </dependency>
+	    
 		<dependency>
 		    <groupId>org.mockito</groupId>
 		    <artifactId>mockito-core</artifactId>
