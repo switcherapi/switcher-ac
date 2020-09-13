@@ -24,6 +24,166 @@
 			"response": []
 		},
 		{
+			"name": "Admin - GitHub Auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a67636b6-4a1b-4bee-8a5f-00db51ab38c4",
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.environment.set('authToken', pm.response.json().token)\r",
+							"    pm.environment.set('refreshToken', pm.response.json().refreshToken)\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/admin/auth/github?code=",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"admin",
+						"auth",
+						"github"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin - Auth Refresh",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c02f49c-4fbe-42a0-a49e-967bfddaf3dd",
+						"exec": [
+							"if (pm.response.code === 200) {\r",
+							"    pm.environment.set('authToken', pm.response.json().token)\r",
+							"    pm.environment.set('refreshToken', pm.response.json().refreshToken)\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/admin/auth/refresh?refreshToken={{refreshToken}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"admin",
+						"auth",
+						"refresh"
+					],
+					"query": [
+						{
+							"key": "refreshToken",
+							"value": "{{refreshToken}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin - Logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3fded65-d901-42af-8eeb-8b8d4ff77957",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/admin/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"admin",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Admin - Plan - List",
 			"request": {
 				"auth": {
@@ -31,7 +191,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "bUsin33sS3kret",
+							"value": "{{authToken}}",
 							"type": "string"
 						}
 					]
@@ -64,7 +224,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "bUsin33sS3kret",
+							"value": "{{adminToken}}",
 							"type": "string"
 						}
 					]
@@ -109,7 +269,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "bUsin33sS3kret",
+							"value": "{{adminToken}}",
 							"type": "string"
 						}
 					]
@@ -147,7 +307,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "bUsin33sS3kret",
+							"value": "{{adminToken}}",
 							"type": "string"
 						}
 					]
@@ -185,7 +345,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "bUsin33sS3kret",
+							"value": "{{adminToken}}",
 							"type": "string"
 						}
 					]
@@ -223,7 +383,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "bUsin33sS3kret",
+							"value": "{{adminToken}}",
 							"type": "string"
 						}
 					]
@@ -232,7 +392,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"UNLIMITED\",\r\n    \"maxDomains\": -1,\r\n    \"maxGroups\": -1,\r\n    \"maxSwitchers\": -1,\r\n    \"maxComponents\": -1,\r\n    \"maxEnvironments\": -1,\r\n    \"maxTeams\": -1,\r\n    \"maxDailyExecution\": -1\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -267,7 +427,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "bUsin33sS3kret",
+							"value": "{{adminToken}}",
 							"type": "string"
 						}
 					]
@@ -284,7 +444,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/admin/account/v1/change/5e0ece2b6f4f994eac9007ad?plan=UNLIMITED",
+					"raw": "{{url}}/admin/account/v1/change/ACCOUNT_ID?plan=UNLIMITED",
 					"host": [
 						"{{url}}"
 					],
@@ -293,7 +453,7 @@
 						"account",
 						"v1",
 						"change",
-						"5e0ece2b6f4f994eac9007ad"
+						"ACCOUNT_ID"
 					],
 					"query": [
 						{
@@ -313,7 +473,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "bUsin33sS3kret",
+							"value": "{{adminToken}}",
 							"type": "string"
 						}
 					]
@@ -330,7 +490,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/admin/account/v1/reset/5e0ece2b6f4f994eac9007ad",
+					"raw": "{{url}}/admin/account/v1/reset/ACCOUNT_ID",
 					"host": [
 						"{{url}}"
 					],
@@ -339,7 +499,7 @@
 						"account",
 						"v1",
 						"reset",
-						"5e0ece2b6f4f994eac9007ad"
+						"ACCOUNT_ID"
 					]
 				}
 			},
@@ -353,7 +513,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "relayTokenSecret",
+							"value": "{{switcherToken}}",
 							"type": "string"
 						}
 					]
@@ -362,7 +522,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"value\": \"5f345218c984d8443c108f2b\"\r\n}",
+					"raw": "{\r\n    \"value\": \"ACCOUNT_ID\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -391,7 +551,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "relayTokenSecret",
+							"value": "{{switcherToken}}",
 							"type": "string"
 						}
 					]
@@ -400,7 +560,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"value\": \"5e0ece2b6f4f994eac9007ad\"\r\n}",
+					"raw": "{\r\n    \"value\": \"ACCOUNT_ID\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -429,7 +589,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "relayTokenSecret",
+							"value": "{{switcherToken}}",
 							"type": "string"
 						}
 					]
@@ -438,7 +598,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"value\": \"metrics#5e0ece2b6f4f994eac9007ad\"\r\n}",
+					"raw": "{\r\n    \"value\": \"metrics#ACCOUNT_ID\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -470,7 +630,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "relayTokenSecret",
+							"value": "{{switcherToken}}",
 							"type": "string"
 						}
 					]
@@ -487,7 +647,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{url}}/switcher/v1/execution?value=5e0ece2b6f4f994eac9007ad",
+					"raw": "{{url}}/switcher/v1/execution?value=ACCOUNT_ID",
 					"host": [
 						"{{url}}"
 					],
@@ -499,7 +659,7 @@
 					"query": [
 						{
 							"key": "value",
-							"value": "5e0ece2b6f4f994eac9007ad"
+							"value": "ACCOUNT_ID"
 						}
 					]
 				}

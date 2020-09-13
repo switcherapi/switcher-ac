@@ -17,17 +17,26 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.switcherapi.ac.model.Account;
+import com.github.switcherapi.ac.model.Admin;
 import com.github.switcherapi.ac.model.Plan;
 import com.github.switcherapi.ac.model.PlanDTO;
 import com.github.switcherapi.ac.model.PlanType;
 import com.github.switcherapi.ac.service.AccountControlService;
 import com.github.switcherapi.ac.service.AccountService;
+import com.github.switcherapi.ac.service.AdminService;
+import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.ac.service.PlanService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
 class AdminAccountControllerTests {
+	
+	@Autowired
+	private AdminService adminService;
+	
+	@Autowired
+	private JwtTokenService jwtService;
 	
 	@Autowired
 	private PlanService planService;
@@ -41,6 +50,8 @@ class AdminAccountControllerTests {
 	@Autowired
 	private MockMvc mockMvc;
 	
+	private String token;
+	
 	@BeforeEach
 	void setup() {
 		final PlanDTO plan1 = Plan.loadDefault();
@@ -51,6 +62,10 @@ class AdminAccountControllerTests {
 		planService.createPlan(plan2);
 		
 		accountService.createAccount("mock_account1");
+		
+		final Admin admin = adminService.createAdminAccount("123456");
+		token = jwtService.generateToken(admin.getId())[0];
+		adminService.updateAdminAccountToken(admin,token);
 	}
 
 	@Test
@@ -69,7 +84,7 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer api_token")
+			.header("Authorization", "Bearer " + token)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andDo(print())
@@ -90,7 +105,7 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(delete("/admin/plan/v1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer api_token")
+			.header("Authorization", "Bearer " + token)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andExpect(status().isOk());
@@ -114,7 +129,7 @@ class AdminAccountControllerTests {
 	void shouldNotChangeAccountPlan_planNotFound() throws Exception {
 		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer api_token")
+			.header("Authorization", "Bearer " + token)
 			.with(csrf())
 			.queryParam("plan", "NOT_FOUND"))
 			.andDo(print())
@@ -133,7 +148,7 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(patch("/admin/account/v1/reset/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer api_token")
+			.header("Authorization", "Bearer " + token)
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());

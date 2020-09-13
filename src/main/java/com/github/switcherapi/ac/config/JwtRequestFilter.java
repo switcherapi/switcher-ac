@@ -61,6 +61,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 	
+	/**
+	 * Validate token given the accessed resource
+	 */
 	private boolean validateToken(String token, HttpServletRequest request, 
 			List<SimpleGrantedAuthority> authorities) {
 		
