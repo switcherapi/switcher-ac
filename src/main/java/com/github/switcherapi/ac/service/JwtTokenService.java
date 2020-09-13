@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ public class JwtTokenService {
 	
 	private static final Logger logger = LogManager.getLogger(JwtTokenService.class);
 	
-	public static final long JWT_TOKEN_VALIDITY = 5 * 60;
+	public static final int JWT_TOKEN_VALIDITY = 5; //min
 	
 	@Value("${service.api.secret}")
 	private String jwtSecret;
@@ -36,7 +38,7 @@ public class JwtTokenService {
 	private AdminRepository adminRepository;
 	
 	public boolean validateAdminToken(String token) {
-		return validateToken(token) != null;
+		return StringUtils.isNotBlank(validateToken(token));
 	}
 	
 	public boolean validateRelayToken(String token) {
@@ -50,7 +52,7 @@ public class JwtTokenService {
 		
 		final SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 		final String token = Jwts.builder()
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 60 * 1000))
 				.setSubject(subject)
 				.signWith(key)
 				.compact();
@@ -69,7 +71,7 @@ public class JwtTokenService {
 			logger.debug("Refresh token could not be processed for {}", subject);
 		}
 		
-		return null;
+		return ArrayUtils.EMPTY_STRING_ARRAY;
 	}
 	
 	public String validateToken(String token) {
@@ -83,7 +85,7 @@ public class JwtTokenService {
 			return adminAccount != null ? subject : null;
 		} catch (JwtException e) {
 			logger.error("Failed to validate JWT - {}", e.getMessage());
-			return null;
+			return StringUtils.EMPTY;
 		}
 	}
 	

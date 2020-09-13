@@ -48,7 +48,7 @@ public class AdminController {
 	}
 	
 	@PostMapping(value = "/logout")
-	public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+	public ResponseEntity<Object> logout(@RequestHeader("Authorization") String token) {
 		adminService.logout(token);
 		return ResponseEntity.ok().build();
 	}
