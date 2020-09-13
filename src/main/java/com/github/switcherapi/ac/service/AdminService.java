@@ -93,7 +93,7 @@ public class AdminService {
 			
 			if (admin != null) {
 				String[] tokens = jwtService.refreshToken(admin.getId(), token, refreshToken);
-				if (tokens != null && tokens.length == 2) {
+				if (tokens.length == 2) {
 					updateAdminAccountToken(admin, tokens[0]);
 					
 					response.put(TOKEN, tokens[0]);

@@ -32,11 +32,9 @@ public class SwitcherService {
 	@Value("${switcher.domain}")
 	private String switcherDomain;
 	
-	private Map<String, Object> properties;
-	
 	@PostConstruct
 	public void buildContext() throws SwitcherException {
-		properties = new HashMap<String, Object>();
+		Map<String, Object> properties = new HashMap<>();
 		properties.put(SwitcherContextParam.URL, switcherUrl);
 		properties.put(SwitcherContextParam.APIKEY, switcherKey);
 		properties.put(SwitcherContextParam.DOMAIN, switcherDomain);

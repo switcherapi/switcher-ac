@@ -67,7 +67,7 @@ public class GitHubService {
 			if (responseEntity.containsKey("access_token"))
 				return responseEntity.get("access_token").toString();
 			
-			throw new Exception();
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, INVALID_ACCOUNT);
 		} catch (Exception e) {
 			logger.error("Failed to get token from GitHub - {}", e.getMessage());
 			throw new ResponseStatusException(
@@ -87,7 +87,7 @@ public class GitHubService {
 			if (response.getStatus() == 200)
 				return response.readEntity(GitHubDetailResponse.class);
 			
-			throw new Exception();
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, INVALID_ACCOUNT);
 		} catch (Exception e) {
 			logger.error("Failed to get user detailt - {}", e.getMessage());
 			throw new ResponseStatusException(
