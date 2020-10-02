@@ -224,7 +224,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{adminToken}}",
+							"value": "{{authToken}}",
 							"type": "string"
 						}
 					]
@@ -269,7 +269,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{adminToken}}",
+							"value": "{{authToken}}",
 							"type": "string"
 						}
 					]
@@ -307,7 +307,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{adminToken}}",
+							"value": "{{authToken}}",
 							"type": "string"
 						}
 					]
@@ -345,7 +345,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{adminToken}}",
+							"value": "{{authToken}}",
 							"type": "string"
 						}
 					]
@@ -383,7 +383,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{adminToken}}",
+							"value": "{{authToken}}",
 							"type": "string"
 						}
 					]
@@ -473,7 +473,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{adminToken}}",
+							"value": "{{authToken}}",
 							"type": "string"
 						}
 					]
