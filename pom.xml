@@ -7,7 +7,7 @@
 
 	<groupId>com.github.switcherac</groupId>
 	<artifactId>switcher-ac</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	
 	<name>Switcher Account Control</name>
 	<description>Account Control Service for Switcher API</description>
@@ -42,9 +42,9 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		
 		<jersey-client.version>3.0.0</jersey-client.version>
-		<switcher-client.version>1.0.8</switcher-client.version>
+		<switcher-client.version>1.1.0</switcher-client.version>
 		<jsonwebtoken.version>0.11.2</jsonwebtoken.version>
-		<joda-time.version>2.10.7</joda-time.version>
+		<joda-time.version>2.10.8</joda-time.version>
 		
 		<!-- Sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
