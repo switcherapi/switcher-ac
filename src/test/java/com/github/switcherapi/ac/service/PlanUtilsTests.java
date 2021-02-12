@@ -31,8 +31,8 @@ class PlanUtilsTests {
 		
 		//test
 		PlanUtils.loadAttributes(from, to);
-		assertThat(to.getMaxDomains()).isEqualTo(new Integer(2));
-		assertThat(to.getEnableHistory()).isEqualTo(new Boolean(false));
+		assertThat(to.getMaxDomains()).isEqualTo(2);
+		assertThat(to.getEnableHistory()).isFalse();
 	}
 	
 	@Test

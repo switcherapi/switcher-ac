@@ -1,0 +1,47 @@
+{"properties": [
+  {
+    "name": "service.api.secret",
+    "type": "java.lang.String",
+    "description": "Switcher AC Secret"
+  },
+  {
+    "name": "service.relay.token",
+    "type": "java.lang.String",
+    "description": "Access Token created to be used with Switcher Relay"
+  },
+  {
+    "name": "service.endpoint.healthchecker",
+    "type": "java.lang.String",
+    "description": "Allowed endpoint to check this service availability"
+  },
+  {
+    "name": "service.github.clientid",
+    "type": "java.lang.String",
+    "description": "GitHub Client ID"
+  },
+  {
+    "name": "service.github.secret",
+    "type": "java.lang.String",
+    "description": "GitHub Secret"
+  },
+  {
+    "name": "switcher.url",
+    "type": "java.lang.String",
+    "description": "Switcher API URL"
+  },
+  {
+    "name": "switcher.apikey",
+    "type": "java.lang.String",
+    "description": "Switcher API component APIKey"
+  },
+  {
+    "name": "switcher.environment",
+    "type": "java.lang.String",
+    "description": "Switcher API environment"
+  },
+  {
+    "name": "switcher.domain",
+    "type": "java.lang.String",
+    "description": "Switcher API domain"
+  }
+]}
