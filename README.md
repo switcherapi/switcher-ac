@@ -25,7 +25,6 @@ Here it goes what you need to start using Switcher AC.
 
 Provide the values for the Spring parameters file located at src/main/resources/application-[ENV].properties
 ```
-spring.profiles.active=@activatedProperties@
 spring.application.name=switcher-ac
 
 service.api.secret=${API_SECRET}

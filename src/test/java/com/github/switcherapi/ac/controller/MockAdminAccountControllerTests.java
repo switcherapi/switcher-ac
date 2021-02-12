@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.controller.AdminController;
 import com.github.switcherapi.ac.service.AccountService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -37,13 +36,13 @@ class MockAdminAccountControllerTests {
 	
 	@BeforeEach
     void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
     }
 	
 	@Test
 	void shouldNotResetDailyExecution() throws Exception {
-		//mock
+		//given
         Mockito.when(mockAccountService.resetDailyExecution(Mockito.any(String.class)))
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         

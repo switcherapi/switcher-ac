@@ -38,7 +38,7 @@ class MockSwitcherRelayControllerTests {
 	
 	@BeforeEach
     void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(switcherRelayController).build();
     }
 	

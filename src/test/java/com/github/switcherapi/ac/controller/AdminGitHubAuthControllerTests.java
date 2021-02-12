@@ -68,7 +68,7 @@ class AdminGitHubAuthControllerTests {
 
 	@Test
 	void shouldLoginWithGitHub() throws Exception {
-		//mock
+		//given
 		mockGitHub();
 		SwitcherExecutor.assume("SWITCHER_AC_ADM", true);
 		
@@ -84,7 +84,7 @@ class AdminGitHubAuthControllerTests {
 	
 	@Test
 	void shouldNotLoginWithGitHub_invalidToken() throws Exception {
-		//mock
+		//given
 		mockBackEnd.enqueue(new MockResponse()
 				.setBody("{ \"access_token\": \"123\" }")
 				.addHeader("Content-Type", "application/json"));
@@ -101,7 +101,7 @@ class AdminGitHubAuthControllerTests {
 	
 	@Test
 	void shouldNotLoginWithGitHub_invalidCode() throws Exception {
-		//mock
+		//given
 		mockBackEnd.enqueue(new MockResponse()
 				.setBody("{ \"error\": \"Invalid code\" }")
 				.addHeader("Content-Type", "application/json"));
@@ -116,7 +116,7 @@ class AdminGitHubAuthControllerTests {
 	
 	@Test
 	void shouldNotLoginWithGitHub_notAvailable() throws Exception {
-		//mock
+		//given
 		mockGitHub();
 		SwitcherExecutor.assume("SWITCHER_AC_ADM", false);
 		
