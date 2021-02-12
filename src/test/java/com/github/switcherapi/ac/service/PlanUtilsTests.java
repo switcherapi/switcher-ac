@@ -32,7 +32,7 @@ class PlanUtilsTests {
 		//test
 		PlanUtils.loadAttributes(from, to);
 		assertThat(to.getMaxDomains()).isEqualTo(2);
-		assertThat(to.getEnableHistory()).isEqualTo(false);
+		assertThat(to.getEnableHistory()).isFalse();
 	}
 	
 	@Test
