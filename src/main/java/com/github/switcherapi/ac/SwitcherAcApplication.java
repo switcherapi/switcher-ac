@@ -10,12 +10,16 @@ import org.springframework.context.annotation.ComponentScan;
 
 import com.github.switcherapi.ac.model.Plan;
 import com.github.switcherapi.ac.service.PlanService;
+import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.github.switcherapi.ac" })
 public class SwitcherAcApplication implements CommandLineRunner {
 	
 	private static final Logger logger = LogManager.getLogger(SwitcherAcApplication.class);
+	
+	@Autowired
+	private ValidatorFactory validatorInitializer;
 	
 	@Autowired
 	private PlanService planService;
@@ -26,6 +30,7 @@ public class SwitcherAcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		validatorInitializer.scanValidators();
 		logger.info("Loading default Plan...");
 		planService.createPlan(Plan.loadDefault());
 		logger.info("Plan loaded");

@@ -357,6 +357,15 @@ class SwitcherRelayControllerTests {
 	}
 	
 	@Test
+	void shouldNotBeOkWhenValidate_metric_invalidArgument() throws Exception {
+		//given
+		ResponseRelay expectedResponse = new ResponseRelay(false, "For input string: \"INVALID_ARGUMENT\"");
+		
+		//test
+		this.executeTestValidate("adminid", "metrics", "INVALID_ARGUMENT", expectedResponse, 500);
+	}
+	
+	@Test
 	void shouldBeOkWhenValidate_history() throws Exception {
 		//given
 		accountService.createAccount("adminid");
@@ -386,25 +395,28 @@ class SwitcherRelayControllerTests {
 	void shouldNotBeOkWhenValidate_accountNotFound() throws Exception {
 		//given
 		ResponseRelay expectedResponse = new ResponseRelay(false, "404 NOT_FOUND \"Account not found\"");
-		final String[] features = new String[] {
+		final String[] features = {
 				"domain", "group", "switcher", "component",
 				"environment", "team", "metrics", "history"
 		};
 		
+		final String[] paramValue = {
+				"0", "0", "0", "0", "0", "0", null, null
+		};
+		
 		//test
-		for (String feature : features) {
-			this.executeTestValidate("NOT_FOUND", feature, "0", expectedResponse, 500);
+		for (int i = 0; i < features.length; i++) {
+			this.executeTestValidate("NOT_FOUND", features[i], paramValue[i], expectedResponse, 404);
 		}
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_invalidFeatureName() throws Exception {
 		//given
-		ResponseRelay expectedResponse = new ResponseRelay(false, 
-				"Invalid arguments - value INVALID_FEATURE#adminid - numeric 0");
+		ResponseRelay expectedResponse = new ResponseRelay(false, "Invalid validator: INVALID_FEATURE");
 		
 		//test
-		this.executeTestValidate("adminid", "INVALID_FEATURE", "0", expectedResponse, 500);
+		this.executeTestValidate("adminid", "INVALID_FEATURE", "0", expectedResponse, 400);
 	}
 
 }
