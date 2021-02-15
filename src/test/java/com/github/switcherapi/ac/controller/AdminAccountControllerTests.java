@@ -21,11 +21,12 @@ import com.github.switcherapi.ac.model.Admin;
 import com.github.switcherapi.ac.model.Plan;
 import com.github.switcherapi.ac.model.PlanDTO;
 import com.github.switcherapi.ac.model.PlanType;
-import com.github.switcherapi.ac.service.AccountControlService;
+import com.github.switcherapi.ac.model.request.RequestRelay;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.ac.service.PlanService;
+import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
@@ -45,7 +46,7 @@ class AdminAccountControllerTests {
 	private AccountService accountService;
 	
 	@Autowired
-	private AccountControlService accountControlService;
+	private ValidatorFactory validatorFactory;
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -72,7 +73,6 @@ class AdminAccountControllerTests {
 	void testServices() {
 		assertThat(accountService).isNotNull();
 		assertThat(planService).isNotNull();
-		assertThat(accountControlService).isNotNull();
 	}
 	
 	@Test
@@ -139,7 +139,9 @@ class AdminAccountControllerTests {
 	@Test
 	void shouldResetDailyExecution() throws Exception {
 		//given
-		accountControlService.checkExecution("mock_account1");
+		RequestRelay request = new RequestRelay();
+		request.setValue("execution#mock_account1");
+		validatorFactory.runValidator(request);
 		
 		//validate before
 		Account account = accountService.getAccountByAdminId("mock_account1");
