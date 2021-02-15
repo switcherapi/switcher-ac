@@ -11,7 +11,7 @@ import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 public class ValidateDomain extends AbstractValidatorService {
 	
 	@Override
-	protected ResponseRelay executeValidator(Account account) {
+	protected ResponseRelay executeValidator(final Account account) {
 		if (validate(account.getPlan().getMaxDomains(), 
 				getParam(TOTAL, Integer.class))) {
 			return new ResponseRelay(false, "Domain limit has been reached");

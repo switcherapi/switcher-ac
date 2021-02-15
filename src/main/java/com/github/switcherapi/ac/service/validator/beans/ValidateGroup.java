@@ -11,7 +11,7 @@ import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 public class ValidateGroup extends AbstractValidatorService {
 
 	@Override
-	protected ResponseRelay executeValidator(Account account) {
+	protected ResponseRelay executeValidator(final Account account) {
 		if (validate(account.getPlan().getMaxGroups(), 
 				getParam(TOTAL, Integer.class))) {
 			return new ResponseRelay(false, "Group limit has been reached");

@@ -8,7 +8,7 @@ import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 public class ValidateHistory extends AbstractActiveCheckValidator {
 	
 	@Override
-	protected ResponseRelay executeValidator(Account account) {
+	protected ResponseRelay executeValidator(final Account account) {
 		if (!account.getPlan().getEnableHistory().booleanValue()) {
 			return new ResponseRelay(false, "History is not available");
 		}

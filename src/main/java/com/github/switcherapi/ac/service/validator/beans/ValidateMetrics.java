@@ -8,7 +8,7 @@ import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 public class ValidateMetrics extends AbstractActiveCheckValidator {
 
 	@Override
-	protected ResponseRelay executeValidator(Account account) {
+	protected ResponseRelay executeValidator(final Account account) {
 		if (!account.getPlan().getEnableMetrics().booleanValue()) {
 			return new ResponseRelay(false, "Metrics is not available");
 		}

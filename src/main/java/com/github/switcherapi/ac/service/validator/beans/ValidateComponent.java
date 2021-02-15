@@ -11,7 +11,7 @@ import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 public class ValidateComponent extends AbstractValidatorService {
 	
 	@Override
-	protected ResponseRelay executeValidator(Account account) {
+	protected ResponseRelay executeValidator(final Account account) {
 		if (validate(account.getPlan().getMaxComponents(), 
 				getParam(TOTAL, Integer.class))) {
 			return new ResponseRelay(false, "Component limit has been reached");

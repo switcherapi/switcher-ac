@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import javax.ws.rs.core.MediaType;
 
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.switcherapi.ac.model.response.GitHubDetailResponse;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.GitHubService;
+import com.github.switcherapi.ac.service.facades.GitHubFacade;
 import com.github.switcherapi.client.factory.SwitcherExecutor;
 
 import okhttp3.mockwebserver.MockResponse;
@@ -36,7 +38,7 @@ import okhttp3.mockwebserver.MockWebServer;
 @AutoConfigureMockMvc
 class AdminGitHubAuthControllerTests {
 	
-	public static MockWebServer mockBackEnd;
+	public static MockWebServer mockBackend;
 	
 	private ObjectMapper MAPPER = new ObjectMapper();
 	
@@ -50,19 +52,20 @@ class AdminGitHubAuthControllerTests {
 
 	@BeforeAll
     static void setup() throws IOException {
-        mockBackEnd = new MockWebServer();
-        mockBackEnd.start();
+        mockBackend = new MockWebServer();
+        mockBackend.start();
     }
 	
 	@AfterAll
     static void tearDown() throws IOException {
-        mockBackEnd.shutdown();
+        mockBackend.shutdown();
     }
 	
 	@BeforeEach
 	void initialize() {
-	    String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
-	    gitHubService = new GitHubService(baseUrl, baseUrl);
+	    String baseUrl = String.format("http://localhost:%s", mockBackend.getPort());
+	    gitHubService = new GitHubService();
+	    gitHubService.setGithubFacade(new GitHubFacade(baseUrl, baseUrl));
 		context.getBean(AdminService.class).setGithubService(gitHubService);
 	}
 
@@ -85,11 +88,25 @@ class AdminGitHubAuthControllerTests {
 	@Test
 	void shouldNotLoginWithGitHub_invalidToken() throws Exception {
 		//given
-		mockBackEnd.enqueue(new MockResponse()
+		mockBackend.enqueue(new MockResponse()
 				.setBody("{ \"access_token\": \"123\" }")
 				.addHeader("Content-Type", "application/json"));
 		
-		mockBackEnd.enqueue(new MockResponse().setResponseCode(401));
+		mockBackend.enqueue(new MockResponse().setResponseCode(401));
+		
+		//test
+		this.mockMvc.perform(post("/admin/auth/github")
+				.contentType(MediaType.APPLICATION_JSON)
+				.queryParam("code", "123"))
+		.andDo(print())
+		.andExpect(status().isUnauthorized());
+	}
+	
+	@Test
+	void shouldNotGetGitHubToken_serviceUnavailable() throws Exception {
+		//given
+		mockBackend.enqueue(new MockResponse().setHttp2ErrorCode(
+				HttpURLConnection.HTTP_UNAVAILABLE));
 		
 		//test
 		this.mockMvc.perform(post("/admin/auth/github")
@@ -102,7 +119,7 @@ class AdminGitHubAuthControllerTests {
 	@Test
 	void shouldNotLoginWithGitHub_invalidCode() throws Exception {
 		//given
-		mockBackEnd.enqueue(new MockResponse()
+		mockBackend.enqueue(new MockResponse()
 				.setBody("{ \"error\": \"Invalid code\" }")
 				.addHeader("Content-Type", "application/json"));
 		
@@ -129,7 +146,7 @@ class AdminGitHubAuthControllerTests {
 	}
 	
 	void mockGitHub() throws JsonProcessingException {
-		mockBackEnd.enqueue(new MockResponse()
+		mockBackend.enqueue(new MockResponse()
 				.setBody("{ \"access_token\": \"123\" }")
 				.addHeader("Content-Type", "application/json"));
 		
@@ -138,7 +155,7 @@ class AdminGitHubAuthControllerTests {
 		githubAccountDetail.setLogin("login");
 		githubAccountDetail.setName("UserName");
 		
-		mockBackEnd.enqueue(new MockResponse()
+		mockBackend.enqueue(new MockResponse()
 			.setBody(MAPPER.writeValueAsString(githubAccountDetail))
 			.addHeader("Content-Type", "application/json"));
 	}
