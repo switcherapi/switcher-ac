@@ -77,11 +77,10 @@ public abstract class AbstractValidatorService {
 		}
 		
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
-		
 	}
 	
 	/**
-	 * Executes the validator service
+	 * Executes validator bean
 	 */
 	protected abstract ResponseRelay executeValidator(final Account account);
 

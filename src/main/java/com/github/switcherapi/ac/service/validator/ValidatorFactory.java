@@ -64,7 +64,7 @@ public class ValidatorFactory {
         }
     }
     
-    private String getValidator(RequestRelay request) {
+    private String getValidatorName(RequestRelay request) {
     	if (request != null && request.getValue() != null)
     		return request.getValue().split(SEPARATOR)[0];
     	return StringUtils.EMPTY;
@@ -72,7 +72,7 @@ public class ValidatorFactory {
     
     public ResponseRelay runValidator(RequestRelay request) {
     	try {
-    		final String validatorName = getValidator(request);
+    		final String validatorName = getValidatorName(request);
     		if (validators.containsKey(validatorName)) {
     			Class<?> handler = validators.get(validatorName);
  
