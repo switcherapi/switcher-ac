@@ -13,7 +13,7 @@ import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 public class ValidateExecution extends AbstractActiveCheckValidator {
 	
 	@Override
-	protected ResponseRelay executeValidator(Account account) {
+	protected ResponseRelay executeValidator(final Account account) {
 		final DateTime dateTime = new DateTime(new Date());
 		final DateTime lastReset = new DateTime(account.getLastReset());
 		final int days = Days.daysBetween(lastReset, dateTime).getDays();
