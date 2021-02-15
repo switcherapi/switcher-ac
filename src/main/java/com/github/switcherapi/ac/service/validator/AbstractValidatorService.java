@@ -3,7 +3,7 @@ package com.github.switcherapi.ac.service.validator;
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.TOTAL;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public abstract class AbstractValidatorService {
 	 * Executes validator by validating the request and then calling the validator service
 	 */
 	public ResponseRelay execute(RequestRelay request) {
-		params = new HashMap<>();
+		params = new EnumMap<>(SwitcherValidatorParams.class);
 		validateRequest(request);
 		return executeValidator();
 	}

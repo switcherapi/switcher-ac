@@ -48,7 +48,7 @@ public class ValidatorFactory {
 		final List<String> filteredClasses = new ArrayList<>();
 		beans.stream().forEach(beanDefinition -> filteredClasses.add(beanDefinition.getBeanClassName()));
 
-        filteredClasses.stream().forEach(filteredClass -> storeValidator(filteredClass));
+        filteredClasses.stream().forEach(this::storeValidator);
 	}
 	
     private void storeValidator(String controllerClassName) {
@@ -56,7 +56,7 @@ public class ValidatorFactory {
             Class<?> clazz = Class.forName(controllerClassName);
             Annotation validatorAnnotation = clazz.getDeclaredAnnotation(SwitcherValidator.class);
             if (validatorAnnotation != null) {
-            	SwitcherValidator sValidator = (SwitcherValidator) clazz.getAnnotation(SwitcherValidator.class);
+            	SwitcherValidator sValidator = clazz.getAnnotation(SwitcherValidator.class);
             	validators.put(sValidator.value(), clazz);
             }
         } catch (ClassNotFoundException e) {
