@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -210,125 +212,44 @@ class SwitcherRelayControllerTests {
 		this.executeTestValidate("masteradminid", "switcher", "10000", expectedResponse, 200);
 	}
 	
-	@Test
-	void shouldBeOkWhenValidate_domain() throws Exception {
+	@ParameterizedTest
+	@ValueSource(strings = {
+			"component/1",
+			"domain/0",
+			"environment/1",
+			"group/1",
+			"switcher/1",
+			"team/0"
+	}) 
+	void shouldBeOkWhenValidate(String validatorSlashTotal) throws Exception {
 		//given
 		accountService.createAccount("adminid");
 		ResponseRelay expectedResponse = new ResponseRelay(true);
+		String[] args = validatorSlashTotal.split("\\/");
 
 		//test
-		this.executeTestValidate("adminid", "domain", "0", expectedResponse, 200);
+		this.executeTestValidate("adminid", args[0], args[1], expectedResponse, 200);
 	}
 	
-	@Test
-	void shouldNotBeOkWhenValidate_domain() throws Exception {
+	@ParameterizedTest
+	@ValueSource(strings = {
+			"component/3/Component limit has been reached",
+			"domain/2/Domain limit has been reached",
+			"environment/3/Environment limit has been reached",
+			"group/5/Group limit has been reached",
+			"switcher/4/Switcher limit has been reached",
+			"team/2/Team limit has been reached"
+	})
+	void shouldNotBeOkWhenValidate(String validatorSlashTotalSlashError) throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(false, "Domain limit has been reached");
-		
-		//test
-		this.executeTestValidate("adminid", "domain", "2", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldBeOkWhenValidate_group() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(true);
+		String[] args = validatorSlashTotalSlashError.split("\\/");
+		ResponseRelay expectedResponse = new ResponseRelay(false, args[2]);
 
 		//test
-		this.executeTestValidate("adminid", "group", "1", expectedResponse, 200);
+		this.executeTestValidate("adminid", args[0], args[1], expectedResponse, 200);
 	}
 	
-	@Test
-	void shouldNotBeOkWhenValidate_group() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(false, "Group limit has been reached");
-
-		//test
-		this.executeTestValidate("adminid", "group", "5", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldBeOkWhenValidate_switcher() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(true);
-
-		//test
-		this.executeTestValidate("adminid", "switcher", "1", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldNotBeOkWhenValidate_switcher() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(false, "Switcher limit has been reached");
-		
-		//test
-		this.executeTestValidate("adminid", "switcher", "4", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldBeOkWhenValidate_component() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(true);
-
-		//test
-		this.executeTestValidate("adminid", "component", "1", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldNotBeOkWhenValidate_component() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(false, "Component limit has been reached");
-
-		//test
-		this.executeTestValidate("adminid", "component", "3", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldBeOkWhenValidate_environment() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(true);
-		
-		//test
-		this.executeTestValidate("adminid", "environment", "1", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldNotBeOkWhenValidate_environment() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(false, "Environment limit has been reached");
-		
-		//test
-		this.executeTestValidate("adminid", "environment", "3", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldBeOkWhenValidate_team() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(true);
-		
-		//test
-		this.executeTestValidate("adminid", "team", "0", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldNotBeOkWhenValidate_team() throws Exception {
-		//given
-		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(false, "Team limit has been reached");
-
-		//test
-		this.executeTestValidate("adminid", "team", "2", expectedResponse, 200);
-	}
 	
 	@Test
 	void shouldBeOkWhenValidate_metric() throws Exception {
