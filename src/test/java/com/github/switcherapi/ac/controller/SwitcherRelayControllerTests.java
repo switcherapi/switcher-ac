@@ -10,9 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -212,42 +215,50 @@ class SwitcherRelayControllerTests {
 		this.executeTestValidate("masteradminid", "switcher", "10000", expectedResponse, 200);
 	}
 	
-	@ParameterizedTest
-	@ValueSource(strings = {
-			"component/1",
-			"domain/0",
-			"environment/1",
-			"group/1",
-			"switcher/1",
-			"team/0"
-	}) 
-	void shouldBeOkWhenValidate(String validatorSlashTotal) throws Exception {
+	static Stream<Arguments> providedOkValidators() {
+	    return Stream.of(
+	      Arguments.of("component", 1),
+	      Arguments.of("domain", 0),
+	      Arguments.of("environment", 1),
+	      Arguments.of("group", 1),
+	      Arguments.of("switcher", 1),
+	      Arguments.of("team", 0)
+	    );
+	}
+	
+	@ParameterizedTest()
+	@MethodSource("providedOkValidators")
+	void shouldBeOkWhenValidate(String validator, int total) throws Exception {
 		//given
 		accountService.createAccount("adminid");
 		ResponseRelay expectedResponse = new ResponseRelay(true);
-		String[] args = validatorSlashTotal.split("\\/");
 
 		//test
-		this.executeTestValidate("adminid", args[0], args[1], expectedResponse, 200);
+		this.executeTestValidate(
+				"adminid", validator, String.valueOf(total), expectedResponse, 200);
+	}
+	
+	static Stream<Arguments> providedNokValidators() {
+	    return Stream.of(
+	      Arguments.of("component", 3, "Component limit has been reached"),
+	      Arguments.of("domain", 2, "Domain limit has been reached"),
+	      Arguments.of("environment", 3, "Environment limit has been reached"),
+	      Arguments.of("group", 5, "Group limit has been reached"),
+	      Arguments.of("switcher", 4, "Switcher limit has been reached"),
+	      Arguments.of("team", 2, "Team limit has been reached")
+	    );
 	}
 	
 	@ParameterizedTest
-	@ValueSource(strings = {
-			"component/3/Component limit has been reached",
-			"domain/2/Domain limit has been reached",
-			"environment/3/Environment limit has been reached",
-			"group/5/Group limit has been reached",
-			"switcher/4/Switcher limit has been reached",
-			"team/2/Team limit has been reached"
-	})
-	void shouldNotBeOkWhenValidate(String validatorSlashTotalSlashError) throws Exception {
+	@MethodSource("providedNokValidators")
+	void shouldNotBeOkWhenValidate(String validator, int total, String message) throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		String[] args = validatorSlashTotalSlashError.split("\\/");
-		ResponseRelay expectedResponse = new ResponseRelay(false, args[2]);
+		ResponseRelay expectedResponse = new ResponseRelay(false, message);
 
 		//test
-		this.executeTestValidate("adminid", args[0], args[1], expectedResponse, 200);
+		this.executeTestValidate(
+				"adminid", validator, String.valueOf(total), expectedResponse, 200);
 	}
 	
 	
