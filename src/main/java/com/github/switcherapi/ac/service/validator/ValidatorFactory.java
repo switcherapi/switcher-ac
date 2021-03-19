@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,12 +36,9 @@ public class ValidatorFactory {
 	@Autowired
 	private AutowireCapableBeanFactory autowireCapableBeanFactory;
 	
-	private Map<String, Class<?>> validators = new HashMap<>();
+	private Map<String, AbstractValidatorService> validatorHandlers = new HashMap<>();
 	
-	public ValidatorFactory() {
-		scanValidators();
-	}
-	
+	@PostConstruct
 	private void scanValidators() {
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
 		provider.addIncludeFilter(new AnnotationTypeFilter(SwitcherValidator.class, false, true));
@@ -48,18 +47,23 @@ public class ValidatorFactory {
 		final List<String> filteredClasses = new ArrayList<>();
 		beans.stream().forEach(beanDefinition -> filteredClasses.add(beanDefinition.getBeanClassName()));
 
-        filteredClasses.stream().forEach(this::storeValidator);
+        filteredClasses.stream().forEach(this::cacheValidator);
 	}
 	
-    private void storeValidator(String controllerClassName) {
+    private void cacheValidator(String controllerClassName) {
         try {
-            Class<?> clazz = Class.forName(controllerClassName);
-            Annotation validatorAnnotation = clazz.getDeclaredAnnotation(SwitcherValidator.class);
+            Class<?> validatorClass = Class.forName(controllerClassName);
+            Annotation validatorAnnotation = validatorClass.getDeclaredAnnotation(SwitcherValidator.class);
             if (validatorAnnotation != null) {
-            	SwitcherValidator sValidator = clazz.getAnnotation(SwitcherValidator.class);
-            	validators.put(sValidator.value(), clazz);
+            	SwitcherValidator sValidator = validatorClass.getAnnotation(SwitcherValidator.class);
+            	
+    			final AbstractValidatorService validatorService = 
+    					(AbstractValidatorService) validatorClass.getConstructor().newInstance();
+
+    			autowireCapableBeanFactory.autowireBean(validatorService);
+    			validatorHandlers.put(sValidator.value(), validatorService);
             }
-        } catch (ClassNotFoundException e) {
+        } catch (ReflectiveOperationException e) {
         	logger.error("Failed to initialize validator - {}", e.getMessage());
         }
     }
@@ -70,26 +74,16 @@ public class ValidatorFactory {
     	return StringUtils.EMPTY;
     }
     
-    public ResponseRelay runValidator(RequestRelay request) {
-    	try {
-    		final String validatorName = getValidatorName(request);
-    		if (validators.containsKey(validatorName)) {
-    			Class<?> handler = validators.get(validatorName);
+    public ResponseRelay runValidator(RequestRelay request) {	
+		final String validatorName = getValidatorName(request);
+		if (validatorHandlers.containsKey(validatorName)) {
+			final AbstractValidatorService validatorService = validatorHandlers.get(validatorName);
+			return validatorService.execute(request);
+		}
+		
+		throw new ResponseStatusException(
+				HttpStatus.BAD_REQUEST, String.format("Invalid validator: %s", validatorName));
  
-    			final AbstractValidatorService validatorService = 
-    					(AbstractValidatorService) handler.getConstructor().newInstance();
-
-    			autowireCapableBeanFactory.autowireBean(validatorService);
-    			return validatorService.execute(request);
-    		}
-    		
-    		throw new ResponseStatusException(
-    				HttpStatus.BAD_REQUEST, String.format("Invalid validator: %s", validatorName));
-    	} catch (ReflectiveOperationException | IllegalArgumentException | SecurityException e) {
-    		throw new ResponseStatusException(
-    				HttpStatus.INTERNAL_SERVER_ERROR, 
-    				String.format("Failed to execute validator - %s", e.getMessage()));
-    	}
     }
 
 }
