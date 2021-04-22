@@ -60,7 +60,7 @@ public class JwtTokenService {
 	}
 	
 	public String[] refreshToken(String subject, String token, String refreshToken) {
-		final BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
+		final var crypt = new BCryptPasswordEncoder();
 		
 		if (token != null && crypt.matches(token.split("\\.")[2], refreshToken)) {
 			return generateToken(subject);
@@ -89,7 +89,6 @@ public class JwtTokenService {
 	}
 	
 	private String generateRefreshToken(String token) {
-		final BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
-		return crypt.encode(token.split("\\.")[2]);
+		return new BCryptPasswordEncoder().encode(token.split("\\.")[2]);
 	}
 }
