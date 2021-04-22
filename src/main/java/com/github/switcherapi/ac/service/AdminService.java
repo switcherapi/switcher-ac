@@ -45,7 +45,7 @@ public class AdminService {
 		final GitHubDetailResponse gitHubDetail = githubService.getGitHubDetail(gitHubToken);
 		
 		if (isAvailable(gitHubDetail.getId())) {
-			Admin admin = adminRepository.findByGitHubId(gitHubDetail.getId());
+			var admin = adminRepository.findByGitHubId(gitHubDetail.getId());
 			if (admin == null) {
 				admin = createAdminAccount(gitHubDetail.getId());
 			}
@@ -69,13 +69,13 @@ public class AdminService {
 			token = token.substring(7);
 		}
 		
-		Admin admin = adminRepository.findByToken(token);
+		var admin = adminRepository.findByToken(token);
 		if (admin != null)
 			updateAdminAccountToken(admin, null);
 	}
 	
 	public Admin createAdminAccount(String gitHubId) {
-		Admin admin = adminRepository.findByGitHubId(gitHubId);
+		var admin = adminRepository.findByGitHubId(gitHubId);
 		
 		if (admin == null)
 			admin = new Admin();
@@ -94,7 +94,7 @@ public class AdminService {
 			token = token.substring(7);
 			
 			Map<String, Object> response = new HashMap<>();
-			Admin admin = adminRepository.findByToken(token);
+			var admin = adminRepository.findByToken(token);
 			
 			if (admin != null) {
 				String[] tokens = jwtService.refreshToken(admin.getId(), token, refreshToken);

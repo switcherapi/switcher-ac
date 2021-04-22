@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.github.switcherapi.ac.model.Admin;
 import com.github.switcherapi.ac.repository.AdminRepository;
 
 import io.jsonwebtoken.JwtException;
@@ -81,7 +80,7 @@ public class JwtTokenService {
 						.setSigningKey(jwtSecret.getBytes(StandardCharsets.UTF_8)).build()
 						.parseClaimsJws(token).getBody().getSubject();
 			
-			final Admin adminAccount = adminRepository.findByToken(token);
+			final var adminAccount = adminRepository.findByToken(token);
 			return adminAccount != null ? subject : null;
 		} catch (JwtException e) {
 			logger.error("Failed to validate JWT - {}", e.getMessage());
