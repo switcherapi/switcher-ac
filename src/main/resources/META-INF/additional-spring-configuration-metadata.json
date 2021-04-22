@@ -23,25 +23,5 @@
     "name": "service.github.secret",
     "type": "java.lang.String",
     "description": "GitHub Secret"
-  },
-  {
-    "name": "switcher.url",
-    "type": "java.lang.String",
-    "description": "Switcher API URL"
-  },
-  {
-    "name": "switcher.apikey",
-    "type": "java.lang.String",
-    "description": "Switcher API component APIKey"
-  },
-  {
-    "name": "switcher.environment",
-    "type": "java.lang.String",
-    "description": "Switcher API environment"
-  },
-  {
-    "name": "switcher.domain",
-    "type": "java.lang.String",
-    "description": "Switcher API domain"
   }
 ]}
