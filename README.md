@@ -58,7 +58,7 @@ the GIT_CODE will be given to access this resource and eventually proceed with t
 
 When authenticating it will be given a pair of tokens. The refresh token will be used to re-generate a new pair once the access token has expired.
 
-0 **Loging Out** - /admin/logout [POST]
+- **Loging Out** - /admin/logout [POST]
 
 Well, it logout the admin user.
 

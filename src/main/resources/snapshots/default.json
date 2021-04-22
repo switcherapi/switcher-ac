@@ -1,0 +1,37 @@
+{
+  "data": {
+    "domain": {
+      "name": "Switcher API",
+      "version": 1618552226475,
+      "group": [
+        {
+          "name": "Features",
+          "config": [
+            {
+              "key": "SWITCHER_AC_ADM",
+              "strategies": [
+                {
+                  "strategy": "VALUE_VALIDATION",
+                  "operation": "EXIST",
+                  "values": [
+                    "31597636"
+                  ],
+                  "activated": true
+                }
+              ],
+              "components": [
+                "switcher-ac"
+              ],
+              "description": "Validate Switcher AC\u0027s allowed GitHub accounts",
+              "activated": true
+            }
+          ],
+          "description": "Control Switcher API features.\n\nswitcherapi:\n$2b$08$e.jlOiZuY4aQ7sYKKitja.wWjKJlusraIHahRE7/fPVpLX1EfAdNS",
+          "activated": true
+        }
+      ],
+      "description": "Feature Flag - Toggle - Cloud-based",
+      "activated": true
+    }
+  }
+}

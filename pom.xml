@@ -39,10 +39,10 @@
 		<java.version>11</java.version>
 		
 		<jersey-client.version>3.0.0</jersey-client.version>
-		<switcher-client.version>1.1.0</switcher-client.version>
+		<switcher-client.version>1.2.0</switcher-client.version>
 		<jsonwebtoken.version>0.11.2</jsonwebtoken.version>
 		<joda-time.version>2.10.10</joda-time.version>
-		<mongodb.version>4.2.1</mongodb.version>
+		<mongodb.version>4.2.2</mongodb.version>
 		
 		<!-- Sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>

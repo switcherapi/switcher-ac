@@ -1,6 +1,7 @@
 package com.github.switcherapi.ac.controller;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,10 +26,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.response.GitHubDetailResponse;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.GitHubService;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
+import com.github.switcherapi.client.configuration.SwitcherMock;
 import com.github.switcherapi.client.factory.SwitcherExecutor;
 
 import okhttp3.mockwebserver.MockResponse;
@@ -68,12 +72,17 @@ class AdminGitHubAuthControllerTests {
 	    gitHubService.setGithubFacade(new GitHubFacade(baseUrl, baseUrl));
 		context.getBean(AdminService.class).setGithubService(gitHubService);
 	}
-
+	
 	@Test
+	void testSwitchers() {
+		assertDoesNotThrow(() -> SwitcherFeatures.checkSwitchers());
+	}
+
+	@SwitcherMock(key = SwitcherFeatures.SWITCHER_AC_ADM, result = true)
+	@ParameterizedTest
 	void shouldLoginWithGitHub() throws Exception {
 		//given
 		mockGitHub();
-		SwitcherExecutor.assume("SWITCHER_AC_ADM", true);
 		
 		//test
 		this.mockMvc.perform(post("/admin/auth/github")
