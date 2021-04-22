@@ -1,5 +1,7 @@
 package com.github.switcherapi.ac.service;
 
+import static com.github.switcherapi.ac.config.SwitcherFeatures.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,15 +33,18 @@ public class AdminService {
 	@Autowired
 	private JwtTokenService jwtService;
 	
-	@Autowired
-	private SwitcherService switcherService;
+	private boolean isAvailable(String githubId) {
+		return getSwitcher(SWITCHER_AC_ADM)
+				.checkValue(githubId)
+				.isItOn();
+	}
 	
 	public Map<String, Object> gitHubAuth(String code) {
 		Map<String, Object> response = new HashMap<>();
 		final String gitHubToken = githubService.getToken(code);
 		final GitHubDetailResponse gitHubDetail = githubService.getGitHubDetail(gitHubToken);
 		
-		if (switcherService.isAvailable("SWITCHER_AC_ADM", gitHubDetail.getId())) {
+		if (isAvailable(gitHubDetail.getId())) {
 			Admin admin = adminRepository.findByGitHubId(gitHubDetail.getId());
 			if (admin == null) {
 				admin = createAdminAccount(gitHubDetail.getId());
