@@ -25,14 +25,15 @@ public class PlanService {
 	private AccountService accountService;
 	
 	public Plan createPlan(PlanDTO plan) {
-		Plan newPlan = planDao.findByName(plan.getName());
+		var newPlan = planDao.findByName(plan.getName());
 		newPlan = newPlan != null ? newPlan : new Plan();
+		
 		PlanUtils.loadAttributes(plan, newPlan);
 		return planDao.getPlanRepository().save(newPlan);
 	}
 	
 	public Plan updatePlan(String planName, PlanDTO plan) {
-		Plan planFound = getPlanByName(planName);
+		var planFound = getPlanByName(planName);
 		PlanUtils.loadAttributes(plan, planFound);
 		planDao.getPlanRepository().save(planFound);
 		
@@ -56,7 +57,7 @@ public class PlanService {
 	}
 	
 	public Plan getPlanByName(String planName) {
-		Plan plan = planDao.findByName(planName);
+		var plan = planDao.findByName(planName);
 		
 		if (plan == null) {
 			throw new ResponseStatusException(

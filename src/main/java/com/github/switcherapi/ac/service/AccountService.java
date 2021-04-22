@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.github.switcherapi.ac.model.Account;
-import com.github.switcherapi.ac.model.Plan;
 import com.github.switcherapi.ac.model.PlanType;
 import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
@@ -32,13 +31,13 @@ public class AccountService {
 	}
 	
 	public Account createAccount(String adminId, String planName) {
-		final Plan plan = planDao.findByName(planName);
+		final var plan = planDao.findByName(planName);
 		if (plan == null) {
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
 		}
 		
-		Account account = accountDao.findByAdminId(adminId);
+		var account = accountDao.findByAdminId(adminId);
 		if (account == null) {
 			account = new Account();
 			account.setAdminId(adminId);
@@ -51,7 +50,7 @@ public class AccountService {
 	}
 	
 	public Account resetDailyExecution(String adminId) {
-		Account account = getAccountByAdminId(adminId);
+		var account = getAccountByAdminId(adminId);
 		account.setCurrentDailyExecution(0);
 		account.setLastReset(new Date());
 		accountDao.getAccountRepository().save(account);
@@ -59,13 +58,13 @@ public class AccountService {
 	}
 	
 	public Account updateAccountPlan(String adminId, String planName) {
-		final Plan plan = planDao.findByName(planName);
+		final var plan = planDao.findByName(planName);
 		if (plan == null) {
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
 		}
 		
-		final Account account = getAccountByAdminId(adminId);
+		final var account = getAccountByAdminId(adminId);
 		
 		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
@@ -74,14 +73,14 @@ public class AccountService {
 	}
 	
 	public void deleteAccount(String adminId) {
-		final Account account = getAccountByAdminId(adminId);
+		final var account = getAccountByAdminId(adminId);
 		if (account != null) {
 			accountDao.getAccountRepository().delete(account);
 		}	
 	}
 	
 	public Account getAccountByAdminId(String adminId) {
-		final Account account = accountDao.findByAdminId(adminId);
+		final var account = accountDao.findByAdminId(adminId);
 		
 		if (account == null) {
 			throw new ResponseStatusException(
