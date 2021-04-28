@@ -6,7 +6,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -61,7 +60,7 @@ public class GitHubFacade {
 			final WebTarget myResource = client.target(
 					String.format(gitUrlAccess, clientId, oauthSecret, code));
 			
-			final Response response = myResource
+			final var response = myResource
 				.request(MediaType.APPLICATION_JSON)
 				.header(HEADER_ACCEPT, HEADER_JSON)
 				.post(null);
@@ -80,7 +79,7 @@ public class GitHubFacade {
 	
 	public GitHubDetailResponse getGitHubDetail(String token) {
 		final WebTarget myResource = client.target(gitUrlDetail);
-		final Response response = myResource
+		final var response = myResource
 			.request(MediaType.APPLICATION_JSON)
 			.header(HEADER_ACCEPT, HEADER_JSON)
 			.header("Authorization", String.format("token %s", token))

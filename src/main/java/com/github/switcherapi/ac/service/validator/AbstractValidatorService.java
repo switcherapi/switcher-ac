@@ -69,7 +69,7 @@ public abstract class AbstractValidatorService {
 	 * Default validator handler
 	 */
 	protected ResponseRelay executeValidator() {
-		final Account account = accountDao.findByAdminId(
+		final var account = accountDao.findByAdminId(
 				getParam(ADMINID, String.class));
 		
 		if (account != null) {

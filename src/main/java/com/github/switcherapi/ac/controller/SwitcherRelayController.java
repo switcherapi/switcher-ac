@@ -48,7 +48,7 @@ public class SwitcherRelayController {
 	@GetMapping(value = "/v1/execution")
 	public ResponseEntity<ResponseRelay> execution(@RequestParam String value) {
 		try {
-			final RequestRelay request = new RequestRelay();
+			final var request = new RequestRelay();
 			request.setValue(String.format("execution#%s", value));
 			return ResponseEntity.ok(validatorFactory.runValidator(request));
 		} catch (ResponseStatusException e) {

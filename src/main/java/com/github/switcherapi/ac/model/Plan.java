@@ -14,7 +14,7 @@ public class Plan extends PlanDTO {
 	private String id;
 	
 	public static PlanDTO loadDefault() {
-		PlanDTO plan = new PlanDTO();
+		var plan = new PlanDTO();
 		plan.setName(PlanType.DEFAULT.name());
 		plan.setMaxDomains(1);
 		plan.setMaxGroups(2);

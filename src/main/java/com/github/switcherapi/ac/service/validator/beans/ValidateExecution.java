@@ -14,8 +14,8 @@ public class ValidateExecution extends AbstractActiveCheckValidator {
 	
 	@Override
 	protected ResponseRelay executeValidator(final Account account) {
-		final DateTime dateTime = new DateTime(new Date());
-		final DateTime lastReset = new DateTime(account.getLastReset());
+		final var dateTime = new DateTime(new Date());
+		final var lastReset = new DateTime(account.getLastReset());
 		final int days = Days.daysBetween(lastReset, dateTime).getDays();
 		
 		if (days >= 1) {
