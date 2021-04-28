@@ -38,8 +38,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	private JwtTokenService jwtTokenService;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+	protected void doFilterInternal(
+			HttpServletRequest request,
+			HttpServletResponse response, 
+			FilterChain filterChain) throws ServletException, IOException {
 		
 		final Optional<String> jwt = getJwtFromRequest(request);
 		
@@ -50,10 +52,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			
 			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 			if (validateToken(token, request, authorities)) {
-				final UsernamePasswordAuthenticationToken authUser = 
-						new UsernamePasswordAuthenticationToken(SWITCHER_AC, null, authorities);
+				final var authUser = new UsernamePasswordAuthenticationToken(SWITCHER_AC, null, authorities);
 				authUser.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				
 				SecurityContextHolder.getContext().setAuthentication(authUser);
 			}
 		});

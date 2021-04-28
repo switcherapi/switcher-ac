@@ -40,7 +40,7 @@ public class ValidatorFactory {
 	
 	@PostConstruct
 	private void scanValidators() {
-		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
+		final var provider = new ClassPathScanningCandidateComponentProvider(true);
 		provider.addIncludeFilter(new AnnotationTypeFilter(SwitcherValidator.class, false, true));
 		Set<BeanDefinition> beans = provider.findCandidateComponents(VALIDATORS_PATH);
 		

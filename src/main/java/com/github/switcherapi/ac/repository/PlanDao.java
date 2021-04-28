@@ -18,13 +18,13 @@ public class PlanDao {
 	private PlanRepository planRepository;
 	
 	public Plan findByName(String name) {
-		final Query query = new Query();
+		final var query = new Query();
 		query.addCriteria(Criteria.where("name").is(name));
 		return mongoTemplate.findOne(query, Plan.class);
 	}
 	
 	public void deleteByName(String planName) {
-		final Query query = new Query();
+		final var query = new Query();
 		query.addCriteria(Criteria.where("name").is(planName));
 		mongoTemplate.remove(query, Plan.class);
 	}
