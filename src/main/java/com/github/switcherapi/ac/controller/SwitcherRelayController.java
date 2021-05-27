@@ -1,6 +1,5 @@
 package com.github.switcherapi.ac.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,12 +18,17 @@ import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 @RequestMapping("switcher")
 public class SwitcherRelayController {
 	
-	@Autowired
 	private AccountService accountService;
 	
-	@Autowired
 	private ValidatorFactory validatorFactory;
 	
+	public SwitcherRelayController(
+			AccountService accountService, 
+			ValidatorFactory validatorFactory) {
+		this.accountService = accountService;
+		this.validatorFactory = validatorFactory;
+	}
+
 	@PostMapping(value = "/v1/create")
 	public ResponseEntity<ResponseRelay> loadAccount(@RequestBody RequestRelay request) {
 		try {

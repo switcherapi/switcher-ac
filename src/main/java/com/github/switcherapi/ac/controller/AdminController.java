@@ -3,7 +3,6 @@ package com.github.switcherapi.ac.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,15 +26,21 @@ import com.github.switcherapi.ac.service.PlanService;
 @RequestMapping("admin")
 public class AdminController {
 	
-	@Autowired
 	private PlanService planService;
 	
-	@Autowired
 	private AccountService accountService;
 	
-	@Autowired
 	private AdminService adminService;
 	
+	public AdminController(
+			PlanService planService, 
+			AccountService accountService, 
+			AdminService adminService) {
+		this.planService = planService;
+		this.accountService = accountService;
+		this.adminService = adminService;
+	}
+
 	@PostMapping(value = "/auth/github")
 	public ResponseEntity<Map<String, Object>> gitHubAuth(@RequestParam String code) {
 		return ResponseEntity.ok(adminService.gitHubAuth(code));

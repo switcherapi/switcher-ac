@@ -23,7 +23,13 @@ public class PlanService {
 	
 	@Autowired
 	private AccountService accountService;
-	
+
+	public PlanService(PlanDao planDao, AccountService accountService) {
+		super();
+		this.planDao = planDao;
+		this.accountService = accountService;
+	}
+
 	public Plan createPlan(PlanDTO plan) {
 		var newPlan = planDao.findByName(plan.getName());
 		newPlan = newPlan != null ? newPlan : new Plan();

@@ -1,11 +1,11 @@
 package com.github.switcherapi.ac.service;
 
-import static com.github.switcherapi.ac.config.SwitcherFeatures.*;
+import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
+import static com.github.switcherapi.client.SwitcherContext.getSwitcher;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,15 +24,19 @@ public class AdminService {
 	
 	public static final String REFRESH_TOKEN = "refreshToken";
 	
-	@Autowired
 	private AdminRepository adminRepository;
 	
-	@Autowired
 	private GitHubService githubService;
 	
-	@Autowired
 	private JwtTokenService jwtService;
 	
+	public AdminService(AdminRepository adminRepository, 
+			GitHubService githubService, JwtTokenService jwtService) {
+		this.adminRepository = adminRepository;
+		this.githubService = githubService;
+		this.jwtService = jwtService;
+	}
+
 	private boolean isAvailable(String githubId) {
 		return getSwitcher(SWITCHER_AC_ADM)
 				.checkValue(githubId)
