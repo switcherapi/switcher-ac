@@ -3,7 +3,6 @@ package com.github.switcherapi.ac.service;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,12 +19,15 @@ public class AccountService {
 	
 	private static final String ACCOUNT_NOT_FOUND = "Unable to find account %s";
 	
-	@Autowired
 	private PlanDao planDao;
 	
-	@Autowired
 	private AccountDao accountDao;
 	
+	public AccountService(PlanDao planDao, AccountDao accountDao) {
+		this.planDao = planDao;
+		this.accountDao = accountDao;
+	}
+
 	public Account createAccount(String adminId) {
 		return createAccount(adminId, PlanType.DEFAULT.name());
 	}

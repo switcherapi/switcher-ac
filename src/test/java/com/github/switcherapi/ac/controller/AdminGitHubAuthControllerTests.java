@@ -68,8 +68,7 @@ class AdminGitHubAuthControllerTests {
 	@BeforeEach
 	void initialize() {
 	    String baseUrl = String.format("http://localhost:%s", mockBackend.getPort());
-	    gitHubService = new GitHubService();
-	    gitHubService.setGithubFacade(new GitHubFacade(baseUrl, baseUrl));
+	    gitHubService = new GitHubService(new GitHubFacade(baseUrl, baseUrl));
 		context.getBean(AdminService.class).setGithubService(gitHubService);
 	}
 	
