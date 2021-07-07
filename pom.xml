@@ -82,7 +82,11 @@
 		         <groupId>com.fasterxml.jackson.core</groupId>
 		         <artifactId>jackson-databind</artifactId>
 		      </exclusion>
-		   </exclusions>
+		      <exclusion>
+		      	<groupId>org.glassfish</groupId>
+		      	<artifactId>jakarta.el</artifactId>
+		      </exclusion>
+		    </exclusions>
 		</dependency>
 		
 		<dependency>
