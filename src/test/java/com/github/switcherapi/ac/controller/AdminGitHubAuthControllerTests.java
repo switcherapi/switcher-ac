@@ -75,6 +75,7 @@ class AdminGitHubAuthControllerTests {
 	@Test
 	void testSwitchers() {
 		System.out.println("REMOVEME");
+		System.out.println(SwitcherFeatures.getProperties().getUrl());
 		System.out.println(SwitcherFeatures.getProperties().getApiKey());
 		System.out.println(SwitcherFeatures.getProperties().getComponent());
 		System.out.println(SwitcherFeatures.getProperties().getDomain());
