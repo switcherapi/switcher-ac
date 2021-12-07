@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.Plan;
 import com.github.switcherapi.ac.service.PlanService;
 
@@ -26,6 +27,8 @@ public class SwitcherAcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		SwitcherFeatures.checkSwitchers();
+		
 		logger.info("Loading default Plan...");
 		planService.createPlan(Plan.loadDefault());
 		logger.info("Plan loaded");
