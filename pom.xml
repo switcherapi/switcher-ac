@@ -170,6 +170,13 @@
 			<groupId>com.github.switcherapi</groupId>
 			<artifactId>switcher-client</artifactId>
 			<version>${switcher-client.version}</version>
+			<!-- Remove when migrating to 1.3.4 -->
+			<exclusions>
+		      <exclusion>
+		      	<groupId>org.apache.logging.log4j</groupId>
+		      	<artifactId>log4j-api</artifactId>
+		      </exclusion>
+			</exclusions>
 		</dependency>
 			
 		<dependency>
