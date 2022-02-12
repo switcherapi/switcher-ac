@@ -42,6 +42,16 @@ switcher.domain=Switcher API
 spring.data.mongodb.uri=${MONGODB_URL}
 ```
 
+# Running locally with Docker Compose
+
+1. Configure environment variables at docker-env/.env
+2. Define volume for Switcher API snapshots and modify docker-compose volume device parameter.
+3. Run docker-compose
+
+```
+docker-compose --env-file ./docker-env/.env up
+```
+
 # Usage
 
 - **API Check** - /api/check [GET]

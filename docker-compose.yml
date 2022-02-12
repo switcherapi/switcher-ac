@@ -1,0 +1,36 @@
+version: '3.8'
+
+volumes:
+  switcherapi-snapshot:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: [CHANGE_ME]
+
+services:
+  switcherapi:
+    image: trackerforce/switcher-ac
+    container_name: switcherac
+    ports:
+      - 8070:8070
+    volumes:
+      - switcherapi-snapshot:/snapshots
+    environment:
+      # API settings
+      - PORT=8070
+      - API_SECRET=${API_SECRET}
+      - RELAY_TOKEN=${RELAY_TOKEN}
+      - GITHUB_CLIENTID=${GITHUB_CLIENTID}
+      - GITHUB_SECRET=${GITHUB_SECRET}
+      - MONGODB_URL=${MONGODB_URL}
+
+      # Switcher API settings
+      - SWITCHER_URL=${SWITCHER_URL}
+      - SWITCHER_KEY=${SWITCHER_KEY}
+      - SWITCHER_ENV=${SWITCHER_ENV}
+      - SWITCHER_DOMAIN=${SWITCHER_DOMAIN}
+      - SWITCHER_SNAPSHOT_LOCATION=${SWITCHER_SNAPSHOT_LOCATION}
+      - SWITCHER_SNAPSHOT_AUTO=${SWITCHER_SNAPSHOT_AUTO}
+      - SWITCHER_OFFLINE=${SWITCHER_OFFLINE}
+      - SWITCHER_SILENT=${SWITCHER_SILENT}
