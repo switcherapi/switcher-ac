@@ -22,6 +22,8 @@ import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.PlanService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("admin")
 public class AdminController {
@@ -41,11 +43,13 @@ public class AdminController {
 		this.adminService = adminService;
 	}
 
+	@ApiOperation(value = "Authenticate using GitHub credentials")
 	@PostMapping(value = "/auth/github")
 	public ResponseEntity<Map<String, Object>> gitHubAuth(@RequestParam String code) {
 		return ResponseEntity.ok(adminService.gitHubAuth(code));
 	}
 	
+	@ApiOperation(value = "Update JWT using your refresh token")
 	@PostMapping(value = "/auth/refresh")
 	public ResponseEntity<Map<String, Object>> gitHubRefreshAuth(
 			@RequestHeader("Authorization") String token, @RequestParam String refreshToken) {
@@ -58,38 +62,45 @@ public class AdminController {
 		return ResponseEntity.ok().build();
 	}
 	
+	@ApiOperation(value = "Update account plan with another plan")
 	@PatchMapping(value = "/account/v1/change/{adminId}")
 	public ResponseEntity<Account> changeAccountPlan(@PathVariable(value="adminId") 
 		String adminId, @RequestParam String plan) {
 		return ResponseEntity.ok(accountService.createAccount(adminId, plan));
 	}
 	
+	@ApiOperation(value = "Reset execution credits")
 	@PatchMapping(value = "/account/v1/reset/{adminId}")
 	public ResponseEntity<Account> changeAccountPlan(@PathVariable(value="adminId") String adminId) {
 		return ResponseEntity.ok(accountService.resetDailyExecution(adminId));
 	}
 	
+	@ApiOperation(value = "Create a new plan")
 	@PostMapping(value = "/plan/v1")
 	public ResponseEntity<Plan> createPlan(@RequestBody PlanDTO plan) {
 		return ResponseEntity.ok(planService.createPlan(plan));
 	}
 	
+	@ApiOperation(value = "Update existing plan")
 	@PatchMapping(value = "/plan/v1")
 	public ResponseEntity<Plan> updatePlan(@RequestBody PlanDTO plan) {
 		return ResponseEntity.ok(planService.updatePlan(plan.getName(), plan));
 	}
 	
+	@ApiOperation(value = "Delete existing plan")
 	@DeleteMapping(value = "/plan/v1")
 	public ResponseEntity<String> deletePlan(@RequestParam String plan) {
 		planService.deletePlan(plan);
 		return ResponseEntity.ok("Plan deleted");
 	}
 	
+	@ApiOperation(value = "List available plans")
 	@GetMapping(value = "/plan/v1/list")
 	public ResponseEntity<List<Plan>> listPlans() {
 		return ResponseEntity.ok(planService.listAll());
 	}
 	
+	@ApiOperation(value = "Return one plan")
 	@GetMapping(value = "/plan/v1/get")
 	public ResponseEntity<Plan> listPlans(@RequestParam String plan) {
 		return ResponseEntity.ok(planService.getPlanByName(plan));
