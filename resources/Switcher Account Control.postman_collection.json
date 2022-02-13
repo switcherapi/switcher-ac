@@ -6,6 +6,656 @@
 	},
 	"item": [
 		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Admin - GitHub Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.environment.set('authToken', pm.response.json().token)\r",
+									"    pm.environment.set('refreshToken', pm.response.json().refreshToken)\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/auth/github?code=",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"auth",
+								"github"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Auth Refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.environment.set('authToken', pm.response.json().token)\r",
+									"    pm.environment.set('refreshToken', pm.response.json().refreshToken)\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/auth/refresh?refreshToken={{refreshToken}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"auth",
+								"refresh"
+							],
+							"query": [
+								{
+									"key": "refreshToken",
+									"value": "{{refreshToken}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Plan - List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/admin/plan/v1/list",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"plan",
+								"v1",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Plan - Read",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/plan/v1/get?plan=DEFAULT",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"plan",
+								"v1",
+								"get"
+							],
+							"query": [
+								{
+									"key": "plan",
+									"value": "DEFAULT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Plan - Create (BASIC)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"BASIC\",\r\n    \"maxDomains\": 1,\r\n    \"maxGroups\": 5,\r\n    \"maxSwitchers\": 20,\r\n    \"maxComponents\": 5,\r\n    \"maxEnvironments\": 3,\r\n    \"maxTeams\": 5,\r\n    \"maxDailyExecution\": 500\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/plan/v1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"plan",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Plan - Create (UNLIMITED)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"UNLIMITED\",\r\n    \"maxDomains\": -1,\r\n    \"maxGroups\": -1,\r\n    \"maxSwitchers\": -1,\r\n    \"maxComponents\": -1,\r\n    \"maxEnvironments\": -1,\r\n    \"maxTeams\": -1,\r\n    \"maxDailyExecution\": -1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/plan/v1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"plan",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Plan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"UNLIMITED\",\r\n    \"maxDomains\": -1,\r\n    \"maxGroups\": -1,\r\n    \"maxSwitchers\": -1,\r\n    \"maxComponents\": -1,\r\n    \"maxEnvironments\": -1,\r\n    \"maxTeams\": -1,\r\n    \"maxDailyExecution\": -1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/plan/v1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"plan",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Plan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/plan/v1?plan=UNLIMITED",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"plan",
+								"v1"
+							],
+							"query": [
+								{
+									"key": "plan",
+									"value": "UNLIMITED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Account Change",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/account/v1/change/ACCOUNT_ID?plan=UNLIMITED",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"account",
+								"v1",
+								"change",
+								"ACCOUNT_ID"
+							],
+							"query": [
+								{
+									"key": "plan",
+									"value": "UNLIMITED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Account Reset",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/admin/account/v1/reset/ACCOUNT_ID",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"account",
+								"v1",
+								"reset",
+								"ACCOUNT_ID"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Switcher",
+			"item": [
+				{
+					"name": "Switcher - Account - Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{switcherToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": \"ACCOUNT_ID\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/switcher/v1/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"switcher",
+								"v1",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Switcher - Account - Remove",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{switcherToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": \"ACCOUNT_ID\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/switcher/v1/remove",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"switcher",
+								"v1",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Switcher - Validate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{switcherToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": \"metrics#ACCOUNT_ID\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/switcher/v1/validate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"switcher",
+								"v1",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Switcher - Execution",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{switcherToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/switcher/v1/execution?value=ACCOUNT_ID",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"switcher",
+								"v1",
+								"execution"
+							],
+							"query": [
+								{
+									"key": "value",
+									"value": "ACCOUNT_ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "API - check",
 			"request": {
 				"method": "GET",
@@ -22,650 +672,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "Admin - GitHub Auth",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "a67636b6-4a1b-4bee-8a5f-00db51ab38c4",
-						"exec": [
-							"if (pm.response.code === 200) {\r",
-							"    pm.environment.set('authToken', pm.response.json().token)\r",
-							"    pm.environment.set('refreshToken', pm.response.json().refreshToken)\r",
-							"}"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/auth/github?code=",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"auth",
-						"github"
-					],
-					"query": [
-						{
-							"key": "code",
-							"value": ""
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Auth Refresh",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "7c02f49c-4fbe-42a0-a49e-967bfddaf3dd",
-						"exec": [
-							"if (pm.response.code === 200) {\r",
-							"    pm.environment.set('authToken', pm.response.json().token)\r",
-							"    pm.environment.set('refreshToken', pm.response.json().refreshToken)\r",
-							"}"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/auth/refresh?refreshToken={{refreshToken}}",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"auth",
-						"refresh"
-					],
-					"query": [
-						{
-							"key": "refreshToken",
-							"value": "{{refreshToken}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Logout",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "f3fded65-d901-42af-8eeb-8b8d4ff77957",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/logout",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"logout"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Plan - List",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/admin/plan/v1/list",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"plan",
-						"v1",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Plan - Read",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/plan/v1/get?plan=DEFAULT",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"plan",
-						"v1",
-						"get"
-					],
-					"query": [
-						{
-							"key": "plan",
-							"value": "DEFAULT"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Plan - Create (BASIC)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"BASIC\",\r\n    \"maxDomains\": 1,\r\n    \"maxGroups\": 5,\r\n    \"maxSwitchers\": 20,\r\n    \"maxComponents\": 5,\r\n    \"maxEnvironments\": 3,\r\n    \"maxTeams\": 5,\r\n    \"maxDailyExecution\": 500\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/plan/v1",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"plan",
-						"v1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Plan - Create (UNLIMITED)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"UNLIMITED\",\r\n    \"maxDomains\": -1,\r\n    \"maxGroups\": -1,\r\n    \"maxSwitchers\": -1,\r\n    \"maxComponents\": -1,\r\n    \"maxEnvironments\": -1,\r\n    \"maxTeams\": -1,\r\n    \"maxDailyExecution\": -1\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/plan/v1",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"plan",
-						"v1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Plan",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"UNLIMITED\",\r\n    \"maxDomains\": -1,\r\n    \"maxGroups\": -1,\r\n    \"maxSwitchers\": -1,\r\n    \"maxComponents\": -1,\r\n    \"maxEnvironments\": -1,\r\n    \"maxTeams\": -1,\r\n    \"maxDailyExecution\": -1\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/plan/v1",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"plan",
-						"v1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Plan",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/plan/v1?plan=UNLIMITED",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"plan",
-						"v1"
-					],
-					"query": [
-						{
-							"key": "plan",
-							"value": "UNLIMITED"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Account Change",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{adminToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/account/v1/change/ACCOUNT_ID?plan=UNLIMITED",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"account",
-						"v1",
-						"change",
-						"ACCOUNT_ID"
-					],
-					"query": [
-						{
-							"key": "plan",
-							"value": "UNLIMITED"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Admin - Account Reset",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{authToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/admin/account/v1/reset/ACCOUNT_ID",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"admin",
-						"account",
-						"v1",
-						"reset",
-						"ACCOUNT_ID"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Switcher - Account - Create",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{switcherToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"value\": \"ACCOUNT_ID\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/switcher/v1/create",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"switcher",
-						"v1",
-						"create"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Switcher - Account - Remove",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{switcherToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"value\": \"ACCOUNT_ID\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/switcher/v1/remove",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"switcher",
-						"v1",
-						"remove"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Switcher - Validate",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{switcherToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"value\": \"metrics#ACCOUNT_ID\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/switcher/v1/validate",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"switcher",
-						"v1",
-						"validate"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Switcher - Execution",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{switcherToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/switcher/v1/execution?value=ACCOUNT_ID",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"switcher",
-						"v1",
-						"execution"
-					],
-					"query": [
-						{
-							"key": "value",
-							"value": "ACCOUNT_ID"
-						}
-					]
-				}
-			},
-			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
