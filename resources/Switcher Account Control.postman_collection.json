@@ -672,6 +672,90 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "API - actuator",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/actuator",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"actuator"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - actuator/health",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/actuator/health/custom",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"actuator",
+						"health",
+						"custom"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API - actuator/env",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/actuator/env",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"actuator",
+						"env"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
