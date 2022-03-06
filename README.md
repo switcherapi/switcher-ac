@@ -24,23 +24,6 @@ Here it goes what you need to start using Switcher AC.
 - Switcher API
 
 Provide the values for the Spring parameters file located at src/main/resources/application-[ENV].properties
-```
-spring.application.name=switcher-ac
-
-service.api.secret=${API_SECRET}
-service.relay.token=${RELAY_TOKEN}
-service.endpoint.healthchecker=/**/api/**
-
-service.github.clientid=${GITHUB_CLIENTID}
-service.github.secret=${GITHUB_SECRET}
-
-switcher.url=${SWITCHER_URL}
-switcher.apikey=${SWITCHER_KEY}
-switcher.environment=default
-switcher.domain=Switcher API
-
-spring.data.mongodb.uri=${MONGODB_URL}
-```
 
 # Running locally with Docker Compose
 
@@ -54,9 +37,24 @@ docker-compose --env-file ./docker-env/.env up
 
 # Usage
 
-- **API Check** - /api/check [GET]
-Verifies if API is online.
-No authorization required.
+- **API Check** - /api/check [GET]<br /> 
+Verifies if API is online.<br /> 
+No authorization required.<br /> 
+
+
+- **Swagger Definition** - /v2/api-docs [GET]<br /> 
+Retrieve API swagger definition<br />
+
+
+- **Swagger UI** - /swagger-ui/<br /> 
+Access Swagger UI.<br /> 
+Use /admin/auth/github to generate API access token.<br />
+
+
+- **Actuator** - /actuator [GET]<br />
+Retrieve actuator resources available.<br />
+Requires authentication as Admin.<br />
+
 
 ### Admin
 - **Login with GitHub** - /admin/auth/github?code=GIT_CODE [POST]
