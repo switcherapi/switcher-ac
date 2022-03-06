@@ -23,13 +23,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
 				.antMatchers(healthChecker).permitAll()
 				.antMatchers("/admin/auth/**").permitAll()
+				.antMatchers("/actuator/**").hasRole("ADMIN")
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/switcher/**").hasRole("SWITCHER")
 			
