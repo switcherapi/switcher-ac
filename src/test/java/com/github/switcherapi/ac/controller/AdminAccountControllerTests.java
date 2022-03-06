@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,22 +52,31 @@ class AdminAccountControllerTests {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	private String token;
+	private static Admin adminAccount;
 	
-	@BeforeEach
-	void setup() {
+	private String bearer;
+	
+	@BeforeAll
+	static void setup(
+			@Autowired AccountService accountService,
+			@Autowired AdminService adminService,
+			@Autowired PlanService planService) {
 		final PlanDTO plan1 = Plan.loadDefault();
 		planService.createPlan(plan1);
 		
+		accountService.createAccount("mock_account1");
+		adminAccount = adminService.createAdminAccount("123456");
+	}
+	
+	@BeforeEach
+	void setup() {
 		final PlanDTO plan2 = Plan.loadDefault();
 		plan2.setName("BASIC");
 		planService.createPlan(plan2);
 		
-		accountService.createAccount("mock_account1");
-		
-		final Admin admin = adminService.createAdminAccount("123456");
-		token = jwtService.generateToken(admin.getId())[0];
-		adminService.updateAdminAccountToken(admin,token);
+		final var token = jwtService.generateToken(adminAccount.getId())[0];
+		adminService.updateAdminAccountToken(adminAccount, token);
+		bearer = String.format("Bearer %s", token);
 	}
 
 	@Test
@@ -84,7 +94,7 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer " + token)
+			.header("Authorization", bearer)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andDo(print())
@@ -105,7 +115,7 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(delete("/admin/plan/v1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer " + token)
+			.header("Authorization", bearer)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andExpect(status().isOk());
@@ -129,7 +139,7 @@ class AdminAccountControllerTests {
 	void shouldNotChangeAccountPlan_planNotFound() throws Exception {
 		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer " + token)
+			.header("Authorization", bearer)
 			.with(csrf())
 			.queryParam("plan", "NOT_FOUND"))
 			.andDo(print())
@@ -150,7 +160,7 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(patch("/admin/account/v1/reset/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer " + token)
+			.header("Authorization", bearer)
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());
