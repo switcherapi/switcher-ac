@@ -25,7 +25,14 @@ Here it goes what you need to start using Switcher AC.
 
 Provide the values for the Spring parameters file located at src/main/resources/application-[ENV].properties
 
-# Running locally with Docker Compose
+# Running locally
+
+## Maven Spring-boot
+
+1. Initialize/configure environment with required variables located at /docker-env/.env.template (use set -a)
+2. mvn clean install spring-boot:run -Dspring-boot.run.profiles=dev
+
+## With Docker-Compose
 
 1. Configure environment variables at docker-env/.env
 2. Define volume for Switcher API snapshots and modify docker-compose volume device parameter.
