@@ -56,7 +56,7 @@ class MockAdminPlanControllerTests {
 		String json = gson.toJson(planObj);
 		
 		//test
-		this.mockMvc.perform(post("/admin/plan/v1")
+		this.mockMvc.perform(post("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer api_token")
 			.content(json))
@@ -71,7 +71,7 @@ class MockAdminPlanControllerTests {
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
 		
 		//test
-		this.mockMvc.perform(get("/admin/plan/v1/list")
+		this.mockMvc.perform(get("/admin/v1/plan/list")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer api_token"))
 			.andDo(print())

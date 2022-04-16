@@ -47,7 +47,7 @@ class MockAdminAccountControllerTests {
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
 		//test
-		this.mockMvc.perform(patch("/admin/account/v1/reset/{adminId}", "mock_account1")
+		this.mockMvc.perform(patch("/admin/v1/account/reset/{adminId}", "mock_account1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer api_token"))
 				.andDo(print())
