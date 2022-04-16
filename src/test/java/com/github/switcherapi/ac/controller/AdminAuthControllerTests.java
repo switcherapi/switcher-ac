@@ -48,7 +48,7 @@ class AdminAuthControllerTests {
 	
 	@Test
 	void shouldRefreshToken() throws Exception {
-		this.mockMvc.perform(post("/admin/auth/refresh")
+		this.mockMvc.perform(post("/admin/v1/auth/refresh")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer " + tokens[0])
 			.with(csrf())
@@ -59,7 +59,7 @@ class AdminAuthControllerTests {
 	
 	@Test
 	void shouldNotRefreshToken_invalidRefreshToken() throws Exception {
-		this.mockMvc.perform(post("/admin/auth/refresh")
+		this.mockMvc.perform(post("/admin/v1/auth/refresh")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer " + tokens[0])
 			.with(csrf())
@@ -70,7 +70,7 @@ class AdminAuthControllerTests {
 	
 	@Test
 	void shouldLogout() throws Exception {
-		this.mockMvc.perform(post("/admin/logout")
+		this.mockMvc.perform(post("/admin/v1/logout")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer " + tokens[0])
 			.with(csrf()))

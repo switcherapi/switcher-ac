@@ -92,7 +92,7 @@ class AdminAccountControllerTests {
 		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
 		
 		//test
-		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
+		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
@@ -113,7 +113,7 @@ class AdminAccountControllerTests {
 		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
 		
 		//test
-		this.mockMvc.perform(delete("/admin/plan/v1")
+		this.mockMvc.perform(delete("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
@@ -126,7 +126,7 @@ class AdminAccountControllerTests {
 	
 	@Test
 	void shouldNotChangeAccountPlan_invalidAuthorizationKey() throws Exception {
-		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
+		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer INVALID_KEY")
 			.with(csrf())
@@ -137,7 +137,7 @@ class AdminAccountControllerTests {
 	
 	@Test
 	void shouldNotChangeAccountPlan_planNotFound() throws Exception {
-		this.mockMvc.perform(patch("/admin/account/v1/change/{adminId}", "mock_account1")
+		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
@@ -158,7 +158,7 @@ class AdminAccountControllerTests {
 		assertThat(account.getCurrentDailyExecution()).isEqualTo(1);
 		
 		//test
-		this.mockMvc.perform(patch("/admin/account/v1/reset/{adminId}", "mock_account1")
+		this.mockMvc.perform(patch("/admin/v1/account/reset/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf()))

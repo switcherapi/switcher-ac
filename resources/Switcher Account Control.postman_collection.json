@@ -40,12 +40,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/auth/github?code=",
+							"raw": "{{url}}/admin/v1/auth/github?code=",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
+								"v1",
 								"auth",
 								"github"
 							],
@@ -98,12 +99,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/auth/refresh?refreshToken={{refreshToken}}",
+							"raw": "{{url}}/admin/v1/auth/refresh?refreshToken={{refreshToken}}",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
+								"v1",
 								"auth",
 								"refresh"
 							],
@@ -153,12 +155,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/logout",
+							"raw": "{{url}}/admin/v1/logout",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
+								"v1",
 								"logout"
 							]
 						}
@@ -181,14 +184,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/admin/plan/v1/list",
+							"raw": "{{url}}/admin/v1/plan/list",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
-								"plan",
 								"v1",
+								"plan",
 								"list"
 							]
 						}
@@ -223,14 +226,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/plan/v1/get?plan=DEFAULT",
+							"raw": "{{url}}/admin/v1/plan/get?plan=DEFAULT",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
-								"plan",
 								"v1",
+								"plan",
 								"get"
 							],
 							"query": [
@@ -268,14 +271,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/plan/v1",
+							"raw": "{{url}}/admin/v1/plan",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
-								"plan",
-								"v1"
+								"v1",
+								"plan"
 							]
 						}
 					},
@@ -306,14 +309,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/plan/v1",
+							"raw": "{{url}}/admin/v1/plan",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
-								"plan",
-								"v1"
+								"v1",
+								"plan"
 							]
 						}
 					},
@@ -344,14 +347,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/plan/v1",
+							"raw": "{{url}}/admin/v1/plan",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
-								"plan",
-								"v1"
+								"v1",
+								"plan"
 							]
 						}
 					},
@@ -382,14 +385,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/plan/v1?plan=UNLIMITED",
+							"raw": "{{url}}/admin/v1/plan?plan=UNLIMITED",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
-								"plan",
-								"v1"
+								"v1",
+								"plan"
 							],
 							"query": [
 								{
@@ -426,14 +429,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/account/v1/change/ACCOUNT_ID?plan=UNLIMITED",
+							"raw": "{{url}}/admin/v1/account/change/ACCOUNT_ID?plan=UNLIMITED",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
-								"account",
 								"v1",
+								"account",
 								"change",
 								"ACCOUNT_ID"
 							],
@@ -472,14 +475,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/account/v1/reset/ACCOUNT_ID",
+							"raw": "{{url}}/admin/v1/account/reset/ACCOUNT_ID",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"admin",
-								"account",
 								"v1",
+								"account",
 								"reset",
 								"ACCOUNT_ID"
 							]

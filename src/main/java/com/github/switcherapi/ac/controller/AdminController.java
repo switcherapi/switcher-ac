@@ -25,7 +25,7 @@ import com.github.switcherapi.ac.service.PlanService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("admin")
+@RequestMapping("admin/v1")
 public class AdminController {
 	
 	private PlanService planService;
@@ -63,45 +63,45 @@ public class AdminController {
 	}
 	
 	@ApiOperation(value = "Update account plan with another plan")
-	@PatchMapping(value = "/account/v1/change/{adminId}")
+	@PatchMapping(value = "/account/change/{adminId}")
 	public ResponseEntity<Account> changeAccountPlan(@PathVariable(value="adminId") 
 		String adminId, @RequestParam String plan) {
 		return ResponseEntity.ok(accountService.createAccount(adminId, plan));
 	}
 	
 	@ApiOperation(value = "Reset execution credits")
-	@PatchMapping(value = "/account/v1/reset/{adminId}")
+	@PatchMapping(value = "/account/reset/{adminId}")
 	public ResponseEntity<Account> changeAccountPlan(@PathVariable(value="adminId") String adminId) {
 		return ResponseEntity.ok(accountService.resetDailyExecution(adminId));
 	}
 	
 	@ApiOperation(value = "Create a new plan")
-	@PostMapping(value = "/plan/v1")
+	@PostMapping(value = "/plan")
 	public ResponseEntity<Plan> createPlan(@RequestBody PlanDTO plan) {
 		return ResponseEntity.ok(planService.createPlan(plan));
 	}
 	
 	@ApiOperation(value = "Update existing plan")
-	@PatchMapping(value = "/plan/v1")
+	@PatchMapping(value = "/plan")
 	public ResponseEntity<Plan> updatePlan(@RequestBody PlanDTO plan) {
 		return ResponseEntity.ok(planService.updatePlan(plan.getName(), plan));
 	}
 	
 	@ApiOperation(value = "Delete existing plan")
-	@DeleteMapping(value = "/plan/v1")
+	@DeleteMapping(value = "/plan")
 	public ResponseEntity<String> deletePlan(@RequestParam String plan) {
 		planService.deletePlan(plan);
 		return ResponseEntity.ok("Plan deleted");
 	}
 	
 	@ApiOperation(value = "List available plans")
-	@GetMapping(value = "/plan/v1/list")
+	@GetMapping(value = "/plan/list")
 	public ResponseEntity<List<Plan>> listPlans() {
 		return ResponseEntity.ok(planService.listAll());
 	}
 	
 	@ApiOperation(value = "Return one plan")
-	@GetMapping(value = "/plan/v1/get")
+	@GetMapping(value = "/plan/get")
 	public ResponseEntity<Plan> listPlans(@RequestParam String plan) {
 		return ResponseEntity.ok(planService.getPlanByName(plan));
 	}

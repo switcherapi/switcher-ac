@@ -73,11 +73,11 @@ the GIT_CODE will be given to access this resource and eventually proceed with t
 
 When authenticating it will be given a pair of tokens. The refresh token will be used to re-generate a new pair once the access token has expired.
 
-- **Loging Out** - /admin/logout [POST]
+- **Loging Out** - /admin/v1/logout [POST]
 
 Well, it logout the admin user.
 
-- **List plans** - /admin/plan/v1/list [GET]
+- **List plans** - /admin/v1/plan/list [GET]
 
 Return all registered plans.
 
@@ -85,7 +85,7 @@ Return all registered plans.
 
 Return a specific plan.
 
-- **Create plan** - /admin/plan/v1 [POST]
+- **Create plan** - /admin/v1/plan [POST]
 
 Create new plan.
 ```json
@@ -101,15 +101,15 @@ Create new plan.
 }
 ```
 
-- **Delete plan** - /admin/plan/v1?plan={PLAN_NAME} [POST]
+- **Delete plan** - /admin/v1/plan?plan={PLAN_NAME} [POST]
 
 Delete a specific plan.
 
-- **Change account plan** - /admin/account/v1/change/:externalId?plan={PLAN_NAME} [PATCH]
+- **Change account plan** - /admin/v1/account/change/:externalId?plan={PLAN_NAME} [PATCH]
 
 Change account plan to the one especified.
 
-- **Reset account execution daily limit** - /admin/account/v1/reset/:externalId [PATCH]
+- **Reset account execution daily limit** - /admin/v1/account/reset/:externalId [PATCH]
 
 Reset the number of executions for a specific account.
 

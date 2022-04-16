@@ -84,7 +84,7 @@ class AdminGitHubAuthControllerTests {
 		mockGitHub();
 		
 		//test
-		this.mockMvc.perform(post("/admin/auth/github")
+		this.mockMvc.perform(post("/admin/v1/auth/github")
 				.contentType(MediaType.APPLICATION_JSON)
 				.queryParam("code", "123"))
 		.andDo(print())
@@ -103,7 +103,7 @@ class AdminGitHubAuthControllerTests {
 		mockBackend.enqueue(new MockResponse().setResponseCode(401));
 		
 		//test
-		this.mockMvc.perform(post("/admin/auth/github")
+		this.mockMvc.perform(post("/admin/v1/auth/github")
 				.contentType(MediaType.APPLICATION_JSON)
 				.queryParam("code", "123"))
 		.andDo(print())
@@ -117,7 +117,7 @@ class AdminGitHubAuthControllerTests {
 				HttpURLConnection.HTTP_UNAVAILABLE));
 		
 		//test
-		this.mockMvc.perform(post("/admin/auth/github")
+		this.mockMvc.perform(post("/admin/v1/auth/github")
 				.contentType(MediaType.APPLICATION_JSON)
 				.queryParam("code", "123"))
 		.andDo(print())
@@ -132,7 +132,7 @@ class AdminGitHubAuthControllerTests {
 				.addHeader("Content-Type", "application/json"));
 		
 		//test
-		this.mockMvc.perform(post("/admin/auth/github")
+		this.mockMvc.perform(post("/admin/v1/auth/github")
 				.contentType(MediaType.APPLICATION_JSON)
 				.queryParam("code", "123"))
 		.andDo(print())

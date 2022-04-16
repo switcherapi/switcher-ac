@@ -76,7 +76,7 @@ class AdminPlanControllerTests {
 	
 	@Test
 	void shoutNotDelete_notAuthenticated() throws Exception {
-		this.mockMvc.perform(delete("/admin/plan/v1")
+		this.mockMvc.perform(delete("/admin/v1/plan/v1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
@@ -91,7 +91,7 @@ class AdminPlanControllerTests {
 		String json = gson.toJson(planObj);
 		
 		//test
-		this.mockMvc.perform(post("/admin/plan/v1")
+		this.mockMvc.perform(post("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
@@ -115,7 +115,7 @@ class AdminPlanControllerTests {
 		final Plan old = planService.getPlanByName(PlanType.DEFAULT.name());
 		assertEquals(false, old.getEnableHistory());
 		
-		this.mockMvc.perform(patch("/admin/plan/v1")
+		this.mockMvc.perform(patch("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.content(json)
@@ -138,7 +138,7 @@ class AdminPlanControllerTests {
 		String json = gson.toJson(planObj);
 		
 		//test
-		this.mockMvc.perform(patch("/admin/plan/v1")
+		this.mockMvc.perform(patch("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
@@ -156,7 +156,7 @@ class AdminPlanControllerTests {
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		
-		this.mockMvc.perform(post("/admin/plan/v1")
+		this.mockMvc.perform(post("/admin/v1/plan")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", bearer)
 				.with(csrf())
@@ -167,7 +167,7 @@ class AdminPlanControllerTests {
 		final Plan planBeforeDelete = planService.getPlanByName("DELETE_ME");
 		assertThat(planBeforeDelete).isNotNull();
 		
-		this.mockMvc.perform(delete("/admin/plan/v1")
+		this.mockMvc.perform(delete("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
@@ -183,7 +183,7 @@ class AdminPlanControllerTests {
 	
 	@Test
 	void shouldNotDeletePlan_planCannotBeDeleted() throws Exception {
-		this.mockMvc.perform(delete("/admin/plan/v1")
+		this.mockMvc.perform(delete("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
@@ -200,7 +200,7 @@ class AdminPlanControllerTests {
 		assertThat(plans).isNotNull();
 		
 		//test
-		this.mockMvc.perform(get("/admin/plan/v1/list")
+		this.mockMvc.perform(get("/admin/v1/plan/list")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf()))
@@ -216,7 +216,7 @@ class AdminPlanControllerTests {
 		assertThat(plan).isNotNull();
 		
 		//test
-		this.mockMvc.perform(get("/admin/plan/v1/get")
+		this.mockMvc.perform(get("/admin/v1/plan/get")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
@@ -228,7 +228,7 @@ class AdminPlanControllerTests {
 	
 	@Test
 	void shouldNotGetPlanByName_plaNotFound() throws Exception {
-		this.mockMvc.perform(get("/admin/plan/v1/get")
+		this.mockMvc.perform(get("/admin/v1/plan/get")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
