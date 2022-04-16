@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers(healthChecker).permitAll()
-				.antMatchers("/admin/auth/**").permitAll()
+				.antMatchers("/admin/v1/auth/**").permitAll()
 				.antMatchers("/actuator/**").hasRole("ADMIN")
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/switcher/**").hasRole("SWITCHER")
