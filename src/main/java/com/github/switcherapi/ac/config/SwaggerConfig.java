@@ -1,79 +1,70 @@
 package com.github.switcherapi.ac.config;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.ResponseBuilder;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.SecurityReference;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
-@EnableSwagger2
 public class SwaggerConfig {
 	
-	public static final String AUTHORIZATION_HEADER = "Authorization";
+	private static final String SCHEME_NAME = "bearerScheme";
 	
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-        	.select()
-            .apis(RequestHandlerSelectors.basePackage("com.github.switcherapi.ac.controller"))
-            .paths(PathSelectors.any())
-            .build()
-            .apiInfo(apiInfo())
-            .securityContexts(Arrays.asList(securityContext()))
-            .securitySchemes(Arrays.asList(apiKey()))
-            .useDefaultResponseMessages(false)
-            .globalResponses(HttpMethod.GET, List.of(
-        		new ResponseBuilder().code("500").description("Something went wrong").build(),
-                new ResponseBuilder().code("403") .description("Unauthorized access").build()));
-    }
-    
-    private ApiKey apiKey() { 
-        return new ApiKey("JWT", AUTHORIZATION_HEADER, "header"); 
-    }
+	private static final String SCHEME = "Bearer";
 
-    private ApiInfo apiInfo() {
-    	Contact contact = new Contact(
-    			"Roger Floriano (petruki)", 
-    			"https://github.com/petruki", 
-    			"switcher.project@gmail.com");
-    	
-        return new ApiInfo(
-        		"Switcher AC", 
-        		"Account Controller for Switcher API", 
-        		"1.0.4", 
-        		StringUtils.EMPTY, 
-        		contact, 
-        		"MIT", 
-        		"https://github.com/switcherapi/switcher-ac/blob/master/LICENSE", 
-        		Collections.emptyList());
-    }
-    
-    private SecurityContext securityContext() { 
-        return SecurityContext.builder().securityReferences(defaultAuth()).build(); 
-    } 
+	@Bean
+	public OpenAPI customOpenAPI() {
+		var openApi = new OpenAPI().info(getInfo());
+		addSecurity(openApi);
+		return openApi;
+	}
 
-    private List<SecurityReference> defaultAuth() { 
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything"); 
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1]; 
-        authorizationScopes[0] = authorizationScope; 
-        return List.of(new SecurityReference("JWT", authorizationScopes)); 
-    }
+	private Info getInfo() {
+		return new Info()
+				.title("Switcher AC")
+				.description("Account Controller for Switcher API")
+				.version("v1.0.4")
+				.contact(getContact())
+				.license(getLicense());
+	}
+
+	private License getLicense() {
+		return new License()
+				.name("MIT")
+				.url("https://github.com/switcherapi/switcher-ac/blob/master/LICENSE");
+	}
+	
+	private Contact getContact() {
+		return new Contact()
+				.name("Roger Floriano (petruki)")
+				.email("switcher.project@gmail.com");
+	}
+
+	private void addSecurity(OpenAPI openApi) {
+		var components = createComponents();
+		var securityItem = new SecurityRequirement().addList(SCHEME_NAME);
+
+		openApi.components(components).addSecurityItem(securityItem);
+	}
+
+	private Components createComponents() {
+		var components = new Components();
+		components.addSecuritySchemes(SCHEME_NAME, createSecurityScheme());
+
+		return components;
+	}
+
+	private SecurityScheme createSecurityScheme() {
+		return new SecurityScheme()
+				.name(SCHEME_NAME)
+				.type(SecurityScheme.Type.HTTP)
+				.scheme(SCHEME);
+	}
     
 }

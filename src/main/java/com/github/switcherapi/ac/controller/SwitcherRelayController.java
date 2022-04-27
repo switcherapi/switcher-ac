@@ -14,7 +14,7 @@ import com.github.switcherapi.ac.model.response.ResponseRelay;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("switcher/v1")
@@ -31,7 +31,7 @@ public class SwitcherRelayController {
 		this.validatorFactory = validatorFactory;
 	}
 
-	@ApiOperation(value = "Load new account to Switcher AC")
+	@Operation(summary = "Load new account to Switcher AC")
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseRelay> loadAccount(@RequestBody RequestRelay request) {
 		try {
@@ -42,7 +42,7 @@ public class SwitcherRelayController {
 		}
 	}
 
-	@ApiOperation(value = "Remove existing account from Switcher AC")
+	@Operation(summary = "Remove existing account from Switcher AC")
 	@PostMapping(value = "/remove")
 	public ResponseEntity<ResponseRelay> removeAccount(@RequestBody RequestRelay request) {
 		try {
@@ -53,7 +53,7 @@ public class SwitcherRelayController {
 		}
 	}
 	
-	@ApiOperation(value = "Perform account validation on execution credits")
+	@Operation(summary = "Perform account validation on execution credits")
 	@GetMapping(value = "/execution")
 	public ResponseEntity<ResponseRelay> execution(@RequestParam String value) {
 		try {
@@ -65,7 +65,7 @@ public class SwitcherRelayController {
 		}
 	}
 	
-	@ApiOperation(value = "Perform account validation given input value")
+	@Operation(summary = "Perform account validation given input value")
 	@PostMapping(value = "/validate")
 	public ResponseEntity<Object> validate(@RequestBody RequestRelay request) {
 		try {

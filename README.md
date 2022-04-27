@@ -49,7 +49,7 @@ Verifies if API is online.<br />
 No authorization required.<br /> 
 
 
-- **Swagger Definition** - /v2/api-docs [GET]<br /> 
+- **Swagger Definition** - /v3/api-docs [GET]<br /> 
 Retrieve API swagger definition<br />
 
 

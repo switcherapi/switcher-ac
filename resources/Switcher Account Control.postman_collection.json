@@ -677,6 +677,24 @@
 			"response": []
 		},
 		{
+			"name": "API - docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/v3/api-docs",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v3",
+						"api-docs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "API - actuator",
 			"request": {
 				"auth": {
