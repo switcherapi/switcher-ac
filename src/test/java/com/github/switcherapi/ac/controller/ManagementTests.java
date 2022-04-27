@@ -73,7 +73,7 @@ class ManagementTests {
 	
 	@Test
 	void shouldAccessSwagger() throws Exception {
-		this.mockMvc.perform(get("/v2/api-docs")
+		this.mockMvc.perform(get("/v3/api-docs")
 			.contentType(MediaType.APPLICATION_JSON)
 			.with(csrf()))
 			.andDo(print())
@@ -82,7 +82,7 @@ class ManagementTests {
 	
 	@Test
 	void shouldAccessSwaggerUI() throws Exception {
-		this.mockMvc.perform(get("/swagger-ui/")
+		this.mockMvc.perform(get("/swagger-ui/index.html")
 			.contentType(MediaType.APPLICATION_JSON)
 			.with(csrf()))
 			.andDo(print())
