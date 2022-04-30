@@ -1,5 +1,6 @@
 package com.github.switcherapi.ac.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,7 +28,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.switcherapi.ac.config.SwitcherFeatures;
-import com.github.switcherapi.ac.model.response.GitHubDetailResponse;
+import com.github.switcherapi.ac.model.GitHubDetail;
+import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.GitHubService;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
@@ -84,13 +86,19 @@ class AdminGitHubAuthControllerTests {
 		mockGitHub();
 		
 		//test
-		this.mockMvc.perform(post("/admin/v1/auth/github")
-				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-		.andDo(print())
-		.andExpect(status().isOk())
-		.andExpect(content().string(containsString("admin")))
-		.andExpect(content().string(containsString("token")));
+		var json = this.mockMvc.perform(post("/admin/v1/auth/github")
+			.contentType(MediaType.APPLICATION_JSON)
+			.queryParam("code", "123"))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(content().string(containsString("admin")))
+			.andExpect(content().string(containsString("token")))
+			.andReturn().getResponse().getContentAsString();
+		
+		var authDto = new ObjectMapper().readValue(json, GitHubAuthDTO.class);
+		assertThat(authDto.getAdmin()).isNotNull();
+		assertThat(authDto.getToken()).isNotNull();
+		assertThat(authDto.getRefreshToken()).isNotNull();
 	}
 	
 	@Test
@@ -104,10 +112,10 @@ class AdminGitHubAuthControllerTests {
 		
 		//test
 		this.mockMvc.perform(post("/admin/v1/auth/github")
-				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-		.andDo(print())
-		.andExpect(status().isUnauthorized());
+			.contentType(MediaType.APPLICATION_JSON)
+			.queryParam("code", "123"))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -118,25 +126,25 @@ class AdminGitHubAuthControllerTests {
 		
 		//test
 		this.mockMvc.perform(post("/admin/v1/auth/github")
-				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-		.andDo(print())
-		.andExpect(status().isUnauthorized());
+			.contentType(MediaType.APPLICATION_JSON)
+			.queryParam("code", "123"))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
 	void shouldNotLoginWithGitHub_invalidCode() throws Exception {
 		//given
 		mockBackend.enqueue(new MockResponse()
-				.setBody("{ \"error\": \"Invalid code\" }")
-				.addHeader("Content-Type", "application/json"));
+			.setBody("{ \"error\": \"Invalid code\" }")
+			.addHeader("Content-Type", "application/json"));
 		
 		//test
 		this.mockMvc.perform(post("/admin/v1/auth/github")
-				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-		.andDo(print())
-		.andExpect(status().isUnauthorized());
+			.contentType(MediaType.APPLICATION_JSON)
+			.queryParam("code", "123"))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
@@ -147,18 +155,18 @@ class AdminGitHubAuthControllerTests {
 		
 		//test
 		this.mockMvc.perform(post("/admin/auth/github")
-				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-		.andDo(print())
-		.andExpect(status().isUnauthorized());
+			.contentType(MediaType.APPLICATION_JSON)
+			.queryParam("code", "123"))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
 	}
 	
 	void mockGitHub() throws JsonProcessingException {
 		mockBackend.enqueue(new MockResponse()
-				.setBody("{ \"access_token\": \"123\" }")
-				.addHeader("Content-Type", "application/json"));
+			.setBody("{ \"access_token\": \"123\" }")
+			.addHeader("Content-Type", "application/json"));
 		
-		GitHubDetailResponse githubAccountDetail = new GitHubDetailResponse();
+		GitHubDetail githubAccountDetail = new GitHubDetail();
 		githubAccountDetail.setId("123");
 		githubAccountDetail.setLogin("login");
 		githubAccountDetail.setName("UserName");

@@ -1,21 +1,21 @@
-package com.github.switcherapi.ac.model.response;
+package com.github.switcherapi.ac.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
-public class ResponseRelay {
+public class ResponseRelayDTO {
 	
 	private boolean result;
 	
 	private String message;
 	
-	public ResponseRelay(boolean result, String message) {
+	public ResponseRelayDTO(boolean result, String message) {
 		this.result = result;
 		this.message = message;
 	}
 	
-	public ResponseRelay(boolean result) {
+	public ResponseRelayDTO(boolean result) {
 		this(result, null);
 	}
 	

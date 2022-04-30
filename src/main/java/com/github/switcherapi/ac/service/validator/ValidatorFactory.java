@@ -21,8 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.request.RequestRelay;
-import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 
 @Component
 public class ValidatorFactory {
@@ -68,13 +68,13 @@ public class ValidatorFactory {
         }
     }
     
-    private String getValidatorName(RequestRelay request) {
+    private String getValidatorName(RequestRelayDTO request) {
     	if (request != null && request.getValue() != null)
     		return request.getValue().split(SEPARATOR)[0];
     	return StringUtils.EMPTY;
     }
     
-    public ResponseRelay runValidator(RequestRelay request) {	
+    public ResponseRelayDTO runValidator(RequestRelayDTO request) {	
 		final String validatorName = getValidatorName(request);
 		if (validatorHandlers.containsKey(validatorName)) {
 			final AbstractValidatorService validatorService = validatorHandlers.get(validatorName);

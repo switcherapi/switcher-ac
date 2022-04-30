@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import com.github.switcherapi.ac.model.Account;
+import com.github.switcherapi.ac.model.domain.Account;
 
 @Component
 public class AccountDao {

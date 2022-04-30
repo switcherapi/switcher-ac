@@ -1,29 +1,62 @@
-package com.github.switcherapi.ac.model;
+package com.github.switcherapi.ac.model.domain;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class PlanDTO {
-	
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
+@Document(collection = "plans")
+public class Plan {
+
+	@Id
+	private String id;
+
 	@Indexed(unique = true)
-	protected String name;
-	
-	protected Integer maxDomains;
-	
-	protected Integer maxGroups;
-	
-	protected Integer maxSwitchers;
-	
-	protected Integer maxComponents;
-	
-	protected Integer maxEnvironments;
-	
-	protected Integer maxTeams;
-	
-	protected Integer maxDailyExecution;
-	
-	protected Boolean enableMetrics;
-	
-	protected Boolean enableHistory;
+	private String name;
+
+	private Integer maxDomains;
+
+	private Integer maxGroups;
+
+	private Integer maxSwitchers;
+
+	private Integer maxComponents;
+
+	private Integer maxEnvironments;
+
+	private Integer maxTeams;
+
+	private Integer maxDailyExecution;
+
+	private Boolean enableMetrics;
+
+	private Boolean enableHistory;
+
+	public static Plan loadDefault() {
+		var plan = new Plan();
+		plan.setName(PlanType.DEFAULT.name());
+		plan.setMaxDomains(1);
+		plan.setMaxGroups(2);
+		plan.setMaxSwitchers(3);
+		plan.setMaxEnvironments(2);
+		plan.setMaxComponents(2);
+		plan.setMaxTeams(1);
+		plan.setMaxDailyExecution(100);
+		plan.setEnableHistory(false);
+		plan.setEnableMetrics(false);
+		return plan;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;

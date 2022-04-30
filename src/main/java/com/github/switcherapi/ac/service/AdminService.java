@@ -3,16 +3,14 @@ package com.github.switcherapi.ac.service;
 import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
 import static com.github.switcherapi.client.SwitcherContext.getSwitcher;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.github.switcherapi.ac.config.JwtRequestFilter;
-import com.github.switcherapi.ac.model.Admin;
-import com.github.switcherapi.ac.model.response.GitHubDetailResponse;
+import com.github.switcherapi.ac.model.domain.Admin;
+import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
+import com.github.switcherapi.ac.model.mapper.GitHubAuthMapper;
 import com.github.switcherapi.ac.repository.AdminRepository;
 
 @Service
@@ -24,11 +22,11 @@ public class AdminService {
 	
 	public static final String REFRESH_TOKEN = "refreshToken";
 	
-	private AdminRepository adminRepository;
+	private final AdminRepository adminRepository;
+	
+	private final JwtTokenService jwtService;
 	
 	private GitHubService githubService;
-	
-	private JwtTokenService jwtService;
 	
 	public AdminService(AdminRepository adminRepository, 
 			GitHubService githubService, JwtTokenService jwtService) {
@@ -43,10 +41,9 @@ public class AdminService {
 				.isItOn();
 	}
 	
-	public Map<String, Object> gitHubAuth(String code) {
-		Map<String, Object> response = new HashMap<>();
-		final String gitHubToken = githubService.getToken(code);
-		final GitHubDetailResponse gitHubDetail = githubService.getGitHubDetail(gitHubToken);
+	public GitHubAuthDTO gitHubAuth(String code) {
+		final var gitHubToken = githubService.getToken(code);
+		final var gitHubDetail = githubService.getGitHubDetail(gitHubToken);
 		
 		if (isAvailable(gitHubDetail.getId())) {
 			var admin = adminRepository.findByGitHubId(gitHubDetail.getId());
@@ -57,11 +54,7 @@ public class AdminService {
 			final String[] tokens = jwtService.generateToken(admin.getId());
 			updateAdminAccountToken(admin, tokens[0]);
 			
-			response.put(ADMIN, admin);
-			response.put(TOKEN, tokens[0]);
-			response.put(REFRESH_TOKEN, tokens[1]);
-			
-			return response;
+			return GitHubAuthMapper.createCopy(admin, tokens);
 		}
 		
 		throw new ResponseStatusException(
@@ -93,21 +86,16 @@ public class AdminService {
 		adminRepository.save(admin);
 	}
 	
-	public Map<String, Object> refreshToken(String token, String refreshToken) {
+	public GitHubAuthDTO refreshToken(String token, String refreshToken) {
 		if (token != null && token.startsWith(JwtRequestFilter.BEARER)) {
 			token = token.substring(7);
 			
-			Map<String, Object> response = new HashMap<>();
 			var admin = adminRepository.findByToken(token);
-			
 			if (admin != null) {
 				String[] tokens = jwtService.refreshToken(admin.getId(), token, refreshToken);
 				if (tokens.length == 2) {
 					updateAdminAccountToken(admin, tokens[0]);
-					
-					response.put(TOKEN, tokens[0]);
-					response.put(REFRESH_TOKEN, tokens[1]);
-					return response;
+					return GitHubAuthMapper.createCopy(admin, tokens);
 				}
 			}
 		}

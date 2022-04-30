@@ -5,16 +5,16 @@ import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParam
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.Account;
-import com.github.switcherapi.ac.model.request.RequestRelay;
-import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.model.domain.Account;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 
 public abstract class AbstractActiveCheckValidator extends AbstractValidatorService {
 	
 	@Override
-	public void validateRequest(RequestRelay request) {
+	public void validateRequest(RequestRelayDTO request) {
 		final String[] args = request.getValue().split(ValidatorFactory.SEPARATOR);
 		
 		try {
@@ -25,6 +25,6 @@ public abstract class AbstractActiveCheckValidator extends AbstractValidatorServ
 		}
 	}
 	
-	protected abstract ResponseRelay executeValidator(final Account account);
+	protected abstract ResponseRelayDTO executeValidator(final Account account);
 
 }

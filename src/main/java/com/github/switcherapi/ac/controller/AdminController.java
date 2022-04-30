@@ -1,7 +1,6 @@
 package com.github.switcherapi.ac.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,9 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.switcherapi.ac.model.Account;
-import com.github.switcherapi.ac.model.Plan;
-import com.github.switcherapi.ac.model.PlanDTO;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.dto.AccountDTO;
+import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
+import com.github.switcherapi.ac.model.dto.PlanDTO;
+import com.github.switcherapi.ac.model.mapper.AccountMapper;
+import com.github.switcherapi.ac.model.mapper.DefaultMapper;
+import com.github.switcherapi.ac.model.mapper.PlanMapper;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.PlanService;
@@ -45,13 +48,13 @@ public class AdminController {
 
 	@Operation(summary = "Authenticate using GitHub credentials")
 	@PostMapping(value = "/auth/github")
-	public ResponseEntity<Map<String, Object>> gitHubAuth(@RequestParam String code) {
+	public ResponseEntity<GitHubAuthDTO> gitHubAuth(@RequestParam String code) {
 		return ResponseEntity.ok(adminService.gitHubAuth(code));
 	}
 	
 	@Operation(summary = "Update JWT using your refresh token")
 	@PostMapping(value = "/auth/refresh")
-	public ResponseEntity<Map<String, Object>> gitHubRefreshAuth(
+	public ResponseEntity<GitHubAuthDTO> gitHubRefreshAuth(
 			@RequestHeader("Authorization") String token, @RequestParam String refreshToken) {
 		return ResponseEntity.ok(adminService.refreshToken(token, refreshToken));
 	}
@@ -64,27 +67,31 @@ public class AdminController {
 	
 	@Operation(summary = "Update account plan with another plan")
 	@PatchMapping(value = "/account/change/{adminId}")
-	public ResponseEntity<Account> changeAccountPlan(@PathVariable(value="adminId") 
+	public ResponseEntity<AccountDTO> changeAccountPlan(@PathVariable(value="adminId") 
 		String adminId, @RequestParam String plan) {
-		return ResponseEntity.ok(accountService.createAccount(adminId, plan));
+		final var account = accountService.createAccount(adminId, plan);
+		return ResponseEntity.ok(AccountMapper.createCopy(account));
 	}
 	
 	@Operation(summary = "Reset execution credits")
 	@PatchMapping(value = "/account/reset/{adminId}")
-	public ResponseEntity<Account> changeAccountPlan(@PathVariable(value="adminId") String adminId) {
-		return ResponseEntity.ok(accountService.resetDailyExecution(adminId));
+	public ResponseEntity<AccountDTO> changeAccountPlan(@PathVariable(value="adminId") String adminId) {
+		final var account = accountService.resetDailyExecution(adminId);
+		return ResponseEntity.ok(AccountMapper.createCopy(account));
 	}
 	
 	@Operation(summary = "Create a new plan")
 	@PostMapping(value = "/plan")
-	public ResponseEntity<Plan> createPlan(@RequestBody PlanDTO plan) {
-		return ResponseEntity.ok(planService.createPlan(plan));
+	public ResponseEntity<PlanDTO> createPlan(@RequestBody PlanDTO planRequest) {
+		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.createPlan(plan), PlanDTO.class));
 	}
 	
 	@Operation(summary = "Update existing plan")
 	@PatchMapping(value = "/plan")
-	public ResponseEntity<Plan> updatePlan(@RequestBody PlanDTO plan) {
-		return ResponseEntity.ok(planService.updatePlan(plan.getName(), plan));
+	public ResponseEntity<PlanDTO> updatePlan(@RequestBody PlanDTO planRequest) {
+		final var plan = DefaultMapper.createCopy(planRequest, Plan.class); 
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.updatePlan(plan.getName(), plan), PlanDTO.class));
 	}
 	
 	@Operation(summary = "Delete existing plan")
@@ -96,13 +103,13 @@ public class AdminController {
 	
 	@Operation(summary = "List available plans")
 	@GetMapping(value = "/plan/list")
-	public ResponseEntity<List<Plan>> listPlans() {
-		return ResponseEntity.ok(planService.listAll());
+	public ResponseEntity<List<PlanDTO>> listPlans() {
+		return ResponseEntity.ok(PlanMapper.createCopy(planService.listAll()));
 	}
 	
 	@Operation(summary = "Return one plan")
 	@GetMapping(value = "/plan/get")
-	public ResponseEntity<Plan> listPlans(@RequestParam String plan) {
-		return ResponseEntity.ok(planService.getPlanByName(plan));
+	public ResponseEntity<PlanDTO> listPlans(@RequestParam String plan) {
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.getPlanByName(plan), PlanDTO.class));
 	}
 }
