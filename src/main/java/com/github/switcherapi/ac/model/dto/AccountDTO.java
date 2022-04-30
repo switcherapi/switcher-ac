@@ -1,29 +1,20 @@
-package com.github.switcherapi.ac.model;
+package com.github.switcherapi.ac.model.dto;
 
 import java.util.Date;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
-@Document(collection = "accounts")
-public class Account {
+public class AccountDTO {
 	
-	@Id
 	private String id;
 	
-	@Indexed(unique = true)
 	private String adminId;
 	
-	@DBRef
-	private Plan plan;
+	private PlanDTO plan;
 	
-	private Date lastReset = new Date();
+	private Date lastReset;
 	
 	private int currentDailyExecution;
 
@@ -43,11 +34,11 @@ public class Account {
 		this.adminId = adminId;
 	}
 
-	public Plan getPlan() {
+	public PlanDTO getPlan() {
 		return plan;
 	}
 
-	public void setPlan(Plan plan) {
+	public void setPlan(PlanDTO plan) {
 		this.plan = plan;
 	}
 	

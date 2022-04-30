@@ -20,8 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.Plan;
-import com.github.switcherapi.ac.model.PlanDTO;
+import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.service.PlanService;
 import com.google.gson.Gson;
 
@@ -47,11 +46,11 @@ class MockAdminPlanControllerTests {
 	@Test
 	void shouldNotCreateNewPlan() throws Exception {
 		//mock
-        Mockito.when(mockPlanService.createPlan(Mockito.any(PlanDTO.class)))
+        Mockito.when(mockPlanService.createPlan(Mockito.any(Plan.class)))
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
 		//given
-        PlanDTO planObj = Plan.loadDefault();
+        Plan planObj = Plan.loadDefault();
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		

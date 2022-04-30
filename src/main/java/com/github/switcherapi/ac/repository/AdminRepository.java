@@ -2,7 +2,7 @@ package com.github.switcherapi.ac.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.github.switcherapi.ac.model.Admin;
+import com.github.switcherapi.ac.model.domain.Admin;
 
 public interface AdminRepository extends MongoRepository<Admin, String> {
 	

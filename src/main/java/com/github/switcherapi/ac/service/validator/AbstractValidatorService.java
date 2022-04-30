@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.Account;
-import com.github.switcherapi.ac.model.request.RequestRelay;
-import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.model.domain.Account;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
 
 @Component
@@ -29,7 +29,7 @@ public abstract class AbstractValidatorService {
 	/**
 	 * Executes validator by validating the request and then calling the validator service
 	 */
-	public ResponseRelay execute(RequestRelay request) {
+	public ResponseRelayDTO execute(RequestRelayDTO request) {
 		params = new EnumMap<>(SwitcherValidatorParams.class);
 		validateRequest(request);
 		return executeValidator();
@@ -52,7 +52,7 @@ public abstract class AbstractValidatorService {
 	 * Default request validation.
 	 * It adds ADMINID and TOTAL params to the validator input
 	 */
-	protected void validateRequest(RequestRelay request) {
+	protected void validateRequest(RequestRelayDTO request) {
 		final String[] args = request.getValue().split(ValidatorFactory.SEPARATOR);
 		
 		try {
@@ -68,7 +68,7 @@ public abstract class AbstractValidatorService {
 	/**
 	 * Default validator handler
 	 */
-	protected ResponseRelay executeValidator() {
+	protected ResponseRelayDTO executeValidator() {
 		final var account = accountDao.findByAdminId(
 				getParam(ADMINID, String.class));
 		
@@ -82,6 +82,6 @@ public abstract class AbstractValidatorService {
 	/**
 	 * Executes validator bean
 	 */
-	protected abstract ResponseRelay executeValidator(final Account account);
+	protected abstract ResponseRelayDTO executeValidator(final Account account);
 
 }

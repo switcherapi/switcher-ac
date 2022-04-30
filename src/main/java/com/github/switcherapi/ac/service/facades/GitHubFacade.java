@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.response.GitHubDetailResponse;
+import com.github.switcherapi.ac.model.GitHubDetail;
 
 @Component
 public class GitHubFacade {
@@ -77,7 +77,7 @@ public class GitHubFacade {
 		}
 	}
 	
-	public GitHubDetailResponse getGitHubDetail(String token) {
+	public GitHubDetail getGitHubDetail(String token) {
 		final WebTarget myResource = client.target(gitUrlDetail);
 		final var response = myResource
 			.request(MediaType.APPLICATION_JSON)
@@ -86,7 +86,7 @@ public class GitHubFacade {
 			.get();
 		
 		if (response.getStatus() == 200)
-			return response.readEntity(GitHubDetailResponse.class);
+			return response.readEntity(GitHubDetail.class);
 		return null;
 	}
 

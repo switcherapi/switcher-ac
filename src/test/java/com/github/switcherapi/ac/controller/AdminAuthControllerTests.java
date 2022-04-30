@@ -6,6 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.github.switcherapi.ac.model.Admin;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.switcherapi.ac.model.domain.Admin;
+import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.repository.AdminRepository;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
@@ -48,13 +53,22 @@ class AdminAuthControllerTests {
 	
 	@Test
 	void shouldRefreshToken() throws Exception {
-		this.mockMvc.perform(post("/admin/v1/auth/refresh")
+		CountDownLatch count = new CountDownLatch(1);
+		count.await(1, TimeUnit.SECONDS);
+		
+		var json = this.mockMvc.perform(post("/admin/v1/auth/refresh")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", "Bearer " + tokens[0])
 			.with(csrf())
 			.queryParam("refreshToken", tokens[1]))
 			.andDo(print())
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andReturn().getResponse().getContentAsString();
+		
+		var authDto = new ObjectMapper().readValue(json, GitHubAuthDTO.class);
+		assertThat(authDto.getAdmin().getGitHubId()).isEqualTo("123456");
+		assertThat(authDto.getToken()).isNotEqualTo(tokens[0]);
+		assertThat(authDto.getRefreshToken()).isNotEqualTo(tokens[1]);
 	}
 	
 	@Test

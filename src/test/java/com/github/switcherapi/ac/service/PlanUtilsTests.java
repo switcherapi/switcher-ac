@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import com.github.switcherapi.ac.model.Plan;
-import com.github.switcherapi.ac.model.PlanDTO;
-import com.github.switcherapi.ac.model.PlanType;
-import com.github.switcherapi.ac.service.util.PlanUtils;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.dto.PlanDTO;
+import com.github.switcherapi.ac.model.mapper.DefaultMapper;
 
 class PlanUtilsTests {
 	
@@ -30,7 +30,7 @@ class PlanUtilsTests {
 		from.setMaxDomains(2);
 		
 		//test
-		PlanUtils.loadAttributes(from, to);
+		DefaultMapper.copyProperties(from, to);
 		assertThat(to.getMaxDomains()).isEqualTo(2);
 		assertThat(to.getEnableHistory()).isFalse();
 	}
@@ -38,11 +38,11 @@ class PlanUtilsTests {
 	@Test
 	void shouldPopulatePlan() {
 		//given
-		final PlanDTO from = Plan.loadDefault();
+		final Plan from = Plan.loadDefault();
 		Plan to = new Plan();
 		
 		//test
-		PlanUtils.loadAttributes(from, to);
+		DefaultMapper.copyProperties(from, to);
 		assertThat(from.getName()).isEqualTo(to.getName());
 		assertThat(from.getMaxDomains()).isEqualTo(to.getMaxDomains());
 		assertThat(from.getEnableHistory()).isEqualTo(to.getEnableHistory());

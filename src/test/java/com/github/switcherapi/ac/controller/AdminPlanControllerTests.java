@@ -26,10 +26,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.Admin;
-import com.github.switcherapi.ac.model.Plan;
-import com.github.switcherapi.ac.model.PlanDTO;
-import com.github.switcherapi.ac.model.PlanType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.switcherapi.ac.model.domain.Admin;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.dto.PlanDTO;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.ac.service.PlanService;
@@ -55,6 +58,21 @@ class AdminPlanControllerTests {
 	private String bearer;
 	
 	private static Admin admin;
+	
+	private void assertDtoResponse(Plan planObj, String response)
+			throws JsonProcessingException, JsonMappingException {
+		var planDto = new ObjectMapper().readValue(response, PlanDTO.class);
+		assertThat(planDto.getName()).isEqualTo(planObj.getName());
+		assertThat(planDto.getEnableHistory()).isEqualTo(planObj.getEnableHistory());
+		assertThat(planDto.getEnableMetrics()).isEqualTo(planObj.getEnableMetrics());
+		assertThat(planDto.getMaxComponents()).isEqualTo(planObj.getMaxComponents());
+		assertThat(planDto.getMaxDailyExecution()).isEqualTo(planObj.getMaxDailyExecution());
+		assertThat(planDto.getMaxDomains()).isEqualTo(planObj.getMaxDomains());
+		assertThat(planDto.getMaxEnvironments()).isEqualTo(planObj.getMaxEnvironments());
+		assertThat(planDto.getMaxGroups()).isEqualTo(planObj.getMaxGroups());
+		assertThat(planDto.getMaxSwitchers()).isEqualTo(planObj.getMaxSwitchers());
+		assertThat(planDto.getMaxTeams()).isEqualTo(planObj.getMaxTeams());
+	}
 	
 	@BeforeAll
 	static void setup(@Autowired AdminService adminService) {
@@ -86,25 +104,28 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldCreateNewPlan() throws Exception {
 		//given
-		PlanDTO planObj = Plan.loadDefault();
+		Plan planObj = Plan.loadDefault();
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		
 		//test
-		this.mockMvc.perform(post("/admin/v1/plan")
+		var response = this.mockMvc.perform(post("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
 			.content(json))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(PlanType.DEFAULT.name())));
+			.andExpect(content().string(containsString(PlanType.DEFAULT.name())))
+			.andReturn().getResponse().getContentAsString();
+		
+		assertDtoResponse(planObj, response);
 	}
 	
 	@Test
 	void shouldUpdatePlan() throws Exception {
 		//given
-		PlanDTO planObj = Plan.loadDefault();
+		Plan planObj = Plan.loadDefault();
 		planObj.setName(PlanType.DEFAULT.name());
 		planObj.setEnableHistory(true);
 		
@@ -115,15 +136,17 @@ class AdminPlanControllerTests {
 		final Plan old = planService.getPlanByName(PlanType.DEFAULT.name());
 		assertEquals(false, old.getEnableHistory());
 		
-		this.mockMvc.perform(patch("/admin/v1/plan")
+		var response = this.mockMvc.perform(patch("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.content(json)
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(PlanType.DEFAULT.name())));
+			.andExpect(content().string(containsString(PlanType.DEFAULT.name())))
+			.andReturn().getResponse().getContentAsString();
 		
+		assertDtoResponse(planObj, response);
 		final Plan planUpdated = planService.getPlanByName(PlanType.DEFAULT.name());
 		assertEquals(true, planUpdated.getEnableHistory());
 	}
@@ -131,7 +154,7 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldNotUpdatePlan_planNotFound() throws Exception {
 		//given
-		PlanDTO planObj = Plan.loadDefault();
+		Plan planObj = Plan.loadDefault();
 		planObj.setName("NOT_FOUND");
 		
 		Gson gson = new Gson();
@@ -150,7 +173,7 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldDeletePlan() throws Exception {
 		//given
-		final PlanDTO planObj = Plan.loadDefault();
+		final Plan planObj = Plan.loadDefault();
 		planObj.setName("DELETE_ME");
 		
 		Gson gson = new Gson();
@@ -216,14 +239,17 @@ class AdminPlanControllerTests {
 		assertThat(plan).isNotNull();
 		
 		//test
-		this.mockMvc.perform(get("/admin/v1/plan/get")
+		var response = this.mockMvc.perform(get("/admin/v1/plan/get")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
 			.queryParam("plan", PlanType.DEFAULT.name()))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(content().string(containsString(PlanType.DEFAULT.name())));
+			.andExpect(content().string(containsString(PlanType.DEFAULT.name())))
+			.andReturn().getResponse().getContentAsString();
+		
+		assertDtoResponse(plan, response);
 	}
 	
 	@Test

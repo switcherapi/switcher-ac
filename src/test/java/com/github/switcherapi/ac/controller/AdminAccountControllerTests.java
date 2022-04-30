@@ -16,13 +16,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-import com.github.switcherapi.ac.model.Account;
-import com.github.switcherapi.ac.model.Admin;
-import com.github.switcherapi.ac.model.Plan;
-import com.github.switcherapi.ac.model.PlanDTO;
-import com.github.switcherapi.ac.model.PlanType;
-import com.github.switcherapi.ac.model.request.RequestRelay;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.switcherapi.ac.model.domain.Account;
+import com.github.switcherapi.ac.model.domain.Admin;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.dto.AccountDTO;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
@@ -61,7 +63,7 @@ class AdminAccountControllerTests {
 			@Autowired AccountService accountService,
 			@Autowired AdminService adminService,
 			@Autowired PlanService planService) {
-		final PlanDTO plan1 = Plan.loadDefault();
+		final Plan plan1 = Plan.loadDefault();
 		planService.createPlan(plan1);
 		
 		accountService.createAccount("mock_account1");
@@ -70,7 +72,7 @@ class AdminAccountControllerTests {
 	
 	@BeforeEach
 	void setup() {
-		final PlanDTO plan2 = Plan.loadDefault();
+		final Plan plan2 = Plan.loadDefault();
 		plan2.setName("BASIC");
 		planService.createPlan(plan2);
 		
@@ -92,13 +94,18 @@ class AdminAccountControllerTests {
 		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
 		
 		//test
-		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
+		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header("Authorization", bearer)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andDo(print())
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andReturn().getResponse().getContentAsString();
+		
+		var accountDto = new ObjectMapper().readValue(json, AccountDTO.class);
+		assertThat(accountDto.getAdminId()).isEqualTo("mock_account1");
+		assertThat(accountDto.getPlan().getName()).isEqualTo("BASIC");
 		
 		account = accountService.getAccountByAdminId("mock_account1");
 		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
@@ -118,7 +125,8 @@ class AdminAccountControllerTests {
 			.header("Authorization", bearer)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
-			.andExpect(status().isOk());
+			.andExpect(status().isOk())
+			.andExpect(content().string("Plan deleted"));
 		
 		account = accountService.getAccountByAdminId("mock_account1");
 		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
@@ -149,7 +157,7 @@ class AdminAccountControllerTests {
 	@Test
 	void shouldResetDailyExecution() throws Exception {
 		//given
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		request.setValue("execution#mock_account1");
 		validatorFactory.runValidator(request);
 		

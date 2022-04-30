@@ -23,11 +23,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.github.switcherapi.ac.model.Plan;
-import com.github.switcherapi.ac.model.PlanDTO;
-import com.github.switcherapi.ac.model.PlanType;
-import com.github.switcherapi.ac.model.request.RequestRelay;
-import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
 import com.google.gson.Gson;
@@ -49,9 +48,9 @@ class SwitcherRelayControllerTests {
 	private final Gson GSON = new Gson();
 	
 	private void executeTestValidate(String adminId, String featureName, 
-			String value, ResponseRelay expectedResponse, int expectedStatus) throws Exception {
+			String value, ResponseRelayDTO expectedResponse, int expectedStatus) throws Exception {
 		//given
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		request.setValue(String.format("%s#%s", featureName, adminId));
 		
 		if (value != null)
@@ -71,7 +70,7 @@ class SwitcherRelayControllerTests {
 			.andExpect(content().string(containsString(jsonResponse)));
 	}
 	
-	private void executeTestExecution(String value, ResponseRelay expectedResponse, 
+	private void executeTestExecution(String value, ResponseRelayDTO expectedResponse, 
 			int expectedStatus) throws Exception {
 		//given
 		String jsonResponse = GSON.toJson(expectedResponse);
@@ -104,11 +103,11 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldCreateAccount() throws Exception {
 		//given
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		request.setValue("adminid");
 		String jsonRequest = GSON.toJson(request);
 		
-		ResponseRelay response = new ResponseRelay(true);
+		ResponseRelayDTO response = new ResponseRelayDTO(true);
 		String jsonResponse = GSON.toJson(response);
 		
 		//test
@@ -127,12 +126,12 @@ class SwitcherRelayControllerTests {
 		//given
 		accountService.createAccount("adminid");
 		
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		request.setValue("adminid");
 		
 		String jsonRequest = GSON.toJson(request);
 		
-		ResponseRelay response = new ResponseRelay(true);
+		ResponseRelayDTO response = new ResponseRelayDTO(true);
 		String jsonResponse = GSON.toJson(response);
 		
 		//test
@@ -149,11 +148,11 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotRemoveAccount_accountNotFound() throws Exception {
 		//given
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		request.setValue("NOT_FOUND");
 		String jsonRequest = GSON.toJson(request);
 		
-		ResponseRelay response = new ResponseRelay(false, "404 NOT_FOUND \"Unable to find account NOT_FOUND\"");
+		ResponseRelayDTO response = new ResponseRelayDTO(false, "404 NOT_FOUND \"Unable to find account NOT_FOUND\"");
 		String jsonResponse = GSON.toJson(response);
 		
 		//test
@@ -171,7 +170,7 @@ class SwitcherRelayControllerTests {
 	void shouldBeOkWhenValidate_execution() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(true);
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 		
 		//test
 		this.executeTestExecution("adminid", expectedResponse, 200);
@@ -181,10 +180,10 @@ class SwitcherRelayControllerTests {
 	void shouldNotBeOkWhenValidate_execution() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		PlanDTO plan = Plan.loadDefault();
+		Plan plan = Plan.loadDefault();
 		plan.setMaxDailyExecution(0);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelay expectedResponse = new ResponseRelay(false, "Daily execution limit has been reached");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "Daily execution limit has been reached");
 
 		//test
 		this.executeTestExecution("adminid", expectedResponse, 200);
@@ -193,7 +192,7 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_execution_accountNotFound() throws Exception {
 		//given
-		ResponseRelay expectedResponse = new ResponseRelay(false, "404 NOT_FOUND \"Account not found\"");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
 		
 		//test
 		this.executeTestExecution("NOT_FOUND", expectedResponse, 404);
@@ -203,13 +202,13 @@ class SwitcherRelayControllerTests {
 	void shouldBeOkWhenValidate_unlimitedUseFeature() throws Exception {
 		//given
 		accountService.createAccount("masteradminid");
-		PlanDTO plan = Plan.loadDefault();
+		Plan plan = Plan.loadDefault();
 		plan.setMaxSwitchers(-1);
 		plan.setName("ILIMITED");
 		planService.createPlan(plan);
 		accountService.updateAccountPlan("masteradminid", "ILIMITED");
 		
-		ResponseRelay expectedResponse = new ResponseRelay(true);
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 		
 		//test
 		this.executeTestValidate("masteradminid", "switcher", "10000", expectedResponse, 200);
@@ -231,7 +230,7 @@ class SwitcherRelayControllerTests {
 	void shouldBeOkWhenValidate(String validator, int total) throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(true);
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 
 		//test
 		this.executeTestValidate(
@@ -254,7 +253,7 @@ class SwitcherRelayControllerTests {
 	void shouldNotBeOkWhenValidate(String validator, int total, String message) throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		ResponseRelay expectedResponse = new ResponseRelay(false, message);
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, message);
 
 		//test
 		this.executeTestValidate(
@@ -266,10 +265,10 @@ class SwitcherRelayControllerTests {
 	void shouldBeOkWhenValidate_metric() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		PlanDTO plan = Plan.loadDefault();
+		Plan plan = Plan.loadDefault();
 		plan.setEnableMetrics(true);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelay expectedResponse = new ResponseRelay(true);
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 
 		//test
 		this.executeTestValidate("adminid", "metrics", null, expectedResponse, 200);
@@ -279,10 +278,10 @@ class SwitcherRelayControllerTests {
 	void shouldNotBeOkWhenValidate_metric() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		PlanDTO plan = Plan.loadDefault();
+		Plan plan = Plan.loadDefault();
 		plan.setEnableMetrics(false);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelay expectedResponse = new ResponseRelay(false, "Metrics is not available");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "Metrics is not available");
 		
 		//test
 		this.executeTestValidate("adminid", "metrics", null, expectedResponse, 200);
@@ -292,10 +291,10 @@ class SwitcherRelayControllerTests {
 	void shouldBeOkWhenValidate_history() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		PlanDTO plan = Plan.loadDefault();
+		Plan plan = Plan.loadDefault();
 		plan.setEnableHistory(true);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelay expectedResponse = new ResponseRelay(true);
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 
 		//test
 		this.executeTestValidate("adminid", "history", null, expectedResponse, 200);
@@ -305,10 +304,10 @@ class SwitcherRelayControllerTests {
 	void shouldNotBeOkWhenValidate_history() throws Exception {
 		//given
 		accountService.createAccount("adminid");
-		PlanDTO plan = Plan.loadDefault();
+		Plan plan = Plan.loadDefault();
 		plan.setEnableHistory(false);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelay expectedResponse = new ResponseRelay(false, "History is not available");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "History is not available");
 		
 		//test
 		this.executeTestValidate("adminid", "history", null, expectedResponse, 200);
@@ -317,7 +316,7 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_accountNotFound() throws Exception {
 		//given
-		ResponseRelay expectedResponse = new ResponseRelay(false, "404 NOT_FOUND \"Account not found\"");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
 		final String[] features = {
 				"domain", "group", "switcher", "component",
 				"environment", "team", "metrics", "history"
@@ -336,7 +335,7 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_invalidFeatureName() throws Exception {
 		//given
-		ResponseRelay expectedResponse = new ResponseRelay(false, "400 BAD_REQUEST \"Invalid validator: INVALID_FEATURE\"");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "400 BAD_REQUEST \"Invalid validator: INVALID_FEATURE\"");
 		
 		//test
 		this.executeTestValidate("adminid", "INVALID_FEATURE", "0", expectedResponse, 400);

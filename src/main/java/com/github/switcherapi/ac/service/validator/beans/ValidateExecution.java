@@ -5,15 +5,15 @@ import java.util.Date;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
-import com.github.switcherapi.ac.model.Account;
-import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.model.domain.Account;
+import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 
 @SwitcherValidator("execution")
 public class ValidateExecution extends AbstractActiveCheckValidator {
 	
 	@Override
-	protected ResponseRelay executeValidator(final Account account) {
+	protected ResponseRelayDTO executeValidator(final Account account) {
 		final var dateTime = new DateTime(new Date());
 		final var lastReset = new DateTime(account.getLastReset());
 		final int days = Days.daysBetween(lastReset, dateTime).getDays();
@@ -27,10 +27,10 @@ public class ValidateExecution extends AbstractActiveCheckValidator {
 			account.setCurrentDailyExecution(account.getCurrentDailyExecution() + 1);
 			accountDao.getAccountRepository().save(account);				
 		} else {
-			return new ResponseRelay(false, "Daily execution limit has been reached");
+			return new ResponseRelayDTO(false, "Daily execution limit has been reached");
 		}
 		
-		return new ResponseRelay(true);
+		return new ResponseRelayDTO(true);
 	}
 
 }
