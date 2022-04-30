@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.request.RequestRelay;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 
 @SpringBootTest
@@ -24,7 +24,7 @@ class ValidatorFactoryTest {
 	
 	@Test
 	void shouldThrowError_requestIsEmpty() {
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		assertThrows(ResponseStatusException.class, () -> {
 			validatorFactory.runValidator(request);
 		});
@@ -32,7 +32,7 @@ class ValidatorFactoryTest {
 	
 	@Test
 	void shouldThrowError_missingParameter() {
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		request.setValue("domain#adminid");
 		
 		assertThrows(ResponseStatusException.class, () -> {
@@ -52,7 +52,7 @@ class ValidatorFactoryTest {
 			"team"
 	}) 
 	void shouldThrowError_missingAdminId(String validatorName) {
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		request.setValue(validatorName);
 		request.setNumeric("0");
 		
@@ -75,7 +75,7 @@ class ValidatorFactoryTest {
 	void shouldNotThrowError(String validatorName) {
 		accountService.createAccount("adminid");
 		
-		RequestRelay request = new RequestRelay();
+		RequestRelayDTO request = new RequestRelayDTO();
 		request.setValue(validatorName);
 		request.setNumeric("0");
 		

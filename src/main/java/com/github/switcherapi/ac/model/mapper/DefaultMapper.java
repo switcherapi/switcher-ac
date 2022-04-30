@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.service.util;
+package com.github.switcherapi.ac.model.mapper;
 
 import java.beans.FeatureDescriptor;
 import java.util.Arrays;
@@ -7,15 +7,22 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
-import com.github.switcherapi.ac.model.Plan;
-import com.github.switcherapi.ac.model.PlanDTO;
-
-public class PlanUtils {
+public class DefaultMapper {
 	
-	private PlanUtils() {}
+	private DefaultMapper() {}
 	
-	public static void loadAttributes(PlanDTO from, Plan to) {
+	public static <T, Y> void copyProperties(T from, Y to) {
 		BeanUtils.copyProperties(from, to, getNullPropertyNames(from));
+	}
+	
+	public static <T, Y> Y createCopy(T from, Class<Y> clazz) {
+		try {
+			var to = clazz.getDeclaredConstructor().newInstance();
+			BeanUtils.copyProperties(from, to, getNullPropertyNames(from));
+			return to;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	public static String[] getNullPropertyNames(Object source) {
@@ -25,4 +32,5 @@ public class PlanUtils {
 	    	.filter(nullable -> src.getPropertyValue(nullable) == null)
 	    	.toArray(String[]::new);
 	}
+
 }

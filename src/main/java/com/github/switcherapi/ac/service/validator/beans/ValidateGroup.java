@@ -2,8 +2,8 @@ package com.github.switcherapi.ac.service.validator.beans;
 
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.TOTAL;
 
-import com.github.switcherapi.ac.model.Account;
-import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.model.domain.Account;
+import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
 import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 
@@ -11,13 +11,13 @@ import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 public class ValidateGroup extends AbstractValidatorService {
 
 	@Override
-	protected ResponseRelay executeValidator(final Account account) {
+	protected ResponseRelayDTO executeValidator(final Account account) {
 		if (validate(account.getPlan().getMaxGroups(), 
 				getParam(TOTAL, Integer.class))) {
-			return new ResponseRelay(false, "Group limit has been reached");
+			return new ResponseRelayDTO(false, "Group limit has been reached");
 		}
 		
-		return new ResponseRelay(true);
+		return new ResponseRelayDTO(true);
 	}
 
 }

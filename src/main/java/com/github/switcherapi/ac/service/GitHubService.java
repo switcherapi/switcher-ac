@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.response.GitHubDetailResponse;
+import com.github.switcherapi.ac.model.GitHubDetail;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
 
 @Service
@@ -24,8 +24,8 @@ public class GitHubService {
 		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, GitHubFacade.INVALID_ACCOUNT);
 	}
 	
-	public GitHubDetailResponse getGitHubDetail(String token) {
-		final GitHubDetailResponse response = githubFacade.getGitHubDetail(token);
+	public GitHubDetail getGitHubDetail(String token) {
+		final GitHubDetail response = githubFacade.getGitHubDetail(token);
 		if (response != null)
 			return response;
 			

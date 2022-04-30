@@ -7,11 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.Plan;
-import com.github.switcherapi.ac.model.PlanDTO;
-import com.github.switcherapi.ac.model.PlanType;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.mapper.DefaultMapper;
 import com.github.switcherapi.ac.repository.PlanDao;
-import com.github.switcherapi.ac.service.util.PlanUtils;
 
 @Service
 public class PlanService {
@@ -30,17 +29,17 @@ public class PlanService {
 		this.accountService = accountService;
 	}
 
-	public Plan createPlan(PlanDTO plan) {
+	public Plan createPlan(Plan plan) {
 		var newPlan = planDao.findByName(plan.getName());
 		newPlan = newPlan != null ? newPlan : new Plan();
 		
-		PlanUtils.loadAttributes(plan, newPlan);
+		DefaultMapper.copyProperties(plan, newPlan);
 		return planDao.getPlanRepository().save(newPlan);
 	}
 	
-	public Plan updatePlan(String planName, PlanDTO plan) {
+	public Plan updatePlan(String planName, Plan plan) {
 		var planFound = getPlanByName(planName);
-		PlanUtils.loadAttributes(plan, planFound);
+		DefaultMapper.copyProperties(plan, planFound);
 		planDao.getPlanRepository().save(planFound);
 		
 		return planFound;

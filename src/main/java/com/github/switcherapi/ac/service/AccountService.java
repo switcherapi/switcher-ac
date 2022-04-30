@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.Account;
-import com.github.switcherapi.ac.model.PlanType;
+import com.github.switcherapi.ac.model.domain.Account;
+import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
 

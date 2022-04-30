@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.request.RequestRelay;
-import com.github.switcherapi.ac.model.response.ResponseRelay;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 
@@ -33,45 +33,45 @@ public class SwitcherRelayController {
 
 	@Operation(summary = "Load new account to Switcher AC")
 	@PostMapping(value = "/create")
-	public ResponseEntity<ResponseRelay> loadAccount(@RequestBody RequestRelay request) {
+	public ResponseEntity<ResponseRelayDTO> loadAccount(@RequestBody RequestRelayDTO request) {
 		try {
 			accountService.createAccount(request.getValue());
-			return ResponseEntity.ok(new ResponseRelay(true));
+			return ResponseEntity.ok(new ResponseRelayDTO(true));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body(new ResponseRelay(false, e.getMessage()));
+			return ResponseEntity.status(500).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
 	}
 
 	@Operation(summary = "Remove existing account from Switcher AC")
 	@PostMapping(value = "/remove")
-	public ResponseEntity<ResponseRelay> removeAccount(@RequestBody RequestRelay request) {
+	public ResponseEntity<ResponseRelayDTO> removeAccount(@RequestBody RequestRelayDTO request) {
 		try {
 			accountService.deleteAccount(request.getValue());
-			return ResponseEntity.ok(new ResponseRelay(true));
+			return ResponseEntity.ok(new ResponseRelayDTO(true));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body(new ResponseRelay(false, e.getMessage()));
+			return ResponseEntity.status(500).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
 	}
 	
 	@Operation(summary = "Perform account validation on execution credits")
 	@GetMapping(value = "/execution")
-	public ResponseEntity<ResponseRelay> execution(@RequestParam String value) {
+	public ResponseEntity<ResponseRelayDTO> execution(@RequestParam String value) {
 		try {
-			final var request = new RequestRelay();
+			final var request = new RequestRelayDTO();
 			request.setValue(String.format("execution#%s", value));
 			return ResponseEntity.ok(validatorFactory.runValidator(request));
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatus()).body(new ResponseRelay(false, e.getMessage()));
+			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
 	}
 	
 	@Operation(summary = "Perform account validation given input value")
 	@PostMapping(value = "/validate")
-	public ResponseEntity<Object> validate(@RequestBody RequestRelay request) {
+	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
 			return ResponseEntity.ok(validatorFactory.runValidator(request));
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatus()).body(new ResponseRelay(false, e.getMessage()));
+			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
 	}
 

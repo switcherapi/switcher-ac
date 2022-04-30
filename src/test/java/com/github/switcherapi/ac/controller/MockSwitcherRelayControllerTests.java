@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.request.RequestRelay;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.google.gson.Gson;
 
@@ -49,7 +49,7 @@ class MockSwitcherRelayControllerTests {
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
         //given
-  		RequestRelay request = new RequestRelay();
+  		RequestRelayDTO request = new RequestRelayDTO();
   		request.setValue("adminid");
   		String jsonRequest = new Gson().toJson(request);
         

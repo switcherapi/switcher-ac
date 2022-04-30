@@ -1,45 +1,50 @@
-package com.github.switcherapi.ac.model.response;
+package com.github.switcherapi.ac.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GitHubDetailResponse {
-	
+public class GitHubDetail {
+
 	private String id;
+
 	private String name;
+
 	private String login;
-	private String avatar_url;
-	
+
+	@JsonProperty("avatar_url")
+	private String avatarUrl;
+
 	public String getId() {
 		return id;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getLogin() {
 		return login;
 	}
-	
+
 	public void setLogin(String login) {
 		this.login = login;
 	}
-	
-	public String getAvatar_url() {
-		return avatar_url;
+
+	public String getAvatarUrl() {
+		return avatarUrl;
 	}
-	
-	public void setAvatar_url(String avatar_url) {
-		this.avatar_url = avatar_url;
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
 	}
 
 }
