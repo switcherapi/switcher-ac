@@ -1,5 +1,6 @@
 package com.github.switcherapi.ac.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +18,9 @@ public class SwaggerConfig {
 	private static final String SCHEME_NAME = "bearerScheme";
 	
 	private static final String SCHEME = "Bearer";
+	
+	@Autowired
+	private ConfigProperties configProperties;
 
 	@Bean
 	public OpenAPI customOpenAPI() {
@@ -27,23 +31,23 @@ public class SwaggerConfig {
 
 	private Info getInfo() {
 		return new Info()
-				.title("Switcher AC")
-				.description("Account Controller for Switcher API")
-				.version("v1.0.4")
+				.title(configProperties.getTitle())
+				.description(configProperties.getDescription())
+				.version(configProperties.getVersion())
 				.contact(getContact())
 				.license(getLicense());
 	}
 
 	private License getLicense() {
 		return new License()
-				.name("MIT")
-				.url("https://github.com/switcherapi/switcher-ac/blob/master/LICENSE");
+				.name(configProperties.getLicense().getType())
+				.url(configProperties.getLicense().getUrl());
 	}
 	
 	private Contact getContact() {
 		return new Contact()
-				.name("Roger Floriano (petruki)")
-				.email("switcher.project@gmail.com");
+				.name(configProperties.getContact().getAuthor())
+				.email(configProperties.getContact().getEmail());
 	}
 
 	private void addSecurity(OpenAPI openApi) {
