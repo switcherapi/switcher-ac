@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.switcherapi.ac.repository.AdminRepository;
@@ -60,9 +59,12 @@ public class JwtTokenService {
 	}
 	
 	public String[] refreshToken(String subject, String token, String refreshToken) {
-		final var crypt = new BCryptPasswordEncoder();
+		final String refreshSubject = 
+				Jwts.parserBuilder()
+					.setSigningKey(jwtSecret.getBytes(StandardCharsets.UTF_8)).build()
+					.parseClaimsJws(refreshToken).getBody().getSubject();
 		
-		if (token != null && crypt.matches(token.split("\\.")[2], refreshToken)) {
+		if (token != null && refreshSubject.equals(token.substring(token.length() - 8, token.length()))) {
 			return generateToken(subject);
 		}
 		
@@ -89,6 +91,11 @@ public class JwtTokenService {
 	}
 	
 	private String generateRefreshToken(String token) {
-		return new BCryptPasswordEncoder().encode(token.split("\\.")[2]);
+		final SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+		return Jwts.builder()
+					.setSubject(token.substring(token.length() - 8, token.length()))
+					.signWith(key)
+					.compact();
 	}
+	
 }

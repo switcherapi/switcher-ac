@@ -3,6 +3,8 @@ package com.github.switcherapi.ac.service;
 import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
 import static com.github.switcherapi.client.SwitcherContext.getSwitcher;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +17,8 @@ import com.github.switcherapi.ac.repository.AdminRepository;
 
 @Service
 public class AdminService {
+	
+	private static final Logger logger = LogManager.getLogger(AdminService.class);
 	
 	public static final String ADMIN = "admin";
 	
@@ -87,21 +91,26 @@ public class AdminService {
 	}
 	
 	public GitHubAuthDTO refreshToken(String token, String refreshToken) {
-		if (token != null && token.startsWith(JwtRequestFilter.BEARER)) {
-			token = token.substring(7);
-			
-			var admin = adminRepository.findByToken(token);
-			if (admin != null) {
-				String[] tokens = jwtService.refreshToken(admin.getId(), token, refreshToken);
-				if (tokens.length == 2) {
-					updateAdminAccountToken(admin, tokens[0]);
-					return GitHubAuthMapper.createCopy(admin, tokens);
+		try {
+			if (token != null && token.startsWith(JwtRequestFilter.BEARER)) {
+				token = token.substring(7);
+				
+				var admin = adminRepository.findByToken(token);
+				if (admin != null) {
+					String[] tokens = jwtService.refreshToken(admin.getId(), token, refreshToken);
+					if (tokens.length == 2) {
+						updateAdminAccountToken(admin, tokens[0]);
+						return GitHubAuthMapper.createCopy(admin, tokens);
+					}
 				}
 			}
+		} catch (Exception e) {
+			logger.info("Attempting to refresh token with Invalid refresh tokens");
 		}
 		
 		throw new ResponseStatusException(
 				HttpStatus.UNAUTHORIZED, "Invalid refresh tokens");
+
 	}
 
 	public void setGithubService(GitHubService githubService) {
