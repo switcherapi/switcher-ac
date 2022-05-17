@@ -26,6 +26,7 @@ import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.PlanService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 @RestController
 @RequestMapping("admin/v1")
@@ -46,12 +47,14 @@ public class AdminController {
 		this.adminService = adminService;
 	}
 
+	@SecurityRequirements
 	@Operation(summary = "Authenticate using GitHub credentials")
 	@PostMapping(value = "/auth/github")
 	public ResponseEntity<GitHubAuthDTO> gitHubAuth(@RequestParam String code) {
 		return ResponseEntity.ok(adminService.gitHubAuth(code));
 	}
 	
+	@SecurityRequirements
 	@Operation(summary = "Update JWT using your refresh token")
 	@PostMapping(value = "/auth/refresh")
 	public ResponseEntity<GitHubAuthDTO> gitHubRefreshAuth(

@@ -106,7 +106,7 @@ class AdminGitHubAuthControllerTests {
 		//given
 		mockBackend.enqueue(new MockResponse()
 				.setBody("{ \"access_token\": \"123\" }")
-				.addHeader("Content-Type", "application/json"));
+				.addHeader("Content-Type", MediaType.APPLICATION_JSON));
 		
 		mockBackend.enqueue(new MockResponse().setResponseCode(401));
 		
@@ -137,7 +137,7 @@ class AdminGitHubAuthControllerTests {
 		//given
 		mockBackend.enqueue(new MockResponse()
 			.setBody("{ \"error\": \"Invalid code\" }")
-			.addHeader("Content-Type", "application/json"));
+			.addHeader("Content-Type", MediaType.APPLICATION_JSON));
 		
 		//test
 		this.mockMvc.perform(post("/admin/v1/auth/github")
@@ -164,7 +164,7 @@ class AdminGitHubAuthControllerTests {
 	void mockGitHub() throws JsonProcessingException {
 		mockBackend.enqueue(new MockResponse()
 			.setBody("{ \"access_token\": \"123\" }")
-			.addHeader("Content-Type", "application/json"));
+			.addHeader("Content-Type", MediaType.APPLICATION_JSON));
 		
 		GitHubDetail githubAccountDetail = new GitHubDetail();
 		githubAccountDetail.setId("123");
@@ -173,7 +173,7 @@ class AdminGitHubAuthControllerTests {
 		
 		mockBackend.enqueue(new MockResponse()
 			.setBody(MAPPER.writeValueAsString(githubAccountDetail))
-			.addHeader("Content-Type", "application/json"));
+			.addHeader("Content-Type", MediaType.APPLICATION_JSON));
 	}
 
 }

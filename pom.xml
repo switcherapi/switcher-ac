@@ -11,7 +11,7 @@
 	
 	<name>Switcher Account Control</name>
 	<description>Account Control Service for Switcher API</description>
-	<url></url>
+	<url>https://github.com/switcherapi/switcher-ac</url>
 	
 	<developers>
 		<developer>
@@ -57,22 +57,22 @@
 	</properties>
 	
 	<profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <activatedProperties>dev</activatedProperties>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <activatedProperties>prod</activatedProperties>
-            </properties>
-        </profile>
-    </profiles>
+	    <profile>
+	        <id>local</id>
+	        <activation>
+	            <activeByDefault>true</activeByDefault>
+	        </activation>
+	        <properties>
+	            <spring.profiles.active>local</spring.profiles.active>
+	        </properties>
+	    </profile>
+	    <profile>
+	        <id>prod</id>
+	        <properties>
+	            <spring.profiles.active>prod</spring.profiles.active>
+	        </properties>
+	    </profile>
+	</profiles>
 
 	<dependencies>
 		<!-- Spring -->
@@ -166,6 +166,12 @@
 		</dependency>
 		
 		<!-- Utils -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
@@ -308,6 +314,9 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
+					<excludes>
+			            <exclude>com/github/switcherapi/ac/model/**</exclude>
+			        </excludes>
 					<destFile>${sonar.jacoco.reportPath}</destFile>
 					<dataFile>${sonar.jacoco.reportPath}</dataFile>
 					<append>true</append>
