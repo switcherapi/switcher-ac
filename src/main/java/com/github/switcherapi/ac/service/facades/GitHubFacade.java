@@ -28,8 +28,6 @@ public class GitHubFacade {
 	
 	private static final String HEADER_ACCEPT = "accept";
 	
-	private static final String HEADER_JSON = "application/json";
-	
 	@Value("${service.github.clientid}")
 	private String clientId;
 	
@@ -62,7 +60,7 @@ public class GitHubFacade {
 			
 			final var response = myResource
 				.request(MediaType.APPLICATION_JSON)
-				.header(HEADER_ACCEPT, HEADER_JSON)
+				.header(HEADER_ACCEPT, MediaType.APPLICATION_JSON)
 				.post(null);
 			
 			Map<?, ?> responseEntity = response.readEntity(Map.class);
@@ -81,7 +79,7 @@ public class GitHubFacade {
 		final WebTarget myResource = client.target(gitUrlDetail);
 		final var response = myResource
 			.request(MediaType.APPLICATION_JSON)
-			.header(HEADER_ACCEPT, HEADER_JSON)
+			.header(HEADER_ACCEPT, MediaType.APPLICATION_JSON)
 			.header("Authorization", String.format("token %s", token))
 			.get();
 		

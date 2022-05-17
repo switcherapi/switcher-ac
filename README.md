@@ -23,14 +23,14 @@ Here it goes what you need to start using Switcher AC.
 - GitHub OAuth
 - Switcher API
 
-Provide the values for the Spring parameters file located at src/main/resources/application-[ENV].properties
+Provide the parameters for the Service at resources/application-local.properties
 
 # Running locally
 
 ## Maven Spring-boot
 
 1. Initialize/configure environment with required variables located at /docker-env/.env.template (use set -a)
-2. mvn clean install spring-boot:run -Dspring-boot.run.profiles=dev
+2. mvn clean install spring-boot:run -Plocal
 
 ## With Docker-Compose
 
@@ -53,7 +53,7 @@ No authorization required.<br />
 Retrieve API swagger definition<br />
 
 
-- **Swagger UI** - /swagger-ui/<br /> 
+- **Swagger UI** - /swagger-ui.html<br /> 
 Access Swagger UI.<br /> 
 Use /admin/auth/github to generate API access token.<br />
 
