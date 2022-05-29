@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -57,7 +59,7 @@ class MockAdminPlanControllerTests {
 		//test
 		this.mockMvc.perform(post("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer api_token")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer api_token")
 			.content(json))
 			.andDo(print())
 			.andExpect(status().is5xxServerError());
@@ -72,7 +74,7 @@ class MockAdminPlanControllerTests {
 		//test
 		this.mockMvc.perform(get("/admin/v1/plan/list")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer api_token"))
+			.header(HttpHeaders.AUTHORIZATION, "Bearer api_token"))
 			.andDo(print())
 			.andExpect(status().is5xxServerError());
 	}

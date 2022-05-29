@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringUtils;
@@ -80,7 +81,7 @@ public class GitHubFacade {
 		final var response = myResource
 			.request(MediaType.APPLICATION_JSON)
 			.header(HEADER_ACCEPT, MediaType.APPLICATION_JSON)
-			.header("Authorization", String.format("token %s", token))
+			.header(HttpHeaders.AUTHORIZATION, String.format("token %s", token))
 			.get();
 		
 		if (response.getStatus() == 200)

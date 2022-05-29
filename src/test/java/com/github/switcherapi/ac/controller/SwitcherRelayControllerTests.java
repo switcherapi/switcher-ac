@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.stream.Stream;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -62,7 +64,7 @@ class SwitcherRelayControllerTests {
 		//test
 		this.mockMvc.perform(post("/switcher/v1/validate")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
 			.with(csrf())
 			.content(jsonRequest))
 			.andDo(print())
@@ -78,7 +80,7 @@ class SwitcherRelayControllerTests {
 		//test
 		this.mockMvc.perform(get("/switcher/v1/execution")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
 			.with(csrf())
 			.queryParam("value", value))
 			.andDo(print())
@@ -113,7 +115,7 @@ class SwitcherRelayControllerTests {
 		//test
 		this.mockMvc.perform(post("/switcher/v1/create")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
 			.with(csrf())
 			.content(jsonRequest))
 			.andDo(print())
@@ -137,7 +139,7 @@ class SwitcherRelayControllerTests {
 		//test
 		this.mockMvc.perform(post("/switcher/v1/remove")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
 			.with(csrf())
 			.content(jsonRequest))
 			.andDo(print())
@@ -158,7 +160,7 @@ class SwitcherRelayControllerTests {
 		//test
 		this.mockMvc.perform(post("/switcher/v1/remove")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer relay_token")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
 			.with(csrf())
 			.content(jsonRequest))
 			.andDo(print())

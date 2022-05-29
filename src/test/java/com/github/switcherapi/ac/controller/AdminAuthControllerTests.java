@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +60,7 @@ class AdminAuthControllerTests {
 		
 		var json = this.mockMvc.perform(post("/admin/v1/auth/refresh")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer " + tokens[0])
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens[0])
 			.with(csrf())
 			.queryParam("refreshToken", tokens[1]))
 			.andDo(print())
@@ -75,7 +77,7 @@ class AdminAuthControllerTests {
 	void shouldNotRefreshToken_invalidRefreshToken() throws Exception {
 		this.mockMvc.perform(post("/admin/v1/auth/refresh")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer " + tokens[0])
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens[0])
 			.with(csrf())
 			.queryParam("refreshToken", "INVALID_REFRESH_TOKEN"))
 			.andDo(print())
@@ -86,7 +88,7 @@ class AdminAuthControllerTests {
 	void shouldLogout() throws Exception {
 		this.mockMvc.perform(post("/admin/v1/logout")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer " + tokens[0])
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens[0])
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());

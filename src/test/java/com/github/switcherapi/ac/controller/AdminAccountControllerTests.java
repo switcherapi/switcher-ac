@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,7 +98,7 @@ class AdminAccountControllerTests {
 		//test
 		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andDo(print())
@@ -122,7 +124,7 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(delete("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andExpect(status().isOk())
@@ -136,7 +138,7 @@ class AdminAccountControllerTests {
 	void shouldNotChangeAccountPlan_invalidAuthorizationKey() throws Exception {
 		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer INVALID_KEY")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer INVALID_KEY")
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
 			.andDo(print())
@@ -147,7 +149,7 @@ class AdminAccountControllerTests {
 	void shouldNotChangeAccountPlan_planNotFound() throws Exception {
 		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.queryParam("plan", "NOT_FOUND"))
 			.andDo(print())
@@ -168,7 +170,7 @@ class AdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(patch("/admin/v1/account/reset/{adminId}", "mock_account1")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());

@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -56,7 +58,7 @@ class MockSwitcherRelayControllerTests {
 		//test
 		this.mockMvc.perform(post("/switcher/v1/create")
 				.contentType(MediaType.APPLICATION_JSON)
-				.header("Authorization", "Bearer relay_token")
+				.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
 				.content(jsonRequest))
 				.andDo(print())
 				.andExpect(status().is5xxServerError());
