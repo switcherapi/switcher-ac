@@ -54,6 +54,11 @@
 		<jackson.version>2.13.1</jackson.version>
 		<jackson-databind.version>2.13.2.1</jackson-databind.version>
 		
+		<!-- Plugins -->
+		<maven-compiler.version>3.8.1</maven-compiler.version>
+		<sonar.version>3.7.0.1746</sonar.version>
+		<jacoco.version>0.8.4</jacoco.version>
+		
 		<!-- Sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -331,17 +336,17 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
+					<version>${maven-compiler.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
-					<version>3.6.0.1398</version>
+					<version>${sonar.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.4</version>
+					<version>{jacoco.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
