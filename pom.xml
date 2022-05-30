@@ -54,10 +54,14 @@
 		<jackson.version>2.13.1</jackson.version>
 		<jackson-databind.version>2.13.2.1</jackson-databind.version>
 		
+		<!-- Plugins -->
+		<maven-compiler.version>3.8.1</maven-compiler.version>
+		<sonar.version>3.7.0.1746</sonar.version>
+		<jacoco.version>0.8.4</jacoco.version>
+		
 		<!-- Sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-		<sonar.jacoco.reportPath>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.jacoco.reportPath>
 		<sonar.language>java</sonar.language>
 		<sonar.coverage.exclusions>
 	      **/model/**/*.java,
@@ -80,6 +84,61 @@
 	            <spring.profiles.active>prod</spring.profiles.active>
 	        </properties>
 	    </profile>
+	    <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+								<id>jacoco-initialize</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>jacoco-site</id>
+								<phase>package</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+	    <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.organization>switcherapi</sonar.organization>
+                <sonar.projectKey>switcherapi_switcher-ac</sonar.projectKey>
+                <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>${sonar.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sonar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>
 
 	<dependencies>
@@ -302,17 +361,17 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
+					<version>${maven-compiler.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
-					<version>3.6.0.1398</version>
+					<version>${sonar.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.4</version>
+					<version>${jacoco.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -321,35 +380,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			
-			<!-- Tells Sonar to pick up testing results -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-			            <exclude>com/github/switcherapi/ac/model/**</exclude>
-			        </excludes>
-					<destFile>${sonar.jacoco.reportPath}</destFile>
-					<dataFile>${sonar.jacoco.reportPath}</dataFile>
-					<append>true</append>
-				</configuration>
-				<executions>
-					<execution>
-						<id>jacoco-initialize</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
