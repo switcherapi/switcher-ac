@@ -32,7 +32,7 @@ class PlanUtilsTests {
 		//test
 		DefaultMapper.copyProperties(from, to);
 		assertThat(to.getMaxDomains()).isEqualTo(2);
-		assertThat(to.getEnableHistory()).isFalse();
+		assertThat(to.getEnableHistory()).isTrue();
 	}
 	
 	@Test
