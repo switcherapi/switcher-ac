@@ -7,8 +7,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build_test:
-    name: Build & Test
+  build:
+    name: Build
     runs-on: ubuntu-latest
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
@@ -22,11 +22,9 @@ jobs:
           cache: maven
       - name: Maven Package
         run: mvn -B clean package -DskipTests
-      - name: Maven Verify
-        run: mvn -B clean verify
 
-  sonar:
-    name: SonarCloud Scan
+  test_analyze:
+    name: Test & SonarCloud Scan
     needs: [ build_test ]
     runs-on: ubuntu-latest
 
