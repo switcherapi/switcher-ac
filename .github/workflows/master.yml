@@ -25,7 +25,7 @@ jobs:
 
   test_analyze:
     name: Test & SonarCloud Scan
-    needs: [ build_test ]
+    needs: [ build ]
     runs-on: ubuntu-latest
 
     steps:
