@@ -1,9 +1,12 @@
 package com.github.switcherapi.ac.controller;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import javax.ws.rs.core.HttpHeaders;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +58,7 @@ class ManagementTests {
 	void shouldNotAccessActuator() throws Exception {
 		this.mockMvc.perform(get("/actuator")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", "Bearer INVALID_KEY")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer INVALID_KEY")
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
@@ -65,7 +68,7 @@ class ManagementTests {
 	void shouldAccessActuator() throws Exception {
 		this.mockMvc.perform(get("/actuator")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());
@@ -75,18 +78,38 @@ class ManagementTests {
 	void shouldAccessSwagger() throws Exception {
 		this.mockMvc.perform(get("/v3/api-docs")
 			.contentType(MediaType.APPLICATION_JSON)
+			.with(httpBasic("admin", "admin"))
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());
 	}
 	
 	@Test
+	void shouldNotAccessSwagger() throws Exception {
+		this.mockMvc.perform(get("/v3/api-docs")
+			.contentType(MediaType.APPLICATION_JSON)
+			.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+	}
+	
+	@Test
 	void shouldAccessSwaggerUI() throws Exception {
+		this.mockMvc.perform(get("/swagger-ui/index.html")
+			.contentType(MediaType.APPLICATION_JSON)
+			.with(httpBasic("admin", "admin"))
+			.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+	
+	@Test
+	void shouldNotAccessSwaggerUI() throws Exception {
 		this.mockMvc.perform(get("/swagger-ui/index.html")
 			.contentType(MediaType.APPLICATION_JSON)
 			.with(csrf()))
 			.andDo(print())
-			.andExpect(status().isOk());
+			.andExpect(status().isUnauthorized());
 	}
 
 }

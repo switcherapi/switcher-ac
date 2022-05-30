@@ -2,6 +2,8 @@ package com.github.switcherapi.ac.controller;
 
 import java.util.List;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,12 +60,12 @@ public class AdminController {
 	@Operation(summary = "Update JWT using your refresh token")
 	@PostMapping(value = "/auth/refresh")
 	public ResponseEntity<GitHubAuthDTO> gitHubRefreshAuth(
-			@RequestHeader("Authorization") String token, @RequestParam String refreshToken) {
+			@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam String refreshToken) {
 		return ResponseEntity.ok(adminService.refreshToken(token, refreshToken));
 	}
 	
 	@PostMapping(value = "/logout")
-	public ResponseEntity<Object> logout(@RequestHeader("Authorization") String token) {
+	public ResponseEntity<Object> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 		adminService.logout(token);
 		return ResponseEntity.ok().build();
 	}

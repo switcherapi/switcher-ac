@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -49,7 +51,7 @@ class MockAdminAccountControllerTests {
 		//test
 		this.mockMvc.perform(patch("/admin/v1/account/reset/{adminId}", "mock_account1")
 				.contentType(MediaType.APPLICATION_JSON)
-				.header("Authorization", "Bearer api_token"))
+				.header(HttpHeaders.AUTHORIZATION, "Bearer api_token"))
 				.andDo(print())
 				.andExpect(status().is5xxServerError());
 	}

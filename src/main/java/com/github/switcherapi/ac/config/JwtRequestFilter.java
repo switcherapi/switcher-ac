@@ -2,13 +2,18 @@ package com.github.switcherapi.ac.config;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.github.switcherapi.ac.config.SecurityConfig.Roles;
 import com.github.switcherapi.ac.service.JwtTokenService;
 
 @Component
@@ -29,13 +35,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	private static final Logger jwtLogger = LogManager.getLogger(JwtRequestFilter.class);
 	
 	public static final String SWITCHER_AC = "SWITCHER_AC";
-	
-	public static final String AUTHORIZATION = "Authorization";
 
 	public static final String BEARER = "Bearer ";
 	
+	private Map<Roles, SimpleGrantedAuthority> grantedAuthorities;
+	
 	@Autowired
 	private JwtTokenService jwtTokenService;
+	
+	@PostConstruct
+	private void setupComponent() {
+		final EnumMap<Roles, SimpleGrantedAuthority> roles = new EnumMap<>(Roles.class);
+		roles.put(Roles.ROLE_SWITCHER, new SimpleGrantedAuthority(Roles.ROLE_SWITCHER.name()));
+		roles.put(Roles.ROLE_ADMIN, new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name()));
+		grantedAuthorities = Collections.unmodifiableMap(roles);
+	}
 
 	@Override
 	protected void doFilterInternal(
@@ -69,21 +83,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		
 		if (request.getRequestURI().startsWith("/switcher")) {
 			if (jwtTokenService.validateRelayToken(token)) {
-				authorities.add(new SimpleGrantedAuthority("ROLE_SWITCHER"));
-				return true;
+				return authorities.add(grantedAuthorities.get(Roles.ROLE_SWITCHER));
 			}
-		} else {
-			if (jwtTokenService.validateAdminToken(token)) {
-				authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-				return true;
-			}
+		} else if (jwtTokenService.validateAdminToken(token)) {
+			return authorities.add(grantedAuthorities.get(Roles.ROLE_ADMIN));
 		}
 		
 		return false;
 	}
 	
 	private static Optional<String> getJwtFromRequest(HttpServletRequest request) {
-		final String bearerToken = request.getHeader(AUTHORIZATION);
+		final String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER)) {
 			return Optional.of(bearerToken.substring(7));
 		}

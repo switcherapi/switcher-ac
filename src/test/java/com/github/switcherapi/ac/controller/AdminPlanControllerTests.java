@@ -15,6 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -111,7 +113,7 @@ class AdminPlanControllerTests {
 		//test
 		var response = this.mockMvc.perform(post("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.content(json))
 			.andDo(print())
@@ -138,7 +140,7 @@ class AdminPlanControllerTests {
 		
 		var response = this.mockMvc.perform(patch("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.content(json)
 			.with(csrf()))
 			.andDo(print())
@@ -163,7 +165,7 @@ class AdminPlanControllerTests {
 		//test
 		this.mockMvc.perform(patch("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.content(json))
 			.andDo(print())
@@ -181,7 +183,7 @@ class AdminPlanControllerTests {
 		
 		this.mockMvc.perform(post("/admin/v1/plan")
 				.contentType(MediaType.APPLICATION_JSON)
-				.header("Authorization", bearer)
+				.header(HttpHeaders.AUTHORIZATION, bearer)
 				.with(csrf())
 				.content(json))
 				.andExpect(status().isOk());
@@ -192,7 +194,7 @@ class AdminPlanControllerTests {
 		
 		this.mockMvc.perform(delete("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.queryParam("plan", "DELETE_ME"))
 			.andDo(print())
@@ -208,7 +210,7 @@ class AdminPlanControllerTests {
 	void shouldNotDeletePlan_planCannotBeDeleted() throws Exception {
 		this.mockMvc.perform(delete("/admin/v1/plan")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.queryParam("plan", PlanType.DEFAULT.name()))
 			.andDo(print())
@@ -225,7 +227,7 @@ class AdminPlanControllerTests {
 		//test
 		this.mockMvc.perform(get("/admin/v1/plan/list")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk())
@@ -241,7 +243,7 @@ class AdminPlanControllerTests {
 		//test
 		var response = this.mockMvc.perform(get("/admin/v1/plan/get")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.queryParam("plan", PlanType.DEFAULT.name()))
 			.andDo(print())
@@ -256,7 +258,7 @@ class AdminPlanControllerTests {
 	void shouldNotGetPlanByName_plaNotFound() throws Exception {
 		this.mockMvc.perform(get("/admin/v1/plan/get")
 			.contentType(MediaType.APPLICATION_JSON)
-			.header("Authorization", bearer)
+			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
 			.queryParam("plan", "NOT_FOUND"))
 			.andDo(print())
