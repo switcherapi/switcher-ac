@@ -7,8 +7,8 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
-    name: Test - Unit and Integration
+  build_test:
+    name: Build & Test
     runs-on: ubuntu-latest
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
@@ -19,7 +19,6 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-          fetch-depth: 0
           cache: maven
       - name: Maven Package
         run: mvn -B clean package -DskipTests
@@ -27,7 +26,8 @@ jobs:
         run: mvn -B clean verify
 
   sonar:
-    name: Test - SonarCloud Scan
+    name: SonarCloud Scan
+    needs: [ build_test ]
     runs-on: ubuntu-latest
 
     steps:
@@ -37,7 +37,6 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-          fetch-depth: 0
           cache: maven
       - name: SonarCloud Scan
         run: mvn -B clean verify -Pcoverage,sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
