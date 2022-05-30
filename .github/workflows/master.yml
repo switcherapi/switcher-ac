@@ -40,3 +40,18 @@ jobs:
         run: mvn -B clean verify -Pcoverage,sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    name: Deploy
+    needs: [ test_analyze ]
+    runs-on: ubuntu-latest
+    if: success() && github.ref == 'refs/heads/master'
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Deploy'
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY_2}}
+          heroku_app_name: "switcher-ac"
+          heroku_email: "switcher.project@gmail.com"
