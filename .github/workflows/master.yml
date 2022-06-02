@@ -9,7 +9,6 @@ on:
 jobs:
   build-test:
     name: Build & Test
-    needs: [ build ]
     runs-on: ubuntu-latest
     if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
 
