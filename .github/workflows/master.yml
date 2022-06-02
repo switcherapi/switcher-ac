@@ -24,6 +24,8 @@ jobs:
           cache: maven
       - name: Build/Test & SonarCloud Scan
         run: mvn -B clean verify -Pcoverage,sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     name: Deploy
