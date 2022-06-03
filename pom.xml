@@ -7,7 +7,7 @@
 
 	<groupId>com.github.switcherac</groupId>
 	<artifactId>switcher-ac</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.5-SNAPSHOT</version>
 	
 	<name>Switcher Account Control</name>
 	<description>Account Control Service for Switcher API</description>
@@ -17,10 +17,19 @@
 		<developer>
 			<name>Roger Floriano</name>
 			<email>switcher.project@gmail.com</email>
+			<url>https://github.com/petruki</url>
 			<organization>switcherapi</organization>
 			<organizationUrl>https://github.com/switcherapi</organizationUrl>
+			<roles>
+				<role>Lead developer</role>
+			</roles>
 		</developer>
  	</developers>
+ 	
+    <ciManagement>
+        <system>Github Actions</system>
+        <url>https://github.com/switcherapi/switcher-ac/actions</url>
+    </ciManagement>
  	
 	<scm>
 		<connection>scm:git:git://github.com:switcherapi/switcher-ac.git</connection>
@@ -49,7 +58,6 @@
 		<springdoc.version>1.6.8</springdoc.version>
 		
 		<!-- Managed -->
-		<spring-framework.version>5.3.20</spring-framework.version>
 		<log4j.version>2.17.2</log4j.version>
 		<jackson.version>2.13.1</jackson.version>
 		<jackson-databind.version>2.13.2.1</jackson-databind.version>
@@ -256,7 +264,7 @@
 		    <artifactId>gson</artifactId>
 		</dependency>
 		
-		<!-- Swagger 3 - SpringDoc OpenAPI-->
+		<!-- Swagger 3 - SpringDoc OpenAPI -->
 		<dependency>
       		<groupId>org.springdoc</groupId>
       		<artifactId>springdoc-openapi-ui</artifactId>
@@ -309,12 +317,6 @@
 	
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.springframework</groupId>
-		      	<artifactId>spring-core</artifactId>
-		      	<version>${spring-framework.version}</version>
-			</dependency>
-			
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-api</artifactId>

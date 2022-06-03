@@ -1,36 +1,43 @@
-[![Master Branch](https://github.com/switcherapi/switcher-ac/actions/workflows/master.yml/badge.svg)](https://github.com/switcherapi/switcher-ac/actions/workflows/master.yml)
+***
+
+<div align="center">
+<b>Switcher Account Control</b><br>
+Account Managing Service for the cloud-base API
+</div>
+
+<div align="center">
+
+[![Master CI](https://github.com/switcherapi/switcher-ac/actions/workflows/master.yml/badge.svg)](https://github.com/switcherapi/switcher-ac/actions/workflows/master.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=switcherapi_switcher-ac&metric=alert_status)](https://sonarcloud.io/dashboard?id=switcherapi_switcher-ac)
 [![Known Vulnerabilities](https://snyk.io/test/github/switcherapi/switcher-ac/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/switcherapi/switcher-ac?targetFile=pom.xml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Slack: Switcher-HQ](https://img.shields.io/badge/slack-@switcher/hq-blue.svg?logo=slack)](https://switcher-hq.slack.com/)
 
+</div>
+
+***
+
 # About
-Switcher Account Control is a simple API written in Java/Spring Boot responsible for managing features access to the Switcher API showcase environment.
+Switcher Account Control is a simple API written in Java/SpringBoot responsible for managing feature accesses to the Switcher API cloud version.
 
-https://github.com/switcherapi/switcher-api
-
-It includes:
 - Managing access to Switcher API
-- Managing plans and its limitations
+- Managing plans & limitations
 - Features availability
 - Admin resources accessible via GitHub OAuth
 
 # Configuration
 Switcher AC integrates with other services to run. 
-Here it goes what you need to start using Switcher AC.
 
 - MongoDB
 - GitHub OAuth
 - Switcher API
 
-Provide the parameters for the Service at resources/application-local.properties
-
 # Running locally
 
-## Maven Spring-boot
+## Maven SpringBoot
 
-1. Initialize/configure environment with required variables located at /docker-env/.env.template (use set -a)
-2. mvn clean install spring-boot:run -Plocal
+1. Supply file based on the production context a new one named: resources/application-local.properties
+2. Run ``mvn clean install spring-boot:run -Plocal``
 
 ## With Docker-Compose
 
