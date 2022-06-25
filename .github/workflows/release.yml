@@ -3,6 +3,8 @@ name: Release CI
 on:
   release:
     types: [ created ]
+  push:
+    tags: [ v* ]
 
 jobs:
   build-test:
@@ -27,6 +29,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/switcher-ac
+      
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -42,5 +50,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/switcher-ac:${{ steps.vars.outputs.tag }}
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
