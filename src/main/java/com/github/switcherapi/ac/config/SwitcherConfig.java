@@ -18,6 +18,7 @@ public class SwitcherConfig {
 	private String apikey;
 	private String domain;
 	private String component;
+	private String environment;
 	private boolean offline;
 	private boolean silent;
 	private String retry;
@@ -35,6 +36,7 @@ public class SwitcherConfig {
 				.contextLocation(SwitcherFeatures.class.getName())
 				.apiKey(apikey)
 				.domain(domain)
+				.environment(environment)
 				.component(component)
 				.offlineMode(offline)
 				.silentMode(silent)
