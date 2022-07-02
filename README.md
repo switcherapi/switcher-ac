@@ -146,11 +146,7 @@ Remove account.
 Execute the validation based on the name of the feature and account externalId.
 ```json
 {
-    "payload": "{
-        \"feature\": \"featureName\",
-        \"owner\": \"externalId\",
-        \"total\": 0
-    }"
+    "payload": "{ \"feature\": \"FEATURE_NAME\", \"owner\": \"EXTERNAL_ID\", \"total\": NUM_VALUE }"
 }
 ```
 
