@@ -9,10 +9,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.github.switcherapi.ac.model.domain.Account;
-import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
 
@@ -29,7 +30,7 @@ public abstract class AbstractValidatorService {
 	/**
 	 * Executes validator by validating the request and then calling the validator service
 	 */
-	public ResponseRelayDTO execute(RequestRelayDTO request) {
+	public ResponseRelayDTO execute(FeaturePayload request) {
 		params = new EnumMap<>(SwitcherValidatorParams.class);
 		validateRequest(request);
 		return executeValidator();
@@ -52,16 +53,16 @@ public abstract class AbstractValidatorService {
 	 * Default request validation.
 	 * It adds ADMINID and TOTAL params to the validator input
 	 */
-	protected void validateRequest(RequestRelayDTO request) {
-		final String[] args = request.getValue().split(ValidatorFactory.SEPARATOR);
-		
+	protected void validateRequest(FeaturePayload request) {
 		try {
-			Integer.parseInt(request.getNumeric());
-			params.put(ADMINID, args[1]);
-			params.put(TOTAL, Integer.parseInt(request.getNumeric()));
-		} catch (Exception e) {
-			throw new ResponseStatusException(
-					HttpStatus.BAD_REQUEST, String.format("Invalid input for: %s", args[0]));
+			Assert.notNull(request.getFeature(), "Feature is missing");
+			Assert.notNull(request.getTotal(), "Total is missing");
+			Assert.notNull(request.getOwner(), "Owner is missing");
+			
+			params.put(ADMINID, request.getOwner());
+			params.put(TOTAL, request.getTotal());
+		} catch (IllegalArgumentException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
 	

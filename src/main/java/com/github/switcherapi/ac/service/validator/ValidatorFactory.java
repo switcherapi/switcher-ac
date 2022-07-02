@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 
 @Component
@@ -30,8 +29,6 @@ public class ValidatorFactory {
 	private static final Logger logger = LogManager.getLogger(ValidatorFactory.class);
 	
 	private static final String VALIDATORS_PATH = "com.github.switcherapi.ac.service.validator.beans";
-	
-	public static final String SEPARATOR = "#";
 	
 	@Autowired
 	private AutowireCapableBeanFactory autowireCapableBeanFactory;
@@ -68,21 +65,14 @@ public class ValidatorFactory {
         }
     }
     
-    private String getValidatorName(RequestRelayDTO request) {
-    	if (request != null && request.getValue() != null)
-    		return request.getValue().split(SEPARATOR)[0];
-    	return StringUtils.EMPTY;
-    }
-    
-    public ResponseRelayDTO runValidator(RequestRelayDTO request) {	
-		final String validatorName = getValidatorName(request);
-		if (validatorHandlers.containsKey(validatorName)) {
-			final AbstractValidatorService validatorService = validatorHandlers.get(validatorName);
+    public ResponseRelayDTO runValidator(FeaturePayload request) {	
+		if (validatorHandlers.containsKey(request.getFeature())) {
+			final var validatorService = validatorHandlers.get(request.getFeature());
 			return validatorService.execute(request);
 		}
 		
 		throw new ResponseStatusException(
-				HttpStatus.BAD_REQUEST, String.format("Invalid validator: %s", validatorName));
+				HttpStatus.BAD_REQUEST, String.format("Invalid validator: %s", request.getFeature()));
  
     }
 

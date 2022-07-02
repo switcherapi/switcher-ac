@@ -5,6 +5,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -18,15 +19,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.Admin;
+import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.dto.AccountDTO;
-import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
@@ -159,8 +159,9 @@ class AdminAccountControllerTests {
 	@Test
 	void shouldResetDailyExecution() throws Exception {
 		//given
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setValue("execution#mock_account1");
+		FeaturePayload request = new FeaturePayload();
+		request.setFeature("execution");
+		request.setOwner("mock_account1");
 		validatorFactory.runValidator(request);
 		
 		//validate before

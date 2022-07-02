@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
@@ -50,13 +51,17 @@ class SwitcherRelayControllerTests {
 	private final Gson GSON = new Gson();
 	
 	private void executeTestValidate(String adminId, String featureName, 
-			String value, ResponseRelayDTO expectedResponse, int expectedStatus) throws Exception {
+			Integer value, ResponseRelayDTO expectedResponse, int expectedStatus) throws Exception {
 		//given
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setValue(String.format("%s#%s", featureName, adminId));
+		FeaturePayload feature = new FeaturePayload();
+		feature.setFeature(featureName);
+		feature.setOwner(adminId);
 		
 		if (value != null)
-			request.setNumeric(value);
+			feature.setTotal(value);
+		
+		RequestRelayDTO request = new RequestRelayDTO();
+		request.setPayload(GSON.toJson(feature));
 		
 		String jsonRequest = GSON.toJson(request);
 		String jsonResponse = GSON.toJson(expectedResponse);
@@ -213,7 +218,7 @@ class SwitcherRelayControllerTests {
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 		
 		//test
-		this.executeTestValidate("masteradminid", "switcher", "10000", expectedResponse, 200);
+		this.executeTestValidate("masteradminid", "switcher", 10000, expectedResponse, 200);
 	}
 	
 	static Stream<Arguments> providedOkValidators() {
@@ -236,7 +241,7 @@ class SwitcherRelayControllerTests {
 
 		//test
 		this.executeTestValidate(
-				"adminid", validator, String.valueOf(total), expectedResponse, 200);
+				"adminid", validator, total, expectedResponse, 200);
 	}
 	
 	static Stream<Arguments> providedNokValidators() {
@@ -259,7 +264,7 @@ class SwitcherRelayControllerTests {
 
 		//test
 		this.executeTestValidate(
-				"adminid", validator, String.valueOf(total), expectedResponse, 200);
+				"adminid", validator, total, expectedResponse, 200);
 	}
 	
 	
@@ -324,8 +329,8 @@ class SwitcherRelayControllerTests {
 				"environment", "team", "metrics", "history"
 		};
 		
-		final String[] paramValue = {
-				"0", "0", "0", "0", "0", "0", null, null
+		final Integer[] paramValue = {
+				0, 0, 0, 0, 0, 0, null, null
 		};
 		
 		//test
@@ -340,7 +345,7 @@ class SwitcherRelayControllerTests {
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "400 BAD_REQUEST \"Invalid validator: INVALID_FEATURE\"");
 		
 		//test
-		this.executeTestValidate("adminid", "INVALID_FEATURE", "0", expectedResponse, 400);
+		this.executeTestValidate("adminid", "INVALID_FEATURE", 0, expectedResponse, 400);
 	}
 
 }

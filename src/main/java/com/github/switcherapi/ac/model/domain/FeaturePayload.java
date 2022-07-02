@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.model.dto;
+package com.github.switcherapi.ac.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -7,10 +7,12 @@ import lombok.Data;
 
 @JsonInclude(Include.NON_NULL)
 @Data
-public class RequestRelayDTO {
+public class FeaturePayload {
 
-	private String value;
+	private String feature;
 	
-	private String payload;
+	private String owner;
+	
+	private Integer total;
 
 }
