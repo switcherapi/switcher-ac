@@ -1,7 +1,6 @@
 package com.github.switcherapi.ac.service;
 
-import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
-import static com.github.switcherapi.client.SwitcherContext.getSwitcher;
+import static com.github.switcherapi.ac.config.SwitcherFeatures.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

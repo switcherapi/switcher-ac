@@ -1,6 +1,6 @@
 package com.github.switcherapi.ac;
 
-import static com.github.switcherapi.client.SwitcherContext.checkSwitchers;
+import static com.github.switcherapi.ac.config.SwitcherFeatures.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 
 @SpringBootTest
@@ -24,7 +24,7 @@ class ValidatorFactoryTest {
 	
 	@Test
 	void shouldThrowError_requestIsEmpty() {
-		RequestRelayDTO request = new RequestRelayDTO();
+		FeaturePayload request = new FeaturePayload();
 		assertThrows(ResponseStatusException.class, () -> {
 			validatorFactory.runValidator(request);
 		});
@@ -32,8 +32,9 @@ class ValidatorFactoryTest {
 	
 	@Test
 	void shouldThrowError_missingParameter() {
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setValue("domain#adminid");
+		FeaturePayload request = new FeaturePayload();
+		request.setFeature("domain");
+		request.setOwner("adminid");
 		
 		assertThrows(ResponseStatusException.class, () -> {
 			validatorFactory.runValidator(request);
@@ -51,10 +52,10 @@ class ValidatorFactoryTest {
 			"switcher",
 			"team"
 	}) 
-	void shouldThrowError_missingAdminId(String validatorName) {
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setValue(validatorName);
-		request.setNumeric("0");
+	void shouldThrowError_missingAdminId(String feature) {
+		FeaturePayload request = new FeaturePayload();
+		request.setFeature(feature);
+		request.setTotal(0);
 		
 		assertThrows(ResponseStatusException.class, () -> {
 			validatorFactory.runValidator(request);
@@ -63,21 +64,22 @@ class ValidatorFactoryTest {
 	
 	@ParameterizedTest
 	@ValueSource(strings = {
-			"component#adminid",
-			"domain#adminid",
-			"environment#adminid",
-			"group#adminid",
-			"history#adminid",
-			"metrics#adminid",
-			"switcher#adminid",
-			"team#adminid"
+			"component",
+			"domain",
+			"environment",
+			"group",
+			"history",
+			"metrics",
+			"switcher",
+			"team"
 	}) 
-	void shouldNotThrowError(String validatorName) {
+	void shouldNotThrowError(String feature) {
 		accountService.createAccount("adminid");
 		
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setValue(validatorName);
-		request.setNumeric("0");
+		FeaturePayload request = new FeaturePayload();
+		request.setFeature(feature);
+		request.setOwner("adminid");
+		request.setTotal(0);
 		
 		assertDoesNotThrow(() -> {
 			validatorFactory.runValidator(request);

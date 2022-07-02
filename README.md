@@ -144,12 +144,13 @@ Remove account.
 - **Feature validation** - /switcher/v1/validate [POST]
 
 Execute the validation based on the name of the feature and account externalId.
-  - **value**: string containing one of the features: domain, group, switcher, component, environment, team, metrics, history.
-  - **numeric**: optional string value, not used for metrics and history.
 ```json
 {
-    "value": "{featureName}#{externalId}",
-    "numeric": "0"
+    "payload": "{
+        \"feature\": \"featureName\",
+        \"owner\": \"externalId\",
+        \"total\": 0
+    }"
 }
 ```
 

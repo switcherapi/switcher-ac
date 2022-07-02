@@ -33,8 +33,8 @@ import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.GitHubService;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
-import com.github.switcherapi.client.configuration.SwitcherMock;
-import com.github.switcherapi.client.factory.SwitcherExecutor;
+import com.github.switcherapi.client.SwitcherExecutor;
+import com.github.switcherapi.client.SwitcherMock;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;

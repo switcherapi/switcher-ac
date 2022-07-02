@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
+import com.google.gson.Gson;
 
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -20,6 +22,8 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping("switcher/v1")
 public class SwitcherRelayController {
 	
+	private final Gson gson = new Gson();
+
 	private AccountService accountService;
 	
 	private ValidatorFactory validatorFactory;
@@ -57,8 +61,9 @@ public class SwitcherRelayController {
 	@GetMapping(value = "/execution")
 	public ResponseEntity<ResponseRelayDTO> execution(@RequestParam String value) {
 		try {
-			final var request = new RequestRelayDTO();
-			request.setValue(String.format("execution#%s", value));
+			final var request = new FeaturePayload();
+			request.setFeature("execution");
+			request.setOwner(value);
 			return ResponseEntity.ok(validatorFactory.runValidator(request));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
@@ -69,7 +74,8 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/validate")
 	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
-			return ResponseEntity.ok(validatorFactory.runValidator(request));
+			var featureRequest = gson.fromJson(request.getPayload(), FeaturePayload.class);
+			return ResponseEntity.ok(validatorFactory.runValidator(featureRequest));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
