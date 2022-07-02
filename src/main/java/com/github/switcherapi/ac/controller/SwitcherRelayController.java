@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.Operation;
 @RequestMapping("switcher/v1")
 public class SwitcherRelayController {
 	
-	private final Gson GSON = new Gson();
+	private final Gson gson = new Gson();
 
 	private AccountService accountService;
 	
@@ -74,7 +74,7 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/validate")
 	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
-			var featureRequest = GSON.fromJson(request.getPayload(), FeaturePayload.class);
+			var featureRequest = gson.fromJson(request.getPayload(), FeaturePayload.class);
 			return ResponseEntity.ok(validatorFactory.runValidator(featureRequest));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
