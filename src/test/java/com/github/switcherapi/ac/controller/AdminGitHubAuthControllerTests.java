@@ -1,18 +1,15 @@
 package com.github.switcherapi.ac.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-
-import javax.ws.rs.core.MediaType;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.switcherapi.ac.config.SwitcherFeatures;
+import com.github.switcherapi.ac.model.GitHubDetail;
+import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
+import com.github.switcherapi.ac.service.facades.GitHubFacade;
+import com.github.switcherapi.client.SwitcherExecutor;
+import com.github.switcherapi.client.SwitcherMock;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,19 +22,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.switcherapi.ac.config.SwitcherFeatures;
-import com.github.switcherapi.ac.model.GitHubDetail;
-import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
-import com.github.switcherapi.ac.service.AdminService;
-import com.github.switcherapi.ac.service.GitHubService;
-import com.github.switcherapi.ac.service.facades.GitHubFacade;
-import com.github.switcherapi.client.SwitcherExecutor;
-import com.github.switcherapi.client.SwitcherMock;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
@@ -46,15 +41,13 @@ class AdminGitHubAuthControllerTests {
 	
 	public static MockWebServer mockBackend;
 	
-	private ObjectMapper MAPPER = new ObjectMapper();
-	
-	private GitHubService gitHubService;
+	private final ObjectMapper MAPPER = new ObjectMapper();
 
 	@Autowired
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	@Autowired
-	private ApplicationContext context;
+	ApplicationContext context;
 
 	@BeforeAll
     static void setup() throws IOException {
@@ -70,13 +63,13 @@ class AdminGitHubAuthControllerTests {
 	@BeforeEach
 	void initialize() {
 	    String baseUrl = String.format("http://localhost:%s", mockBackend.getPort());
-	    gitHubService = new GitHubService(new GitHubFacade(baseUrl, baseUrl));
-		context.getBean(AdminService.class).setGithubService(gitHubService);
+		context.getBean(GitHubFacade.class).setGitUrlAccess(baseUrl);
+		context.getBean(GitHubFacade.class).setGitUrlDetail(baseUrl);
 	}
 	
 	@Test
 	void testSwitchers() {
-		assertDoesNotThrow(() -> SwitcherFeatures.checkSwitchers());
+		assertDoesNotThrow(SwitcherFeatures::checkSwitchers);
 	}
 
 	@SwitcherMock(key = SwitcherFeatures.SWITCHER_AC_ADM, result = true)

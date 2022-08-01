@@ -9,9 +9,9 @@ import com.github.switcherapi.ac.service.facades.GitHubFacade;
 
 @Service
 public class GitHubService {
-	
-	private GitHubFacade githubFacade;
-	
+
+	private final GitHubFacade githubFacade;
+
 	public GitHubService(GitHubFacade githubFacade) {
 		this.githubFacade = githubFacade;
 	}

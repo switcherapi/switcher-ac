@@ -7,7 +7,7 @@
 
 	<groupId>com.github.switcherac</groupId>
 	<artifactId>switcher-ac</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.6-SNAPSHOT</version>
 	
 	<name>Switcher Account Control</name>
 	<description>Account Control Service for Switcher API</description>
