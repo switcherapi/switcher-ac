@@ -1,13 +1,7 @@
 package com.github.switcherapi.ac.service.facades;
 
-import java.util.Map;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-
+import com.github.switcherapi.ac.model.GitHubDetail;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.GitHubDetail;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import java.util.Map;
 
 @Component
 public class GitHubFacade {
@@ -28,29 +27,26 @@ public class GitHubFacade {
 	private static final String ACCESS_TOKEN = "access_token";
 	
 	private static final String HEADER_ACCEPT = "accept";
-	
-	@Value("${service.github.clientid}")
-	private String clientId;
-	
-	@Value("${service.github.secret}")
-	private String oauthSecret;
-	
+
+	private final String clientId;
+
+	private final String oauthSecret;
+
+	@Setter
 	private String gitUrlAccess;
-	
+
+	@Setter
 	private String gitUrlDetail;
 	
-	private Client client;
-	
-	public GitHubFacade() {
-		this(
-			"https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s",
-			"https://api.github.com/user"
-		);
-	}
-	
-	public GitHubFacade(String tokenUrl, String detailUrl) {
-		this.gitUrlAccess = tokenUrl;
-		this.gitUrlDetail = detailUrl;
+	private final Client client;
+
+	public GitHubFacade(
+			@Value("${service.github.clientid}") String clientId,
+			@Value("${service.github.secret}") String oauthSecret) {
+		this.clientId = clientId;
+		this.oauthSecret = oauthSecret;
+		this.gitUrlAccess = "https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s";
+		this.gitUrlDetail = "https://api.github.com/user";
 		this.client = ClientBuilder.newClient();
 	}
 	

@@ -29,7 +29,7 @@ public class AdminService {
 	
 	private final JwtTokenService jwtService;
 	
-	private GitHubService githubService;
+	private final GitHubService githubService;
 	
 	public AdminService(AdminRepository adminRepository, 
 			GitHubService githubService, JwtTokenService jwtService) {
@@ -110,10 +110,6 @@ public class AdminService {
 		throw new ResponseStatusException(
 				HttpStatus.UNAUTHORIZED, "Invalid refresh tokens");
 
-	}
-
-	public void setGithubService(GitHubService githubService) {
-		this.githubService = githubService;
 	}
 
 }
