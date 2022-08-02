@@ -1,6 +1,5 @@
 package com.github.switcherapi.ac.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,19 +16,24 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	@Value("${service.endpoint.healthchecker}")
-	private String healthChecker;
-	
-	@Autowired
-	private JwtRequestFilter jwtRequestFilter;
+
+	private final String healthChecker;
+
+	private final JwtRequestFilter jwtRequestFilter;
 	
     private static final String[] SWAGGER_MATCHERS = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
     };
-	
+
+	public SecurityConfig(
+			@Value("${service.endpoint.healthchecker}") String healthChecker,
+			JwtRequestFilter jwtRequestFilter) {
+		this.healthChecker = healthChecker;
+		this.jwtRequestFilter = jwtRequestFilter;
+	}
+
 	public enum Roles {
 		ADMIN, ROLE_ADMIN,
 		SWITCHER, ROLE_SWITCHER

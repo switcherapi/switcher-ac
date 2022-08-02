@@ -24,9 +24,9 @@ public class SwitcherRelayController {
 	
 	private final Gson gson = new Gson();
 
-	private AccountService accountService;
+	private final AccountService accountService;
 	
-	private ValidatorFactory validatorFactory;
+	private final ValidatorFactory validatorFactory;
 	
 	public SwitcherRelayController(
 			AccountService accountService, 

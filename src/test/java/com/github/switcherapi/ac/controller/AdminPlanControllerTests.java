@@ -1,22 +1,15 @@
 package com.github.switcherapi.ac.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-
-import javax.ws.rs.core.HttpHeaders;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.switcherapi.ac.model.domain.Admin;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.dto.PlanDTO;
+import com.github.switcherapi.ac.service.AdminService;
+import com.github.switcherapi.ac.service.JwtTokenService;
+import com.github.switcherapi.ac.service.PlanService;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,41 +21,37 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.dto.PlanDTO;
-import com.github.switcherapi.ac.service.AdminService;
-import com.github.switcherapi.ac.service.JwtTokenService;
-import com.github.switcherapi.ac.service.PlanService;
-import com.google.gson.Gson;
+import javax.ws.rs.core.HttpHeaders;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
 class AdminPlanControllerTests {
 	
-	@Autowired
-	private AdminService adminService;
+	@Autowired AdminService adminService;
+	@Autowired JwtTokenService jwtService;
+	@Autowired PlanService planService;
 	
 	@Autowired
-	private JwtTokenService jwtService;
-	
-	@Autowired
-	private PlanService planService;
-	
-	@Autowired
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	private String bearer;
 	
 	private static Admin admin;
 	
 	private void assertDtoResponse(Plan planObj, String response)
-			throws JsonProcessingException, JsonMappingException {
+			throws JsonProcessingException {
 		var planDto = new ObjectMapper().readValue(response, PlanDTO.class);
 		assertThat(planDto.getName()).isEqualTo(planObj.getName());
 		assertThat(planDto.getEnableHistory()).isEqualTo(planObj.getEnableHistory());
@@ -201,9 +190,8 @@ class AdminPlanControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(content().string(containsString("Plan deleted")));
 		
-		assertThrows(ResponseStatusException.class, () -> {
-			planService.getPlanByName("DELETE_ME");
-	    }, "Unable to find plan DELETE_ME");
+		assertThrows(ResponseStatusException.class, () ->
+				planService.getPlanByName("DELETE_ME"), "Unable to find plan DELETE_ME");
 	}
 	
 	@Test

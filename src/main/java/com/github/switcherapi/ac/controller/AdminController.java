@@ -34,12 +34,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 @RequestMapping("admin/v1")
 public class AdminController {
 	
-	private PlanService planService;
+	private final PlanService planService;
 	
-	private AccountService accountService;
+	private final AccountService accountService;
 	
-	private AdminService adminService;
-	
+	private final AdminService adminService;
+
 	public AdminController(
 			PlanService planService, 
 			AccountService accountService, 
@@ -89,13 +89,15 @@ public class AdminController {
 	@PostMapping(value = "/plan")
 	public ResponseEntity<PlanDTO> createPlan(@RequestBody PlanDTO planRequest) {
 		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
+		assert plan != null;
 		return ResponseEntity.ok(DefaultMapper.createCopy(planService.createPlan(plan), PlanDTO.class));
 	}
 	
 	@Operation(summary = "Update existing plan")
 	@PatchMapping(value = "/plan")
 	public ResponseEntity<PlanDTO> updatePlan(@RequestBody PlanDTO planRequest) {
-		final var plan = DefaultMapper.createCopy(planRequest, Plan.class); 
+		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
+		assert plan != null;
 		return ResponseEntity.ok(DefaultMapper.createCopy(planService.updatePlan(plan.getName(), plan), PlanDTO.class));
 	}
 	

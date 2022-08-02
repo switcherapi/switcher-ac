@@ -1,14 +1,11 @@
 package com.github.switcherapi.ac.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import javax.ws.rs.core.HttpHeaders;
-
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.service.AccountService;
+import com.github.switcherapi.ac.service.validator.ValidatorFactory;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -21,26 +18,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
-import com.github.switcherapi.ac.service.AccountService;
-import com.google.gson.Gson;
+import javax.ws.rs.core.HttpHeaders;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
 class MockSwitcherRelayControllerTests {
-	
-	@InjectMocks
-    private SwitcherRelayController switcherRelayController;
-	
-	@Mock
-	private AccountService mockAccountService;
+
+	@Mock private AccountService mockAccountService;
+	@Mock private ValidatorFactory mockValidatorFactory;
 	
 	private MockMvc mockMvc;
 	
 	@BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
+		final var switcherRelayController = new SwitcherRelayController(mockAccountService, mockValidatorFactory);
         mockMvc = MockMvcBuilders.standaloneSetup(switcherRelayController).build();
     }
 	

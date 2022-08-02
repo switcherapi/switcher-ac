@@ -1,23 +1,19 @@
 package com.github.switcherapi.ac.service;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import javax.crypto.SecretKey;
-
+import com.github.switcherapi.ac.repository.AdminRepository;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.github.switcherapi.ac.repository.AdminRepository;
-
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Service
 public class JwtTokenService {
@@ -25,16 +21,22 @@ public class JwtTokenService {
 	private static final Logger logger = LogManager.getLogger(JwtTokenService.class);
 	
 	public static final int JWT_TOKEN_VALIDITY = 5; //min
-	
-	@Value("${service.api.secret}")
-	private String jwtSecret;
-	
-	@Value("${service.relay.token}")
-	private String relayToken;
-	
-	@Autowired
-	private AdminRepository adminRepository;
-	
+
+	private final String jwtSecret;
+
+	private final String relayToken;
+
+	private final AdminRepository adminRepository;
+
+	public JwtTokenService(
+			@Value("${service.api.secret}") String jwtSecret,
+			@Value("${service.relay.token}") String relayToken,
+			AdminRepository adminRepository) {
+		this.jwtSecret = jwtSecret;
+		this.relayToken = relayToken;
+		this.adminRepository = adminRepository;
+	}
+
 	public boolean validateAdminToken(String token) {
 		return StringUtils.isNotBlank(validateToken(token));
 	}
@@ -64,7 +66,7 @@ public class JwtTokenService {
 					.setSigningKey(jwtSecret.getBytes(StandardCharsets.UTF_8)).build()
 					.parseClaimsJws(refreshToken).getBody().getSubject();
 		
-		if (token != null && refreshSubject.equals(token.substring(token.length() - 8, token.length()))) {
+		if (token != null && refreshSubject.equals(token.substring(token.length() - 8))) {
 			return generateToken(subject);
 		}
 		
@@ -93,7 +95,7 @@ public class JwtTokenService {
 	private String generateRefreshToken(String token) {
 		final SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 		return Jwts.builder()
-					.setSubject(token.substring(token.length() - 8, token.length()))
+					.setSubject(token.substring(token.length() - 8))
 					.signWith(key)
 					.compact();
 	}

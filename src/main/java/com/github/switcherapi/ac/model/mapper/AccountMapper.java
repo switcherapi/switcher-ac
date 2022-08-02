@@ -14,6 +14,8 @@ public class AccountMapper {
 	
 	public static AccountDTO createCopy(Account from) {
 		var to = DefaultMapper.createCopy(from, AccountDTO.class);
+		assert to != null;
+
 		to.setPlan(DefaultMapper.createCopy(from.getPlan(), PlanDTO.class));
 		return to;
 	}
