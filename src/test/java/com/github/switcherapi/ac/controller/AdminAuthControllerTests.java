@@ -32,17 +32,12 @@ import com.github.switcherapi.ac.service.JwtTokenService;
 @AutoConfigureMockMvc
 class AdminAuthControllerTests {
 	
-	@Autowired
-	private AdminRepository adminRepository;
+	@Autowired AdminRepository adminRepository;
+	@Autowired AdminService adminService;
+	@Autowired JwtTokenService jwtService;
 	
 	@Autowired
-	private AdminService adminService;
-	
-	@Autowired
-	private JwtTokenService jwtService;
-	
-	@Autowired
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	private String[] tokens;
 	

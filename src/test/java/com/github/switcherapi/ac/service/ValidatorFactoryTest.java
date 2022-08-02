@@ -1,8 +1,7 @@
 package com.github.switcherapi.ac.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import com.github.switcherapi.ac.model.domain.FeaturePayload;
+import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -10,24 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.service.validator.ValidatorFactory;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class ValidatorFactoryTest {
 	
-	@Autowired
-	private ValidatorFactory validatorFactory;
-	
-	@Autowired
-	private AccountService accountService;
+	@Autowired ValidatorFactory validatorFactory;
+	@Autowired AccountService accountService;
 	
 	@Test
 	void shouldThrowError_requestIsEmpty() {
 		FeaturePayload request = new FeaturePayload();
-		assertThrows(ResponseStatusException.class, () -> {
-			validatorFactory.runValidator(request);
-		});
+		assertThrows(ResponseStatusException.class, () ->
+				validatorFactory.runValidator(request));
 	}
 	
 	@Test
@@ -36,9 +31,8 @@ class ValidatorFactoryTest {
 		request.setFeature("domain");
 		request.setOwner("adminid");
 		
-		assertThrows(ResponseStatusException.class, () -> {
-			validatorFactory.runValidator(request);
-		});
+		assertThrows(ResponseStatusException.class, () ->
+				validatorFactory.runValidator(request));
 	}
 	
 	@ParameterizedTest
@@ -57,9 +51,8 @@ class ValidatorFactoryTest {
 		request.setFeature(feature);
 		request.setTotal(0);
 		
-		assertThrows(ResponseStatusException.class, () -> {
-			validatorFactory.runValidator(request);
-		});
+		assertThrows(ResponseStatusException.class, () ->
+				validatorFactory.runValidator(request));
 	}
 	
 	@ParameterizedTest

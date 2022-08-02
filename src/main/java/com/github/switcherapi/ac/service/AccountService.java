@@ -19,9 +19,9 @@ public class AccountService {
 	
 	private static final String ACCOUNT_NOT_FOUND = "Unable to find account %s";
 	
-	private PlanDao planDao;
+	private final PlanDao planDao;
 	
-	private AccountDao accountDao;
+	private final AccountDao accountDao;
 	
 	public AccountService(PlanDao planDao, AccountDao accountDao) {
 		this.planDao = planDao;
@@ -59,7 +59,7 @@ public class AccountService {
 		return account;
 	}
 	
-	public Account updateAccountPlan(String adminId, String planName) {
+	public void updateAccountPlan(String adminId, String planName) {
 		final var plan = planDao.findByName(planName);
 		if (plan == null) {
 			throw new ResponseStatusException(
@@ -67,11 +67,8 @@ public class AccountService {
 		}
 		
 		final var account = getAccountByAdminId(adminId);
-		
 		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
-		
-		return account;
 	}
 	
 	public void deleteAccount(String adminId) {

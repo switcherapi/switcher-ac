@@ -27,7 +27,7 @@
  	</developers>
  	
     <ciManagement>
-        <system>Github Actions</system>
+        <system>GitHub Actions</system>
         <url>https://github.com/switcherapi/switcher-ac/actions</url>
     </ciManagement>
  	

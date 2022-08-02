@@ -1,14 +1,10 @@
 package com.github.switcherapi.ac.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import javax.ws.rs.core.HttpHeaders;
-
+import com.github.switcherapi.ac.service.AccountService;
+import com.github.switcherapi.ac.service.AdminService;
+import com.github.switcherapi.ac.service.PlanService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -21,24 +17,27 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.github.switcherapi.ac.service.AccountService;
+import javax.ws.rs.core.HttpHeaders;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
 class MockAdminAccountControllerTests {
-	
-	@InjectMocks
-    private AdminController adminController;
-	
-	@Mock
-	private AccountService mockAccountService;
+
+	@Mock private PlanService mockPlanService;
+	@Mock private AccountService mockAccountService;
+	@Mock private AdminService mockAdminService;
 	
 	private MockMvc mockMvc;
 	
 	@BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
+		final var adminController = new AdminController(mockPlanService, mockAccountService, mockAdminService);
         mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
     }
 	

@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class AccountMapper {
 	
 	public static AccountDTO createCopy(Account from) {
-		var to = DefaultMapper.createCopy(from, AccountDTO.class);
-		to.setPlan(DefaultMapper.createCopy(from.getPlan(), PlanDTO.class));
+		var to = DefaultMapper.createCopy(from, new AccountDTO());
+		to.setPlan(DefaultMapper.createCopy(from.getPlan(), new PlanDTO()));
 		return to;
 	}
 

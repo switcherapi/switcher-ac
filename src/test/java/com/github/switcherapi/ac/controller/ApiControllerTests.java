@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class ApiControllerTests {
 	
 	@Autowired
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	@Test
 	void shouldReturnAllGood() throws Exception {

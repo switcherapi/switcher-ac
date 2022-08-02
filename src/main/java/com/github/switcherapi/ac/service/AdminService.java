@@ -19,20 +19,14 @@ public class AdminService {
 	
 	private static final Logger logger = LogManager.getLogger(AdminService.class);
 	
-	public static final String ADMIN = "admin";
-	
-	public static final String TOKEN = "token";
-	
-	public static final String REFRESH_TOKEN = "refreshToken";
-	
 	private final AdminRepository adminRepository;
 	
 	private final JwtTokenService jwtService;
 	
 	private final GitHubService githubService;
 	
-	public AdminService(AdminRepository adminRepository, 
-			GitHubService githubService, JwtTokenService jwtService) {
+	public AdminService(AdminRepository adminRepository,
+						GitHubService githubService, JwtTokenService jwtService) {
 		this.adminRepository = adminRepository;
 		this.githubService = githubService;
 		this.jwtService = jwtService;

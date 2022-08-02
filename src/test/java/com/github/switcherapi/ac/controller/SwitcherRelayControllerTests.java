@@ -39,14 +39,11 @@ import com.google.gson.Gson;
 @AutoConfigureMockMvc
 class SwitcherRelayControllerTests {
 	
-	@Autowired
-	private AccountService accountService;
+	@Autowired AccountService accountService;
+	@Autowired PlanService planService;
 	
 	@Autowired
-	private PlanService planService;
-	
-	@Autowired
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	private final Gson GSON = new Gson();
 	

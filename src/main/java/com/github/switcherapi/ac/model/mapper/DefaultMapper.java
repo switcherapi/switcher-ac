@@ -18,15 +18,10 @@ public class DefaultMapper {
 	public static <T, Y> void copyProperties(T from, Y to) {
 		BeanUtils.copyProperties(from, to, getNullPropertyNames(from));
 	}
-	
-	public static <T, Y> Y createCopy(T from, Class<Y> clazz) {
-		try {
-			var to = clazz.getDeclaredConstructor().newInstance();
-			BeanUtils.copyProperties(from, to, getNullPropertyNames(from));
-			return to;
-		} catch (Exception e) {
-			return null;
-		}
+
+	public static <T, Y> Y createCopy(T from, Y to) {
+		BeanUtils.copyProperties(from, to, getNullPropertyNames(from));
+		return to;
 	}
 	
 	public static String[] getNullPropertyNames(Object source) {

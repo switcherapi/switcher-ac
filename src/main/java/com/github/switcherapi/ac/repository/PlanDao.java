@@ -1,22 +1,23 @@
 package com.github.switcherapi.ac.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.switcherapi.ac.model.domain.Plan;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import com.github.switcherapi.ac.model.domain.Plan;
-
 @Component
 public class PlanDao {
-	
-	@Autowired
-	private MongoTemplate mongoTemplate;
-	
-	@Autowired
-	private PlanRepository planRepository;
-	
+
+	private final MongoTemplate mongoTemplate;
+
+	private final PlanRepository planRepository;
+
+	public PlanDao(MongoTemplate mongoTemplate, PlanRepository planRepository) {
+		this.mongoTemplate = mongoTemplate;
+		this.planRepository = planRepository;
+	}
+
 	public Plan findByName(String name) {
 		final var query = new Query();
 		query.addCriteria(Criteria.where("name").is(name));

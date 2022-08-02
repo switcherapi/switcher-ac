@@ -1,28 +1,29 @@
 package com.github.switcherapi.ac.repository;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.switcherapi.ac.model.domain.Account;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import com.github.switcherapi.ac.model.domain.Account;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class AccountDao {
-	
-	@Autowired
-	private MongoTemplate mongoTemplate;
-	
-	@Autowired
-	private PlanDao planDao;
-	
-	@Autowired
-	private AccountRepository accountRepository;
-	
+
+	private final MongoTemplate mongoTemplate;
+
+	private final PlanDao planDao;
+
+	private final AccountRepository accountRepository;
+
+	public AccountDao(MongoTemplate mongoTemplate, PlanDao planDao, AccountRepository accountRepository) {
+		this.mongoTemplate = mongoTemplate;
+		this.planDao = planDao;
+		this.accountRepository = accountRepository;
+	}
+
 	public Account findByAdminId(String adminId) {
 		final var query = new Query();
 		query.addCriteria(Criteria.where("adminId").is(adminId));

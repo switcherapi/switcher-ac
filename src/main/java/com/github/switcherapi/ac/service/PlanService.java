@@ -1,30 +1,25 @@
 package com.github.switcherapi.ac.service;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.mapper.DefaultMapper;
 import com.github.switcherapi.ac.repository.PlanDao;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Service
 public class PlanService {
 	
 	private static final String PLAN_NOT_FOUND = "Unable to find plan %s";
-	
-	@Autowired
-	private PlanDao planDao;
-	
-	@Autowired
-	private AccountService accountService;
+
+	private final PlanDao planDao;
+
+	private final AccountService accountService;
 
 	public PlanService(PlanDao planDao, AccountService accountService) {
-		super();
 		this.planDao = planDao;
 		this.accountService = accountService;
 	}

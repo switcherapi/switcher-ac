@@ -15,7 +15,7 @@ public class PlanMapper {
 	
 	public static <T> List<PlanDTO> createCopy(List<T> from) {
 		return from.stream()
-			.map(item -> DefaultMapper.createCopy(item, PlanDTO.class))
+			.map(item -> DefaultMapper.createCopy(item, new PlanDTO()))
 			.collect(Collectors.toList());
 	}
 

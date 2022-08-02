@@ -1,7 +1,4 @@
 FROM maven:3.6.3 AS maven
-LABEL COMPANY="Trackerforce"
-LABEL MAINTAINER="trackerforce.project@gmail.com"
-LABEL APPLICATION="Switcher AC"
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app

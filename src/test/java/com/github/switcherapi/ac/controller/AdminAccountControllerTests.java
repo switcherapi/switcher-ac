@@ -38,23 +38,13 @@ import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 @AutoConfigureMockMvc
 class AdminAccountControllerTests {
 	
-	@Autowired
-	private AdminService adminService;
+	@Autowired AdminService adminService;
+	@Autowired JwtTokenService jwtService;
+	@Autowired PlanService planService;
+	@Autowired AccountService accountService;
+	@Autowired ValidatorFactory validatorFactory;
 	
-	@Autowired
-	private JwtTokenService jwtService;
-	
-	@Autowired
-	private PlanService planService;
-	
-	@Autowired
-	private AccountService accountService;
-	
-	@Autowired
-	private ValidatorFactory validatorFactory;
-	
-	@Autowired
-	private MockMvc mockMvc;
+	@Autowired MockMvc mockMvc;
 	
 	private static Admin adminAccount;
 	
