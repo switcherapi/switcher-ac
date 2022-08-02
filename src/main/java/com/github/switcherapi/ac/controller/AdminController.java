@@ -88,17 +88,15 @@ public class AdminController {
 	@Operation(summary = "Create a new plan")
 	@PostMapping(value = "/plan")
 	public ResponseEntity<PlanDTO> createPlan(@RequestBody PlanDTO planRequest) {
-		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
-		assert plan != null;
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.createPlan(plan), PlanDTO.class));
+		final var plan = DefaultMapper.createCopy(planRequest, new Plan());
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.createPlan(plan), new PlanDTO()));
 	}
 	
 	@Operation(summary = "Update existing plan")
 	@PatchMapping(value = "/plan")
 	public ResponseEntity<PlanDTO> updatePlan(@RequestBody PlanDTO planRequest) {
-		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
-		assert plan != null;
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.updatePlan(plan.getName(), plan), PlanDTO.class));
+		final var plan = DefaultMapper.createCopy(planRequest, new Plan());
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.updatePlan(plan.getName(), plan), new PlanDTO()));
 	}
 	
 	@Operation(summary = "Delete existing plan")
@@ -117,6 +115,6 @@ public class AdminController {
 	@Operation(summary = "Return one plan")
 	@GetMapping(value = "/plan/get")
 	public ResponseEntity<PlanDTO> listPlans(@RequestParam String plan) {
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.getPlanByName(plan), PlanDTO.class));
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.getPlanByName(plan), new PlanDTO()));
 	}
 }
