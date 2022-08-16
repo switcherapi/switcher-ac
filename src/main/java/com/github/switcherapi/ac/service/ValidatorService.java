@@ -16,6 +16,9 @@ public class ValidatorService extends AbstractValidatorService {
 
     public static final String MSG_INVALID_FEATURE = "Invalid feature";
     public static final String MSG_FEATURE_LIMIT_REACHED = "Feature limit has been reached";
+    public static final String MSG_FEATURE_MISSING = "Feature is missing";
+    public static final String MSG_OWNER_MISSING = "Owner is missing";
+    public static final String MSG_PLAN_INVALID_VALUE = "Plan has invalid value";
 
     @Override
     protected ResponseRelayDTO executeValidator(final Account account) {
@@ -36,8 +39,8 @@ public class ValidatorService extends AbstractValidatorService {
     @Override
     protected void validateRequest(FeaturePayload request) {
         try {
-            Assert.notNull(request.getFeature(), "Feature is missing");
-            Assert.notNull(request.getOwner(), "Owner is missing");
+            Assert.notNull(request.getFeature(), MSG_FEATURE_MISSING);
+            Assert.notNull(request.getOwner(), MSG_OWNER_MISSING);
 
             params.put(ADMINID, request.getOwner());
             params.put(TOTAL, request.getTotal());
@@ -58,7 +61,7 @@ public class ValidatorService extends AbstractValidatorService {
             return validate(intValue, getParam(TOTAL, Integer.class));
         }
 
-        return false;
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MSG_PLAN_INVALID_VALUE);
     }
 
 }
