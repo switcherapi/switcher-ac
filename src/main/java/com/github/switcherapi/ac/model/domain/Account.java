@@ -26,6 +26,9 @@ public class Account {
 	@DBRef
 	private Plan plan;
 
+	@DBRef
+	private PlanV2 planV2;
+
 	private Date lastReset = new Date();
 
 	private int currentDailyExecution;

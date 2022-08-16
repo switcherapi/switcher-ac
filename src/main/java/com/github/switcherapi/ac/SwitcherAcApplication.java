@@ -1,6 +1,7 @@
 package com.github.switcherapi.ac;
 
 import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanV2;
 import com.github.switcherapi.ac.service.PlanService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +34,7 @@ public class SwitcherAcApplication implements CommandLineRunner {
 
 		logger.info("Loading default Plan...");
 		planService.createPlan(Plan.loadDefault());
+		planService.createPlanV2(PlanV2.loadDefault());
 		logger.info("Plan loaded");
 	}
 

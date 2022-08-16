@@ -34,7 +34,9 @@ public class AccountService {
 	
 	public Account createAccount(String adminId, String planName) {
 		final var plan = planDao.findByName(planName);
-		if (plan == null) {
+		final var planV2 = planDao.findV2ByName(planName);
+
+		if (plan == null || planV2 == null) {
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
 		}
@@ -46,6 +48,7 @@ public class AccountService {
 		}
 		
 		account.setPlan(plan);
+		account.setPlanV2(planV2);
 		accountDao.getAccountRepository().save(account);
 		
 		return account;

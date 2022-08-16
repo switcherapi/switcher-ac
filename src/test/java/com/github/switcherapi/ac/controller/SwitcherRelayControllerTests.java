@@ -50,9 +50,10 @@ class SwitcherRelayControllerTests {
 	private void executeTestValidate(String adminId, String featureName, 
 			Integer value, ResponseRelayDTO expectedResponse, int expectedStatus) throws Exception {
 		//given
-		FeaturePayload feature = new FeaturePayload();
-		feature.setFeature(featureName);
-		feature.setOwner(adminId);
+		FeaturePayload feature = FeaturePayload.builder()
+				.feature(featureName)
+				.owner(adminId)
+				.build();
 		
 		if (value != null)
 			feature.setTotal(value);

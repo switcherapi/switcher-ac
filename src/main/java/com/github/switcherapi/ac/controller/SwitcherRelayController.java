@@ -61,9 +61,11 @@ public class SwitcherRelayController {
 	@GetMapping(value = "/execution")
 	public ResponseEntity<ResponseRelayDTO> execution(@RequestParam String value) {
 		try {
-			final var request = new FeaturePayload();
-			request.setFeature("execution");
-			request.setOwner(value);
+			final var request = FeaturePayload.builder()
+					.feature("execution")
+					.owner(value)
+					.build();
+
 			return ResponseEntity.ok(validatorFactory.runValidator(request));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
