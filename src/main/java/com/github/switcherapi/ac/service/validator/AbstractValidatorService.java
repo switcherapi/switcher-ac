@@ -1,8 +1,5 @@
 package com.github.switcherapi.ac.service.validator;
 
-import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
-import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.TOTAL;
-
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -16,6 +13,8 @@ import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
+
+import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.*;
 
 @Component
 public abstract class AbstractValidatorService {
@@ -48,6 +47,10 @@ public abstract class AbstractValidatorService {
 	public <T> T getParam(SwitcherValidatorParams param, Class<T> clazz) {
 		return clazz.cast(params.get(param));
 	}
+
+	public Object getParam(SwitcherValidatorParams param) {
+		return params.get(param);
+	}
 	
 	/**
 	 * Default request validation.
@@ -61,6 +64,7 @@ public abstract class AbstractValidatorService {
 			
 			params.put(ADMINID, request.getOwner());
 			params.put(TOTAL, request.getTotal());
+			params.put(FEATURE, request.getFeature());
 		} catch (IllegalArgumentException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}

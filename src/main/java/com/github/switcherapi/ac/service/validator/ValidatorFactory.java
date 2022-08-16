@@ -61,14 +61,13 @@ public class ValidatorFactory {
     }
     
     public ResponseRelayDTO runValidator(FeaturePayload request) {	
-		if (validatorHandlers.containsKey(request.getFeature())) {
-			final var validatorService = validatorHandlers.get(request.getFeature());
-			return validatorService.execute(request);
+		if (!validatorHandlers.containsKey(request.getFeature())) {
+			throw new ResponseStatusException(
+					HttpStatus.BAD_REQUEST, String.format("Invalid validator: %s", request.getFeature()));
 		}
-		
-		throw new ResponseStatusException(
-				HttpStatus.BAD_REQUEST, String.format("Invalid validator: %s", request.getFeature()));
- 
+
+		final var validatorService = validatorHandlers.get(request.getFeature());
+		return validatorService.execute(request);
     }
 
 }

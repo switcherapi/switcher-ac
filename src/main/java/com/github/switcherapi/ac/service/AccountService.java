@@ -31,6 +31,10 @@ public class AccountService {
 	public Account createAccount(String adminId) {
 		return createAccount(adminId, PlanType.DEFAULT.name());
 	}
+
+	public Account createAccountV2(String adminId) {
+		return createAccountV2(adminId, PlanType.DEFAULT.name());
+	}
 	
 	public Account createAccount(String adminId, String planName) {
 		final var plan = planDao.findByName(planName);
@@ -48,6 +52,25 @@ public class AccountService {
 		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
 		
+		return account;
+	}
+
+	public Account createAccountV2(String adminId, String planName) {
+		final var planV2 = planDao.findV2ByName(planName);
+		if (planV2 == null) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
+		}
+
+		var account = accountDao.findByAdminId(adminId);
+		if (account == null) {
+			account = new Account();
+			account.setAdminId(adminId);
+		}
+
+		account.setPlanV2(planV2);
+		accountDao.getAccountRepository().save(account);
+
 		return account;
 	}
 	

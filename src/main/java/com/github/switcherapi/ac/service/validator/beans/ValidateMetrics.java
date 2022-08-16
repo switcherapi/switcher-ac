@@ -9,7 +9,7 @@ public class ValidateMetrics extends AbstractActiveCheckValidator {
 
 	@Override
 	protected ResponseRelayDTO executeValidator(final Account account) {
-		if (!account.getPlan().getEnableMetrics().booleanValue()) {
+		if (Boolean.FALSE.equals(account.getPlan().getEnableMetrics())) {
 			return new ResponseRelayDTO(false, "Metrics is not available");
 		}
 		

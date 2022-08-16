@@ -20,16 +20,17 @@ class ValidatorFactoryTest {
 	
 	@Test
 	void shouldThrowError_requestIsEmpty() {
-		FeaturePayload request = new FeaturePayload();
+		var request = FeaturePayload.builder().build();
 		assertThrows(ResponseStatusException.class, () ->
 				validatorFactory.runValidator(request));
 	}
 	
 	@Test
 	void shouldThrowError_missingParameter() {
-		FeaturePayload request = new FeaturePayload();
-		request.setFeature("domain");
-		request.setOwner("adminid");
+		var request = FeaturePayload.builder()
+				.feature("domain")
+				.owner("adminid")
+				.build();
 		
 		assertThrows(ResponseStatusException.class, () ->
 				validatorFactory.runValidator(request));
@@ -47,9 +48,10 @@ class ValidatorFactoryTest {
 			"team"
 	}) 
 	void shouldThrowError_missingAdminId(String feature) {
-		FeaturePayload request = new FeaturePayload();
-		request.setFeature(feature);
-		request.setTotal(0);
+		var request = FeaturePayload.builder()
+				.feature(feature)
+				.total(0)
+				.build();
 		
 		assertThrows(ResponseStatusException.class, () ->
 				validatorFactory.runValidator(request));
@@ -69,10 +71,11 @@ class ValidatorFactoryTest {
 	void shouldNotThrowError(String feature) {
 		accountService.createAccount("adminid");
 		
-		FeaturePayload request = new FeaturePayload();
-		request.setFeature(feature);
-		request.setOwner("adminid");
-		request.setTotal(0);
+		var request = FeaturePayload.builder()
+				.feature(feature)
+				.owner("adminid")
+				.total(0)
+				.build();
 		
 		assertDoesNotThrow(() -> {
 			validatorFactory.runValidator(request);

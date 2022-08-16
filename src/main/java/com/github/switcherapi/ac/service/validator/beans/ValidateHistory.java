@@ -9,7 +9,7 @@ public class ValidateHistory extends AbstractActiveCheckValidator {
 	
 	@Override
 	protected ResponseRelayDTO executeValidator(final Account account) {
-		if (!account.getPlan().getEnableHistory().booleanValue()) {
+		if (Boolean.FALSE.equals(account.getPlan().getEnableHistory())) {
 			return new ResponseRelayDTO(false, "History is not available");
 		}
 		

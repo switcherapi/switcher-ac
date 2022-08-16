@@ -2,6 +2,7 @@ package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.domain.PlanV2;
 import com.github.switcherapi.ac.model.mapper.DefaultMapper;
 import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,14 @@ public class PlanService {
 		
 		DefaultMapper.copyProperties(plan, newPlan);
 		return planDao.getPlanRepository().save(newPlan);
+	}
+
+	public PlanV2 createPlanV2(PlanV2 plan) {
+		var newPlan = planDao.findV2ByName(plan.getName());
+		newPlan = newPlan != null ? newPlan : PlanV2.builder().build();
+
+		DefaultMapper.copyProperties(plan, newPlan);
+		return planDao.getPlanV2Repository().save(newPlan);
 	}
 	
 	public Plan updatePlan(String planName, Plan plan) {

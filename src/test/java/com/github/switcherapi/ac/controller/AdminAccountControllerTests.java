@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.ws.rs.core.HttpHeaders;
 
+import com.github.switcherapi.ac.model.domain.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.switcherapi.ac.model.domain.Account;
-import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.dto.AccountDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
@@ -53,20 +49,20 @@ class AdminAccountControllerTests {
 	@BeforeAll
 	static void setup(
 			@Autowired AccountService accountService,
-			@Autowired AdminService adminService,
-			@Autowired PlanService planService) {
-		final Plan plan1 = Plan.loadDefault();
-		planService.createPlan(plan1);
-		
+			@Autowired AdminService adminService) {
 		accountService.createAccount("mock_account1");
 		adminAccount = adminService.createAdminAccount("123456");
 	}
 	
 	@BeforeEach
 	void setup() {
-		final Plan plan2 = Plan.loadDefault();
+		final Plan plan1 = Plan.loadDefault();
+		plan1.setName("BASIC");
+		planService.createPlan(plan1);
+
+		final PlanV2 plan2 = PlanV2.loadDefault();
 		plan2.setName("BASIC");
-		planService.createPlan(plan2);
+		planService.createPlanV2(plan2);
 		
 		final var token = jwtService.generateToken(adminAccount.getId())[0];
 		adminService.updateAdminAccountToken(adminAccount, token);
@@ -149,9 +145,10 @@ class AdminAccountControllerTests {
 	@Test
 	void shouldResetDailyExecution() throws Exception {
 		//given
-		FeaturePayload request = new FeaturePayload();
-		request.setFeature("execution");
-		request.setOwner("mock_account1");
+		var request = FeaturePayload.builder()
+				.feature("execution")
+				.owner("mock_account1")
+				.build();
 		validatorFactory.runValidator(request);
 		
 		//validate before
