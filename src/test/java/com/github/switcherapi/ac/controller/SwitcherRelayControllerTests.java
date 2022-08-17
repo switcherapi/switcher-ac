@@ -209,9 +209,9 @@ class SwitcherRelayControllerTests {
 		accountService.createAccount("masteradminid");
 		Plan plan = Plan.loadDefault();
 		plan.setMaxSwitchers(-1);
-		plan.setName("ILIMITED");
+		plan.setName("UNLIMITED");
 		planService.createPlan(plan);
-		accountService.updateAccountPlan("masteradminid", "ILIMITED");
+		accountService.updateAccountPlan("masteradminid", "UNLIMITED");
 		
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 		
