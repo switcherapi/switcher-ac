@@ -23,6 +23,23 @@
                 "switcher-ac"
               ],
               "activated": true
+            },
+            {
+              "key": "VALIDATOR_V2",
+              "activated": true,
+              "strategies": [
+                {
+                  "strategy": "VALUE_VALIDATION",
+                  "activated": true,
+                  "operation": "EQUAL",
+                  "values": [
+                    "5ed5cefb4af44b004826dcee"
+                  ]
+                }
+              ],
+              "components": [
+                "switcher-ac"
+              ]
             }
           ],
           "activated": true

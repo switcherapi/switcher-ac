@@ -15,6 +15,14 @@
               ],
               "description": "Validate Switcher AC\u0027s allowed GitHub accounts",
               "activated": true
+            },
+            {
+              "key": "VALIDATOR_V2",
+              "activated": false,
+              "strategies": [],
+              "components": [
+                "switcher-ac"
+              ]
             }
           ],
           "description": "Control Switcher API features.",

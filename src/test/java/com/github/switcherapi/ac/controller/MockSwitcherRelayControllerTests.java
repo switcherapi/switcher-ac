@@ -2,6 +2,7 @@ package com.github.switcherapi.ac.controller;
 
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
+import com.github.switcherapi.ac.service.ValidatorService;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,13 +32,14 @@ class MockSwitcherRelayControllerTests {
 
 	@Mock private AccountService mockAccountService;
 	@Mock private ValidatorFactory mockValidatorFactory;
+	@Mock private ValidatorService mockValidatorService;
 	
 	private MockMvc mockMvc;
 	
 	@BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-		final var switcherRelayController = new SwitcherRelayController(mockAccountService, mockValidatorFactory);
+		final var switcherRelayController = new SwitcherRelayController(mockAccountService, mockValidatorFactory, mockValidatorService);
         mockMvc = MockMvcBuilders.standaloneSetup(switcherRelayController).build();
     }
 	

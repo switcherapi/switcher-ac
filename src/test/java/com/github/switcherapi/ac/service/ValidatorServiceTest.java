@@ -1,6 +1,5 @@
 package com.github.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanV2;
@@ -26,22 +25,22 @@ class ValidatorServiceTest {
 
     static Stream<Arguments> validatorInput() {
         return Stream.of(
-                Arguments.of("domain", "adminid", 0),
-                Arguments.of("group", "adminid", 1),
-                Arguments.of("switcher", "adminid", 2),
-                Arguments.of("environment", "adminid", 1),
-                Arguments.of("component", "adminid", 1),
-                Arguments.of("team", "adminid", 0),
-                Arguments.of("daily_execution", "adminid", 99)
+                Arguments.of("domain", 0),
+                Arguments.of("group", 1),
+                Arguments.of("switcher", 2),
+                Arguments.of("environment", 1),
+                Arguments.of("component", 1),
+                Arguments.of("team", 0),
+                Arguments.of("daily_execution", 99)
         );
     }
 
     @ParameterizedTest
     @MethodSource("validatorInput")
-    void shouldValidateFromRequest(String feature, String owner, Integer total) {
+    void shouldValidateFromRequest(String feature, Integer total) {
         //given
-        givenAccount("adminid");
-        var request = givenRequest(feature, owner, total);
+        givenAccount("adminid_validate");
+        var request = givenRequest(feature, "adminid_validate", total);
 
         //test
         var responseRelayDTO = validatorService.execute(request);
@@ -50,24 +49,24 @@ class ValidatorServiceTest {
 
     static Stream<Arguments> validatorLimitInput() {
         return Stream.of(
-                Arguments.of("domain", "adminid", 1),
-                Arguments.of("group", "adminid", 2),
-                Arguments.of("switcher", "adminid", 3),
-                Arguments.of("environment", "adminid", 2),
-                Arguments.of("component", "adminid", 2),
-                Arguments.of("team", "adminid", 1),
-                Arguments.of("daily_execution", "adminid", 100),
-                Arguments.of("enable_history", "adminid", null),
-                Arguments.of("enable_metric", "adminid", null)
+                Arguments.of("domain", 1),
+                Arguments.of("group", 2),
+                Arguments.of("switcher", 3),
+                Arguments.of("environment", 2),
+                Arguments.of("component", 2),
+                Arguments.of("team", 1),
+                Arguments.of("daily_execution", 100),
+                Arguments.of("enable_history", null),
+                Arguments.of("enable_metric", null)
         );
     }
 
     @ParameterizedTest
     @MethodSource("validatorLimitInput")
-    void shouldNotValidateFromRequest(String feature, String owner, Integer total) {
+    void shouldNotValidateFromRequest(String feature, Integer total) {
         //given
-        givenAccount("adminid");
-        var request = givenRequest(feature, owner, total);
+        givenAccount("adminid_not_validate");
+        var request = givenRequest(feature, "adminid_not_validate", total);
 
         //test
         var responseRelayDTO = validatorService.execute(request);
@@ -78,8 +77,8 @@ class ValidatorServiceTest {
     @Test
     void shouldNotValidateFromRequest_invalidFeature() {
         //given
-        givenAccount("adminid");
-        var request = givenRequest("invalid_feature", "adminid", 1);
+        givenAccount("adminid_invalid_feature");
+        var request = givenRequest("invalid_feature", "adminid_invalid_feature", 1);
 
         //test
         var responseRelayDTO = validatorService.execute(request);
@@ -90,13 +89,25 @@ class ValidatorServiceTest {
     @Test
     void shouldNotValidateFromRequest_emptyFeature() {
         //given
-        givenAccount("adminid");
-        var request = givenRequest(null, "adminid", 1);
+        givenAccount("adminid_empty_feature");
+        var request = givenRequest(null, "adminid_empty_feature", 1);
 
         //test
         final var exception =
                 assertThrows(ResponseStatusException.class, () -> validatorService.execute(request));
         assertEquals(ValidatorService.MSG_FEATURE_MISSING, exception.getReason());
+    }
+
+    @Test
+    void shouldValidateFromRequest_undeterminedValue() {
+        //given
+        givenPlan("PLAN_TEST_UNDETERMINED", "feature_undetermined", -1);
+        givenAccount("adminid_undetermined", "PLAN_TEST_UNDETERMINED");
+        var request = givenRequest("feature_undetermined", "adminid_undetermined", 999);
+
+        //test
+        var responseRelayDTO = validatorService.execute(request);
+        assertTrue(responseRelayDTO.isResult());
     }
 
     @Test
@@ -120,14 +131,15 @@ class ValidatorServiceTest {
                 .build();
     }
 
-    private Account givenAccount(String adminId) {
-        return givenAccount(adminId, null);
+    private void givenAccount(String adminId) {
+        givenAccount(adminId, null);
     }
 
-    private Account givenAccount(String adminId, String planName) {
+    private void givenAccount(String adminId, String planName) {
         if (planName != null)
-            return accountService.createAccountV2(adminId, planName);
-        return accountService.createAccountV2(adminId);
+            accountService.createAccountV2(adminId, planName);
+        else
+            accountService.createAccountV2(adminId);
     }
 
     private void givenPlan(String planName, String featureName, Object value) {

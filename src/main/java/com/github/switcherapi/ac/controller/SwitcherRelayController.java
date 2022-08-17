@@ -1,22 +1,19 @@
 package com.github.switcherapi.ac.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
+import com.github.switcherapi.ac.service.ValidatorService;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 import com.google.gson.Gson;
-
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import static com.github.switcherapi.ac.config.SwitcherFeatures.VALIDATOR_V2;
+import static com.github.switcherapi.ac.config.SwitcherFeatures.getSwitcher;
 
 @RestController
 @RequestMapping("switcher/v1")
@@ -27,12 +24,16 @@ public class SwitcherRelayController {
 	private final AccountService accountService;
 	
 	private final ValidatorFactory validatorFactory;
+
+	private final ValidatorService validatorService;
 	
 	public SwitcherRelayController(
 			AccountService accountService, 
-			ValidatorFactory validatorFactory) {
+			ValidatorFactory validatorFactory,
+			ValidatorService validatorService) {
 		this.accountService = accountService;
 		this.validatorFactory = validatorFactory;
+		this.validatorService = validatorService;
 	}
 
 	@Operation(summary = "Load new account to Switcher AC")
@@ -77,6 +78,10 @@ public class SwitcherRelayController {
 	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
 			var featureRequest = gson.fromJson(request.getPayload(), FeaturePayload.class);
+			var validatorV2 = getSwitcher(VALIDATOR_V2).checkValue(featureRequest.getOwner()).isItOn();
+
+			if (validatorV2)
+				return ResponseEntity.ok(validatorService.execute(featureRequest));
 			return ResponseEntity.ok(validatorFactory.runValidator(featureRequest));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
