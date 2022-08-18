@@ -14,6 +14,11 @@
                 "switcher-ac"
               ],
               "activated": false
+            },
+            {
+              "key": "VALIDATOR_V2",
+              "activated": true,
+              "strategies": []
             }
           ],
           "activated": true
