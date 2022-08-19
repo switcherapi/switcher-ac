@@ -2,6 +2,7 @@ package com.github.switcherapi.ac.controller;
 
 import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
+import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanV2;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
@@ -47,6 +48,10 @@ class SwitcherRelayV2ControllerTests {
 			.attributes(List.of(
 					PlanAttribute.builder().feature("feature_integer").value(1).build()
 			)).build());
+
+		var plan = Plan.loadDefault();
+		plan.setName("TEST");
+		planService.createPlan(plan);
 	}
 	
 	@ParameterizedTest()
@@ -100,7 +105,7 @@ class SwitcherRelayV2ControllerTests {
 	}
 
 	private void givenAccount(String adminId) {
-		accountService.createAccountV2(adminId, "TEST");
+		accountService.createAccount(adminId, "TEST");
 	}
 
 }
