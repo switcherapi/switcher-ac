@@ -42,6 +42,19 @@ public class AccountDao {
 		
 		return Collections.emptyList();
 	}
+
+	public List<Account> findByPlanV2Name(String planName) {
+		final var planFound = planDao.findV2ByName(planName);
+
+		if (planFound != null) {
+			final var query = new Query();
+			query.addCriteria(Criteria.where("planV2").is(planFound));
+
+			return mongoTemplate.find(query, Account.class);
+		}
+
+		return Collections.emptyList();
+	}
 	
 	public AccountRepository getAccountRepository() {
 		return accountRepository;

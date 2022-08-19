@@ -42,6 +42,12 @@ public class PlanDao {
 		query.addCriteria(Criteria.where("name").is(planName));
 		mongoTemplate.remove(query, Plan.class);
 	}
+
+	public void deleteV2ByName(String planName) {
+		final var query = new Query();
+		query.addCriteria(Criteria.where("name").is(planName));
+		mongoTemplate.remove(query, PlanV2.class);
+	}
 	
 	public PlanRepository getPlanRepository() {
 		return planRepository;

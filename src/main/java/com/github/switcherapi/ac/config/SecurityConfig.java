@@ -47,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/admin/v1/auth/**").permitAll()
 				.antMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
 				.antMatchers("/admin/**").hasRole(Roles.ADMIN.name())
+				.antMatchers("/plan/**").hasRole(Roles.ADMIN.name())
 				.antMatchers("/switcher/**").hasRole(Roles.SWITCHER.name())
 				.antMatchers(SWAGGER_MATCHERS).authenticated()
 					.and().httpBasic().authenticationEntryPoint(authenticationEntryPoint())

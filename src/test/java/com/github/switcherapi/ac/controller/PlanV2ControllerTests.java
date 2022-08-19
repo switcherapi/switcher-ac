@@ -3,9 +3,9 @@ package com.github.switcherapi.ac.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.dto.PlanDTO;
+import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.dto.PlanV2DTO;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.ac.service.PlanService;
@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
-class AdminPlanControllerTests {
+class PlanV2ControllerTests {
 	
 	@Autowired AdminService adminService;
 	@Autowired JwtTokenService jwtService;
@@ -47,19 +47,10 @@ class AdminPlanControllerTests {
 	private String bearer;
 	private static Admin admin;
 	
-	private void assertDtoResponse(Plan planObj, String response)
+	private void assertDtoResponse(PlanV2 planObj, String response)
 			throws JsonProcessingException {
-		var planDto = new ObjectMapper().readValue(response, PlanDTO.class);
+		var planDto = new ObjectMapper().readValue(response, PlanV2DTO.class);
 		assertThat(planDto.getName()).isEqualTo(planObj.getName());
-		assertThat(planDto.getEnableHistory()).isEqualTo(planObj.getEnableHistory());
-		assertThat(planDto.getEnableMetrics()).isEqualTo(planObj.getEnableMetrics());
-		assertThat(planDto.getMaxComponents()).isEqualTo(planObj.getMaxComponents());
-		assertThat(planDto.getMaxDailyExecution()).isEqualTo(planObj.getMaxDailyExecution());
-		assertThat(planDto.getMaxDomains()).isEqualTo(planObj.getMaxDomains());
-		assertThat(planDto.getMaxEnvironments()).isEqualTo(planObj.getMaxEnvironments());
-		assertThat(planDto.getMaxGroups()).isEqualTo(planObj.getMaxGroups());
-		assertThat(planDto.getMaxSwitchers()).isEqualTo(planObj.getMaxSwitchers());
-		assertThat(planDto.getMaxTeams()).isEqualTo(planObj.getMaxTeams());
 	}
 	
 	@BeforeAll
@@ -82,7 +73,7 @@ class AdminPlanControllerTests {
 	
 	@Test
 	void shoutNotDelete_notAuthenticated() throws Exception {
-		this.mockMvc.perform(delete("/admin/v1/plan/v1")
+		this.mockMvc.perform(delete("/plan/v2/delete")
 			.contentType(MediaType.APPLICATION_JSON)
 			.with(csrf())
 			.queryParam("plan", "BASIC"))
@@ -92,12 +83,12 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldCreateNewPlan() throws Exception {
 		//given
-		Plan planObj = Plan.loadDefault();
+		PlanV2 planObj = PlanV2.loadDefault();
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		
 		//test
-		var response = this.mockMvc.perform(post("/admin/v1/plan")
+		var response = this.mockMvc.perform(post("/plan/v2/create")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
@@ -113,18 +104,18 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldUpdatePlan() throws Exception {
 		//given
-		Plan planObj = Plan.loadDefault();
+		PlanV2 planObj = PlanV2.loadDefault();
 		planObj.setName(PlanType.DEFAULT.name());
-		planObj.setEnableHistory(true);
+		planObj.getFeature("history").setValue(true);
 		
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		
 		//test
-		final Plan old = planService.getPlanByName(PlanType.DEFAULT.name());
-		assertEquals(false, old.getEnableHistory());
+		final PlanV2 old = planService.getPlanV2ByName(PlanType.DEFAULT.name());
+		assertEquals(false, old.getFeature("history").getValue());
 		
-		var response = this.mockMvc.perform(patch("/admin/v1/plan")
+		var response = this.mockMvc.perform(patch("/plan/v2/update")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.content(json)
@@ -135,21 +126,21 @@ class AdminPlanControllerTests {
 			.andReturn().getResponse().getContentAsString();
 		
 		assertDtoResponse(planObj, response);
-		final Plan planUpdated = planService.getPlanByName(PlanType.DEFAULT.name());
-		assertEquals(true, planUpdated.getEnableHistory());
+		final PlanV2 planUpdated = planService.getPlanV2ByName(PlanType.DEFAULT.name());
+		assertEquals(true, planUpdated.getFeature("history").getValue());
 	}
 	
 	@Test
 	void shouldNotUpdatePlan_planNotFound() throws Exception {
 		//given
-		Plan planObj = Plan.loadDefault();
+		PlanV2 planObj = PlanV2.loadDefault();
 		planObj.setName("NOT_FOUND");
 		
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		
 		//test
-		this.mockMvc.perform(patch("/admin/v1/plan")
+		this.mockMvc.perform(patch("/plan/v2/update")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
@@ -161,13 +152,13 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldDeletePlan() throws Exception {
 		//given
-		final Plan planObj = Plan.loadDefault();
+		final PlanV2 planObj = PlanV2.loadDefault();
 		planObj.setName("DELETE_ME");
 		
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		
-		this.mockMvc.perform(post("/admin/v1/plan")
+		this.mockMvc.perform(post("/plan/v2/create")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(HttpHeaders.AUTHORIZATION, bearer)
 				.with(csrf())
@@ -175,10 +166,10 @@ class AdminPlanControllerTests {
 				.andExpect(status().isOk());
 		
 		//test
-		final Plan planBeforeDelete = planService.getPlanByName("DELETE_ME");
+		final PlanV2 planBeforeDelete = planService.getPlanV2ByName("DELETE_ME");
 		assertThat(planBeforeDelete).isNotNull();
 		
-		this.mockMvc.perform(delete("/admin/v1/plan")
+		this.mockMvc.perform(delete("/plan/v2/delete")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
@@ -188,12 +179,12 @@ class AdminPlanControllerTests {
 			.andExpect(content().string(containsString("Plan deleted")));
 		
 		assertThrows(ResponseStatusException.class, () ->
-				planService.getPlanByName("DELETE_ME"), "Unable to find plan DELETE_ME");
+				planService.getPlanV2ByName("DELETE_ME"), "Unable to find plan DELETE_ME");
 	}
 	
 	@Test
 	void shouldNotDeletePlan_planCannotBeDeleted() throws Exception {
-		this.mockMvc.perform(delete("/admin/v1/plan")
+		this.mockMvc.perform(delete("/plan/v2/delete")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
@@ -206,11 +197,11 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldListPlans() throws Exception {
 		//given
-		final List<Plan> plans = planService.listAll();
+		final List<PlanV2> plans = planService.listAllV2();
 		assertThat(plans).isNotNull();
 		
 		//test
-		this.mockMvc.perform(get("/admin/v1/plan/list")
+		this.mockMvc.perform(get("/plan/v2/list")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf()))
@@ -222,11 +213,11 @@ class AdminPlanControllerTests {
 	@Test
 	void shouldGetPlanByName() throws Exception {
 		//given
-		final Plan plan = planService.getPlanByName(PlanType.DEFAULT.name());
+		final PlanV2 plan = planService.getPlanV2ByName(PlanType.DEFAULT.name());
 		assertThat(plan).isNotNull();
 		
 		//test
-		var response = this.mockMvc.perform(get("/admin/v1/plan/get")
+		var response = this.mockMvc.perform(get("/plan/v2/get")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
@@ -241,7 +232,7 @@ class AdminPlanControllerTests {
 	
 	@Test
 	void shouldNotGetPlanByName_plaNotFound() throws Exception {
-		this.mockMvc.perform(get("/admin/v1/plan/get")
+		this.mockMvc.perform(get("/plan/v2/get")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())

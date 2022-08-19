@@ -93,6 +93,18 @@ public class AccountService {
 		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
 	}
+
+	public void updateAccountPlanV2(String adminId, String planName) {
+		final var plan = planDao.findV2ByName(planName);
+		if (plan == null) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
+		}
+
+		final var account = getAccountByAdminId(adminId);
+		account.setPlanV2(plan);
+		accountDao.getAccountRepository().save(account);
+	}
 	
 	public void deleteAccount(String adminId) {
 		final var account = getAccountByAdminId(adminId);
@@ -114,6 +126,10 @@ public class AccountService {
 	
 	public List<Account> getAccountsByPlanName(String planName) {
 		return accountDao.findByPlanName(planName);
+	}
+
+	public List<Account> getAccountsByPlanV2Name(String planName) {
+		return accountDao.findByPlanV2Name(planName);
 	}
 	
 }

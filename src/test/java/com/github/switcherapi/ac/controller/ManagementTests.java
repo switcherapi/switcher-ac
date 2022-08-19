@@ -28,9 +28,7 @@ class ManagementTests {
 	
 	@Autowired AdminService adminService;
 	@Autowired JwtTokenService jwtService;
-	
-	@Autowired
-	MockMvc mockMvc;
+	@Autowired MockMvc mockMvc;
 	
 	private static Admin adminAccount;
 	

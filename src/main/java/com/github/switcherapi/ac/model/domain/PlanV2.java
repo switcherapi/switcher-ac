@@ -2,9 +2,7 @@ package com.github.switcherapi.ac.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Generated;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,6 +15,8 @@ import java.util.List;
 @Document(collection = "plansV2")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlanV2 {
 
 	@Id
@@ -26,6 +26,12 @@ public class PlanV2 {
 	private String name;
 
 	private List<PlanAttribute> attributes;
+
+	public PlanAttribute getFeature(String feature) {
+		return attributes.stream().filter(a -> a.getFeature().equals(feature))
+				.findFirst()
+				.orElseThrow();
+	}
 
 	public static PlanV2 loadDefault() {
 		return PlanV2.builder()
@@ -38,8 +44,8 @@ public class PlanV2 {
 					PlanAttribute.builder().feature("component").value(2).build(),
 					PlanAttribute.builder().feature("team").value(1).build(),
 					PlanAttribute.builder().feature("daily_execution").value(100).build(),
-					PlanAttribute.builder().feature("enable_history").value(false).build(),
-					PlanAttribute.builder().feature("enable_metric").value(false).build()
+					PlanAttribute.builder().feature("history").value(false).build(),
+					PlanAttribute.builder().feature("metrics").value(false).build()
 			)).build();
 	}
 
