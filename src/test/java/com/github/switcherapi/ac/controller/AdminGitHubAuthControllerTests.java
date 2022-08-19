@@ -40,14 +40,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AdminGitHubAuthControllerTests {
 	
 	public static MockWebServer mockBackend;
-	
 	private final ObjectMapper MAPPER = new ObjectMapper();
 
-	@Autowired
-	MockMvc mockMvc;
-	
-	@Autowired
-	ApplicationContext context;
+	@Autowired MockMvc mockMvc;
+	@Autowired ApplicationContext context;
 
 	@BeforeAll
     static void setup() throws IOException {
@@ -76,7 +72,7 @@ class AdminGitHubAuthControllerTests {
 	@ParameterizedTest
 	void shouldLoginWithGitHub() throws Exception {
 		//given
-		mockGitHub();
+		givenGitHub();
 		
 		//test
 		var json = this.mockMvc.perform(post("/admin/v1/auth/github")
@@ -143,7 +139,7 @@ class AdminGitHubAuthControllerTests {
 	@Test
 	void shouldNotLoginWithGitHub_notAvailable() throws Exception {
 		//given
-		mockGitHub();
+		givenGitHub();
 		SwitcherExecutor.assume("SWITCHER_AC_ADM", false);
 		
 		//test
@@ -154,7 +150,7 @@ class AdminGitHubAuthControllerTests {
 			.andExpect(status().isUnauthorized());
 	}
 	
-	void mockGitHub() throws JsonProcessingException {
+	private void givenGitHub() throws JsonProcessingException {
 		mockBackend.enqueue(new MockResponse()
 			.setBody("{ \"access_token\": \"123\" }")
 			.addHeader("Content-Type", MediaType.APPLICATION_JSON));

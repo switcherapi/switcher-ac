@@ -48,6 +48,14 @@ public class PlanService {
 		
 		return planFound;
 	}
+
+	public PlanV2 updatePlanV2(String planName, PlanV2 plan) {
+		var planFound = getPlanV2ByName(planName);
+		DefaultMapper.copyProperties(plan, planFound);
+		planDao.getPlanV2Repository().save(planFound);
+
+		return planFound;
+	}
 	
 	public void deletePlan(String planName) {
 		if (PlanType.DEFAULT.name().equals(planName)) {
@@ -60,9 +68,25 @@ public class PlanService {
 		
 		planDao.deleteByName(planName);
 	}
+
+	public void deletePlanV2(String planName) {
+		if (PlanType.DEFAULT.name().equals(planName)) {
+			throw new ResponseStatusException(
+					HttpStatus.BAD_REQUEST, "Invalid plan name");
+		}
+
+		accountService.getAccountsByPlanV2Name(planName).forEach(account ->
+				accountService.updateAccountPlanV2(account.getAdminId(), PlanType.DEFAULT.name()));
+
+		planDao.deleteV2ByName(planName);
+	}
 	
 	public List<Plan> listAll() {
 		return planDao.getPlanRepository().findAll();
+	}
+
+	public List<PlanV2> listAllV2() {
+		return planDao.getPlanV2Repository().findAll();
 	}
 	
 	public Plan getPlanByName(String planName) {
@@ -73,6 +97,17 @@ public class PlanService {
 					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
 		}
 		
+		return plan;
+	}
+
+	public PlanV2 getPlanV2ByName(String planName) {
+		var plan = planDao.findV2ByName(planName);
+
+		if (plan == null) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
+		}
+
 		return plan;
 	}
 	

@@ -47,50 +47,6 @@ class SwitcherRelayControllerTests {
 	
 	private final Gson GSON = new Gson();
 	
-	private void executeTestValidate(String adminId, String featureName, 
-			Integer value, ResponseRelayDTO expectedResponse, int expectedStatus) throws Exception {
-		//given
-		FeaturePayload feature = FeaturePayload.builder()
-				.feature(featureName)
-				.owner(adminId)
-				.build();
-		
-		if (value != null)
-			feature.setTotal(value);
-		
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setPayload(GSON.toJson(feature));
-		
-		String jsonRequest = GSON.toJson(request);
-		String jsonResponse = GSON.toJson(expectedResponse);
-		
-		//test
-		this.mockMvc.perform(post("/switcher/v1/validate")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
-			.with(csrf())
-			.content(jsonRequest))
-			.andDo(print())
-			.andExpect(status().is(expectedStatus))
-			.andExpect(content().string(containsString(jsonResponse)));
-	}
-	
-	private void executeTestExecution(String value, ResponseRelayDTO expectedResponse, 
-			int expectedStatus) throws Exception {
-		//given
-		String jsonResponse = GSON.toJson(expectedResponse);
-		
-		//test
-		this.mockMvc.perform(get("/switcher/v1/execution")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
-			.with(csrf())
-			.queryParam("value", value))
-			.andDo(print())
-			.andExpect(status().is(expectedStatus))
-			.andExpect(content().string(containsString(jsonResponse)));
-	}
-	
 	@Test
 	void shoutNotCreate_notAuthenticated() throws Exception {
 		this.mockMvc.perform(delete("/switcher/v1/create")
@@ -108,12 +64,8 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldCreateAccount() throws Exception {
 		//given
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setValue("adminid");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelayDTO response = new ResponseRelayDTO(true);
-		String jsonResponse = GSON.toJson(response);
+		var jsonRequest = givenRequest("adminid");
+		var jsonResponse = givenExpectedResponse(true);
 		
 		//test
 		this.mockMvc.perform(post("/switcher/v1/create")
@@ -129,15 +81,9 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldRemoveAccount() throws Exception {
 		//given
-		accountService.createAccount("adminid");
-		
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setValue("adminid");
-		
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelayDTO response = new ResponseRelayDTO(true);
-		String jsonResponse = GSON.toJson(response);
+		givenAccount("adminid");
+		var jsonRequest = givenRequest("adminid");
+		var jsonResponse = givenExpectedResponse(true);
 		
 		//test
 		this.mockMvc.perform(post("/switcher/v1/remove")
@@ -149,16 +95,13 @@ class SwitcherRelayControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(content().string(containsString(jsonResponse)));
 	}
-	
+
 	@Test
 	void shouldNotRemoveAccount_accountNotFound() throws Exception {
 		//given
-		RequestRelayDTO request = new RequestRelayDTO();
-		request.setValue("NOT_FOUND");
-		String jsonRequest = GSON.toJson(request);
-		
-		ResponseRelayDTO response = new ResponseRelayDTO(false, "404 NOT_FOUND \"Unable to find account NOT_FOUND\"");
-		String jsonResponse = GSON.toJson(response);
+		var jsonRequest = givenRequest("NOT_FOUND");
+		var jsonResponse = givenExpectedResponse(false,
+				"404 NOT_FOUND \"Unable to find account NOT_FOUND\"");
 		
 		//test
 		this.mockMvc.perform(post("/switcher/v1/remove")
@@ -174,7 +117,7 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldBeOkWhenValidate_execution() throws Exception {
 		//given
-		accountService.createAccount("adminid");
+		givenAccount("adminid");
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 		
 		//test
@@ -184,11 +127,13 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_execution() throws Exception {
 		//given
-		accountService.createAccount("adminid");
+		givenAccount("adminid");
 		Plan plan = Plan.loadDefault();
 		plan.setMaxDailyExecution(0);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "Daily execution limit has been reached");
+
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false,
+				"Daily execution limit has been reached");
 
 		//test
 		this.executeTestExecution("adminid", expectedResponse, 200);
@@ -197,7 +142,8 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_execution_accountNotFound() throws Exception {
 		//given
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false,
+				"404 NOT_FOUND \"Account not found\"");
 		
 		//test
 		this.executeTestExecution("NOT_FOUND", expectedResponse, 404);
@@ -206,7 +152,7 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldBeOkWhenValidate_unlimitedUseFeature() throws Exception {
 		//given
-		accountService.createAccount("masteradminid");
+		givenAccount("masteradminid");
 		Plan plan = Plan.loadDefault();
 		plan.setMaxSwitchers(-1);
 		plan.setName("UNLIMITED");
@@ -216,7 +162,8 @@ class SwitcherRelayControllerTests {
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 		
 		//test
-		this.executeTestValidate("masteradminid", "switcher", 10000, expectedResponse, 200);
+		this.executeTestValidate("masteradminid", "switcher",
+				10000, expectedResponse, 200);
 	}
 	
 	static Stream<Arguments> providedOkValidators() {
@@ -234,7 +181,7 @@ class SwitcherRelayControllerTests {
 	@MethodSource("providedOkValidators")
 	void shouldBeOkWhenValidate(String validator, int total) throws Exception {
 		//given
-		accountService.createAccount("adminid");
+		givenAccount("adminid");
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 
 		//test
@@ -257,7 +204,7 @@ class SwitcherRelayControllerTests {
 	@MethodSource("providedNokValidators")
 	void shouldNotBeOkWhenValidate(String validator, int total, String message) throws Exception {
 		//given
-		accountService.createAccount("adminid");
+		givenAccount("adminid");
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, message);
 
 		//test
@@ -269,24 +216,26 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldBeOkWhenValidate_metric() throws Exception {
 		//given
-		accountService.createAccount("adminid");
+		givenAccount("adminid");
 		Plan plan = Plan.loadDefault();
 		plan.setEnableMetrics(true);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 
 		//test
-		this.executeTestValidate("adminid", "metrics", null, expectedResponse, 200);
+		this.executeTestValidate("adminid", "metrics",
+				null, expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_metric() throws Exception {
 		//given
-		accountService.createAccount("adminid");
+		givenAccount("adminid");
 		Plan plan = Plan.loadDefault();
 		plan.setEnableMetrics(false);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "Metrics is not available");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false,
+				"Metrics is not available");
 		
 		//test
 		this.executeTestValidate("adminid", "metrics", null, expectedResponse, 200);
@@ -295,20 +244,21 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldBeOkWhenValidate_history() throws Exception {
 		//given
-		accountService.createAccount("adminid");
+		givenAccount("adminid");
 		Plan plan = Plan.loadDefault();
 		plan.setEnableHistory(true);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 
 		//test
-		this.executeTestValidate("adminid", "history", null, expectedResponse, 200);
+		this.executeTestValidate("adminid", "history",
+				null, expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_history() throws Exception {
 		//given
-		accountService.createAccount("adminid");
+		givenAccount("adminid");
 		Plan plan = Plan.loadDefault();
 		plan.setEnableHistory(false);
 		planService.updatePlan(PlanType.DEFAULT.name(), plan);
@@ -321,7 +271,9 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_accountNotFound() throws Exception {
 		//given
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false,
+				"404 NOT_FOUND \"Account not found\"");
+
 		final String[] features = {
 				"domain", "group", "switcher", "component",
 				"environment", "team", "metrics", "history"
@@ -340,10 +292,77 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_invalidFeatureName() throws Exception {
 		//given
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "400 BAD_REQUEST \"Invalid validator: INVALID_FEATURE\"");
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false,
+				"400 BAD_REQUEST \"Invalid validator: INVALID_FEATURE\"");
 		
 		//test
-		this.executeTestValidate("adminid", "INVALID_FEATURE", 0, expectedResponse, 400);
+		this.executeTestValidate("adminid", "INVALID_FEATURE",
+				0, expectedResponse, 400);
+	}
+
+	private void executeTestValidate(String adminId, String featureName,
+		Integer value, ResponseRelayDTO expectedResponse, int expectedStatus) throws Exception {
+
+		//given
+		FeaturePayload feature = FeaturePayload.builder()
+				.feature(featureName)
+				.owner(adminId)
+				.build();
+
+		if (value != null)
+			feature.setTotal(value);
+
+		RequestRelayDTO request = new RequestRelayDTO();
+		request.setPayload(GSON.toJson(feature));
+
+		String jsonRequest = GSON.toJson(request);
+		String jsonResponse = GSON.toJson(expectedResponse);
+
+		//test
+		this.mockMvc.perform(post("/switcher/v1/validate")
+						.contentType(MediaType.APPLICATION_JSON)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
+						.with(csrf())
+						.content(jsonRequest))
+				.andDo(print())
+				.andExpect(status().is(expectedStatus))
+				.andExpect(content().string(containsString(jsonResponse)));
+	}
+
+	private void executeTestExecution(String value, ResponseRelayDTO expectedResponse,
+									  int expectedStatus) throws Exception {
+		//given
+		String jsonResponse = GSON.toJson(expectedResponse);
+
+		//test
+		this.mockMvc.perform(get("/switcher/v1/execution")
+						.contentType(MediaType.APPLICATION_JSON)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
+						.with(csrf())
+						.queryParam("value", value))
+				.andDo(print())
+				.andExpect(status().is(expectedStatus))
+				.andExpect(content().string(containsString(jsonResponse)));
+	}
+
+	private String givenExpectedResponse(boolean result) {
+		return givenExpectedResponse(result, null);
+	}
+
+	private String givenExpectedResponse(boolean result, String message) {
+		ResponseRelayDTO response = new ResponseRelayDTO(result, message);
+		return GSON.toJson(response);
+	}
+
+	private String givenRequest(String adminId) {
+		RequestRelayDTO request = new RequestRelayDTO();
+		request.setValue(adminId);
+
+		return GSON.toJson(request);
+	}
+
+	private void givenAccount(String adminId) {
+		accountService.createAccount(adminId);
 	}
 
 }

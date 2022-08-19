@@ -56,8 +56,8 @@ class ValidatorServiceTest {
                 Arguments.of("component", 2),
                 Arguments.of("team", 1),
                 Arguments.of("daily_execution", 100),
-                Arguments.of("enable_history", null),
-                Arguments.of("enable_metric", null)
+                Arguments.of("history", null),
+                Arguments.of("metrics", null)
         );
     }
 

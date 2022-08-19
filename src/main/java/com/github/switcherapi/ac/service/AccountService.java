@@ -15,12 +15,10 @@ import com.github.switcherapi.ac.repository.PlanDao;
 @Service
 public class AccountService {
 	
-	private static final String PLAN_NOT_FOUND = "Unable to find plan named %s";
-	
-	private static final String ACCOUNT_NOT_FOUND = "Unable to find account %s";
+	public static final String PLAN_NOT_FOUND = "Unable to find plan named %s";
+	public static final String ACCOUNT_NOT_FOUND = "Unable to find account %s";
 	
 	private final PlanDao planDao;
-	
 	private final AccountDao accountDao;
 	
 	public AccountService(PlanDao planDao, AccountDao accountDao) {
@@ -93,6 +91,18 @@ public class AccountService {
 		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
 	}
+
+	public void updateAccountPlanV2(String adminId, String planName) {
+		final var plan = planDao.findV2ByName(planName);
+		if (plan == null) {
+			throw new ResponseStatusException(
+					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
+		}
+
+		final var account = getAccountByAdminId(adminId);
+		account.setPlanV2(plan);
+		accountDao.getAccountRepository().save(account);
+	}
 	
 	public void deleteAccount(String adminId) {
 		final var account = getAccountByAdminId(adminId);
@@ -114,6 +124,10 @@ public class AccountService {
 	
 	public List<Account> getAccountsByPlanName(String planName) {
 		return accountDao.findByPlanName(planName);
+	}
+
+	public List<Account> getAccountsByPlanV2Name(String planName) {
+		return accountDao.findByPlanV2Name(planName);
 	}
 	
 }
