@@ -1,6 +1,7 @@
 package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
+import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanV2;
 import org.junit.jupiter.api.Test;
@@ -137,9 +138,9 @@ class ValidatorServiceTest {
 
     private void givenAccount(String adminId, String planName) {
         if (planName != null)
-            accountService.createAccountV2(adminId, planName);
+            accountService.createAccount(adminId, planName);
         else
-            accountService.createAccountV2(adminId);
+            accountService.createAccount(adminId);
     }
 
     private void givenPlan(String planName, String featureName, Object value) {
@@ -150,5 +151,9 @@ class ValidatorServiceTest {
                         .value(value)
                         .build()))
                 .build());
+
+        var plan = Plan.loadDefault();
+        plan.setName(planName);
+        planService.createPlan(plan);
     }
 }

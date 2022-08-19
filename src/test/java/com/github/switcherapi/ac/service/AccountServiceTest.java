@@ -48,7 +48,7 @@ class AccountServiceTest {
     }
 
     private void givenAccount() {
-        accountService.createAccountV2("adminid");
+        accountService.createAccount("adminid");
     }
 
     private void givenPlan(String planName) {
