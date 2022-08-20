@@ -1,16 +1,14 @@
 package com.github.switcherapi.ac.model.domain;
 
-import java.util.Date;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import lombok.Data;
+import java.util.Date;
 
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "accounts")
@@ -22,9 +20,6 @@ public class Account {
 
 	@Indexed(unique = true)
 	private String adminId;
-
-	@DBRef
-	private Plan plan;
 
 	@DBRef
 	private PlanV2 planV2;

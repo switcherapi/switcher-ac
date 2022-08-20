@@ -1,8 +1,6 @@
 package com.github.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.service.AccountService;
-import com.github.switcherapi.ac.service.AdminService;
+import com.github.switcherapi.ac.model.domain.PlanV2;
 import com.github.switcherapi.ac.service.PlanService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,31 +30,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MockAdminPlanControllerTests {
 
 	@Mock private PlanService mockPlanService;
-	@Mock private AccountService mockAccountService;
-	@Mock private AdminService mockAdminService;
 	
 	private MockMvc mockMvc;
 	
 	@BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-		final var adminController = new AdminController(mockPlanService, mockAccountService, mockAdminService);
-        mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
+		final var planService = new PlanController(mockPlanService);
+        mockMvc = MockMvcBuilders.standaloneSetup(planService).build();
     }
 	
 	@Test
 	void shouldNotCreateNewPlan() throws Exception {
 		//mock
-        Mockito.when(mockPlanService.createPlan(Mockito.any(Plan.class)))
+        Mockito.when(mockPlanService.createPlanV2(Mockito.any(PlanV2.class)))
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
 		//given
-        Plan planObj = Plan.loadDefault();
+        PlanV2 planObj = PlanV2.loadDefault();
 		Gson gson = new Gson();
 		String json = gson.toJson(planObj);
 		
 		//test
-		this.mockMvc.perform(post("/admin/v1/plan")
+		this.mockMvc.perform(post("/plan/v2/create")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, "Bearer api_token")
 			.content(json))
@@ -67,11 +63,11 @@ class MockAdminPlanControllerTests {
 	@Test
 	void shouldNotListPlans() throws Exception {
 		//mock
-        Mockito.when(mockPlanService.listAll())
+        Mockito.when(mockPlanService.listAllV2())
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
 		
 		//test
-		this.mockMvc.perform(get("/admin/v1/plan/list")
+		this.mockMvc.perform(get("/plan/v2/list")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, "Bearer api_token"))
 			.andDo(print())

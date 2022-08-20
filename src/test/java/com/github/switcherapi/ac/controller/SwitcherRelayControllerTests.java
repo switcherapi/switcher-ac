@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import javax.ws.rs.core.HttpHeaders;
 
+import com.github.switcherapi.ac.model.domain.PlanV2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,7 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
@@ -128,9 +128,9 @@ class SwitcherRelayControllerTests {
 	void shouldNotBeOkWhenValidate_execution() throws Exception {
 		//given
 		givenAccount("adminid");
-		Plan plan = Plan.loadDefault();
-		plan.setMaxDailyExecution(0);
-		planService.updatePlan(PlanType.DEFAULT.name(), plan);
+		PlanV2 plan = PlanV2.loadDefault();
+		plan.getFeature("daily_execution").setValue(0);
+		planService.updatePlanV2(PlanType.DEFAULT.name(), plan);
 
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false,
 				"Daily execution limit has been reached");
@@ -153,11 +153,11 @@ class SwitcherRelayControllerTests {
 	void shouldBeOkWhenValidate_unlimitedUseFeature() throws Exception {
 		//given
 		givenAccount("masteradminid");
-		Plan plan = Plan.loadDefault();
-		plan.setMaxSwitchers(-1);
+		PlanV2 plan = PlanV2.loadDefault();
+		plan.getFeature("switcher").setValue(-1);
 		plan.setName("UNLIMITED");
-		planService.createPlan(plan);
-		accountService.updateAccountPlan("masteradminid", "UNLIMITED");
+		planService.createPlanV2(plan);
+		accountService.updateAccountPlanV2("masteradminid", "UNLIMITED");
 		
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
 		
@@ -191,81 +191,25 @@ class SwitcherRelayControllerTests {
 	
 	static Stream<Arguments> providedNokValidators() {
 	    return Stream.of(
-	      Arguments.of("component", 3, "Component limit has been reached"),
-	      Arguments.of("domain", 2, "Domain limit has been reached"),
-	      Arguments.of("environment", 3, "Environment limit has been reached"),
-	      Arguments.of("group", 5, "Group limit has been reached"),
-	      Arguments.of("switcher", 4, "Switcher limit has been reached"),
-	      Arguments.of("team", 2, "Team limit has been reached")
+	      Arguments.of("component", 3),
+	      Arguments.of("domain", 2),
+	      Arguments.of("environment", 3),
+	      Arguments.of("group", 5),
+	      Arguments.of("switcher", 4),
+	      Arguments.of("team", 2)
 	    );
 	}
 	
 	@ParameterizedTest
 	@MethodSource("providedNokValidators")
-	void shouldNotBeOkWhenValidate(String validator, int total, String message) throws Exception {
+	void shouldNotBeOkWhenValidate(String validator, int total) throws Exception {
 		//given
 		givenAccount("adminid");
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, message);
+		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "Feature limit has been reached");
 
 		//test
 		this.executeTestValidate(
 				"adminid", validator, total, expectedResponse, 200);
-	}
-	
-	
-	@Test
-	void shouldBeOkWhenValidate_metric() throws Exception {
-		//given
-		givenAccount("adminid");
-		Plan plan = Plan.loadDefault();
-		plan.setEnableMetrics(true);
-		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
-
-		//test
-		this.executeTestValidate("adminid", "metrics",
-				null, expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldNotBeOkWhenValidate_metric() throws Exception {
-		//given
-		givenAccount("adminid");
-		Plan plan = Plan.loadDefault();
-		plan.setEnableMetrics(false);
-		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false,
-				"Metrics is not available");
-		
-		//test
-		this.executeTestValidate("adminid", "metrics", null, expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldBeOkWhenValidate_history() throws Exception {
-		//given
-		givenAccount("adminid");
-		Plan plan = Plan.loadDefault();
-		plan.setEnableHistory(true);
-		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(true);
-
-		//test
-		this.executeTestValidate("adminid", "history",
-				null, expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldNotBeOkWhenValidate_history() throws Exception {
-		//given
-		givenAccount("adminid");
-		Plan plan = Plan.loadDefault();
-		plan.setEnableHistory(false);
-		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false, "History is not available");
-		
-		//test
-		this.executeTestValidate("adminid", "history", null, expectedResponse, 200);
 	}
 	
 	@Test
@@ -292,8 +236,9 @@ class SwitcherRelayControllerTests {
 	@Test
 	void shouldNotBeOkWhenValidate_invalidFeatureName() throws Exception {
 		//given
+		givenAccount("adminid");
 		ResponseRelayDTO expectedResponse = new ResponseRelayDTO(false,
-				"400 BAD_REQUEST \"Invalid validator: INVALID_FEATURE\"");
+				"400 BAD_REQUEST \"Invalid feature\"");
 		
 		//test
 		this.executeTestValidate("adminid", "INVALID_FEATURE",

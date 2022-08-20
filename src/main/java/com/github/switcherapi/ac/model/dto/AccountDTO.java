@@ -1,11 +1,10 @@
 package com.github.switcherapi.ac.model.dto;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import lombok.Data;
+
+import java.util.Date;
 
 @JsonInclude(Include.NON_NULL)
 @Data
@@ -15,7 +14,7 @@ public class AccountDTO {
 
 	private String adminId;
 
-	private PlanDTO plan;
+	private PlanV2DTO plan;
 
 	private Date lastReset;
 

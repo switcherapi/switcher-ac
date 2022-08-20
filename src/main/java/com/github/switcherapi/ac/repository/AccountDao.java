@@ -29,19 +29,6 @@ public class AccountDao {
 		query.addCriteria(Criteria.where("adminId").is(adminId));
 		return mongoTemplate.findOne(query, Account.class);
 	}
-	
-	public List<Account> findByPlanName(String planName) {
-		final var planFound = planDao.findByName(planName);
-		
-		if (planFound != null) {
-			final var query = new Query();
-			query.addCriteria(Criteria.where("plan").is(planFound));		
-			
-			return mongoTemplate.find(query, Account.class);
-		}
-		
-		return Collections.emptyList();
-	}
 
 	public List<Account> findByPlanV2Name(String planName) {
 		final var planFound = planDao.findV2ByName(planName);

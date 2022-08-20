@@ -9,7 +9,7 @@ import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.validator.SwitcherValidator;
 
-@SwitcherValidator("execution")
+@SwitcherValidator("daily_execution")
 public class ValidateExecution extends AbstractActiveCheckValidator {
 	
 	@Override
@@ -23,7 +23,8 @@ public class ValidateExecution extends AbstractActiveCheckValidator {
 			account.setLastReset(dateTime.toDate());
 		}
 		
-		if (validate(account.getCurrentDailyExecution(), account.getPlan().getMaxDailyExecution())) {
+		if (validate(account.getCurrentDailyExecution(),
+				Integer.parseInt(account.getPlanV2().getFeature("daily_execution").getValue().toString()))) {
 			account.setCurrentDailyExecution(account.getCurrentDailyExecution() + 1);
 			accountDao.getAccountRepository().save(account);				
 		} else {

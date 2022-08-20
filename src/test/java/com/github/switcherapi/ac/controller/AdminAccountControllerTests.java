@@ -56,10 +56,6 @@ class AdminAccountControllerTests {
 	
 	@BeforeEach
 	void setup() {
-		final Plan plan1 = Plan.loadDefault();
-		plan1.setName("BASIC");
-		planService.createPlan(plan1);
-
 		final PlanV2 plan2 = PlanV2.loadDefault();
 		plan2.setName("BASIC");
 		planService.createPlanV2(plan2);
@@ -79,7 +75,7 @@ class AdminAccountControllerTests {
 	void shouldChangeAccountPlan() throws Exception {
 		//validate before
 		Account account = accountService.getAccountByAdminId("mock_account1");
-		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
+		assertThat(account.getPlanV2().getName()).isEqualTo(PlanType.DEFAULT.name());
 		
 		//test
 		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
@@ -96,7 +92,7 @@ class AdminAccountControllerTests {
 		assertThat(accountDto.getPlan().getName()).isEqualTo("BASIC");
 		
 		account = accountService.getAccountByAdminId("mock_account1");
-		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
+		assertThat(account.getPlanV2().getName()).isEqualTo("BASIC");
 	}
 	
 	@Test
@@ -105,10 +101,10 @@ class AdminAccountControllerTests {
 		Account account = accountService.createAccount("mock_account1", "BASIC");
 		
 		//validate before
-		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
+		assertThat(account.getPlanV2().getName()).isEqualTo("BASIC");
 		
 		//test
-		this.mockMvc.perform(delete("/admin/v1/plan")
+		this.mockMvc.perform(delete("/plan/v2/delete")
 			.contentType(MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, bearer)
 			.with(csrf())
@@ -117,7 +113,7 @@ class AdminAccountControllerTests {
 			.andExpect(content().string("Plan deleted"));
 		
 		account = accountService.getAccountByAdminId("mock_account1");
-		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
+		assertThat(account.getPlanV2().getName()).isEqualTo(PlanType.DEFAULT.name());
 	}
 	
 	@Test
@@ -146,7 +142,7 @@ class AdminAccountControllerTests {
 	void shouldResetDailyExecution() throws Exception {
 		//given
 		var request = FeaturePayload.builder()
-				.feature("execution")
+				.feature("daily_execution")
 				.owner("mock_account1")
 				.build();
 		validatorFactory.runValidator(request);

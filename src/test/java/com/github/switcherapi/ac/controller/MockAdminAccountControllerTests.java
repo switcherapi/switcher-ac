@@ -2,7 +2,6 @@ package com.github.switcherapi.ac.controller;
 
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
-import com.github.switcherapi.ac.service.PlanService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -28,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class MockAdminAccountControllerTests {
 
-	@Mock private PlanService mockPlanService;
 	@Mock private AccountService mockAccountService;
 	@Mock private AdminService mockAdminService;
 	
@@ -37,7 +35,7 @@ class MockAdminAccountControllerTests {
 	@BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-		final var adminController = new AdminController(mockPlanService, mockAccountService, mockAdminService);
+		final var adminController = new AdminController(mockAccountService, mockAdminService);
         mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
     }
 	
