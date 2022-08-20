@@ -8,7 +8,4 @@ public class SwitcherFeatures extends SwitcherContextBase {
 	@SwitcherKey
 	public static final String SWITCHER_AC_ADM = "SWITCHER_AC_ADM";
 
-	@SwitcherKey
-	public static final String VALIDATOR_V2 = "VALIDATOR_V2";
-
 }

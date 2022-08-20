@@ -59,14 +59,7 @@ class ValidatorFactoryTest {
 	
 	@ParameterizedTest
 	@ValueSource(strings = {
-			"component",
-			"domain",
-			"environment",
-			"group",
-			"history",
-			"metrics",
-			"switcher",
-			"team"
+			"daily_execution"
 	}) 
 	void shouldNotThrowError(String feature) {
 		accountService.createAccount("adminid");

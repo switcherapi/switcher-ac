@@ -1,7 +1,6 @@
 package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanV2;
 import org.junit.jupiter.api.Test;
@@ -82,9 +81,9 @@ class ValidatorServiceTest {
         var request = givenRequest("invalid_feature", "adminid_invalid_feature", 1);
 
         //test
-        var responseRelayDTO = validatorService.execute(request);
-        assertFalse(responseRelayDTO.isResult());
-        assertEquals(ValidatorService.MSG_INVALID_FEATURE, responseRelayDTO.getMessage());
+        final var exception =
+                assertThrows(ResponseStatusException.class, () -> validatorService.execute(request));
+        assertEquals(ValidatorService.MSG_INVALID_FEATURE, exception.getReason());
     }
 
     @Test
@@ -145,15 +144,11 @@ class ValidatorServiceTest {
 
     private void givenPlan(String planName, String featureName, Object value) {
         planService.createPlanV2(PlanV2.builder()
-                .name(planName)
-                .attributes(List.of(PlanAttribute.builder()
-                        .feature(featureName)
-                        .value(value)
-                        .build()))
-                .build());
-
-        var plan = Plan.loadDefault();
-        plan.setName(planName);
-        planService.createPlan(plan);
+            .name(planName)
+            .attributes(List.of(PlanAttribute.builder()
+                    .feature(featureName)
+                    .value(value)
+                    .build()))
+            .build());
     }
 }

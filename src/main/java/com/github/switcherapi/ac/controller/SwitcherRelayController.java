@@ -12,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.github.switcherapi.ac.config.SwitcherFeatures.VALIDATOR_V2;
-import static com.github.switcherapi.ac.config.SwitcherFeatures.getSwitcher;
-
 @RestController
 @RequestMapping("switcher/v1")
 public class SwitcherRelayController {
@@ -63,7 +60,7 @@ public class SwitcherRelayController {
 	public ResponseEntity<ResponseRelayDTO> execution(@RequestParam String value) {
 		try {
 			final var request = FeaturePayload.builder()
-					.feature("execution")
+					.feature("daily_execution")
 					.owner(value)
 					.build();
 
@@ -78,11 +75,7 @@ public class SwitcherRelayController {
 	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
 			var featureRequest = gson.fromJson(request.getPayload(), FeaturePayload.class);
-			var validatorV2 = getSwitcher(VALIDATOR_V2).checkValue(featureRequest.getOwner()).isItOn();
-
-			if (validatorV2)
-				return ResponseEntity.ok(validatorService.execute(featureRequest));
-			return ResponseEntity.ok(validatorFactory.runValidator(featureRequest));
+			return ResponseEntity.ok(validatorService.execute(featureRequest));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
 		}

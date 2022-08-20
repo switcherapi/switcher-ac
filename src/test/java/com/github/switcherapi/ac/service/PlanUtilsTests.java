@@ -1,51 +1,55 @@
 package com.github.switcherapi.ac.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.github.switcherapi.ac.model.domain.PlanAttribute;
+import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.dto.PlanV2DTO;
+import com.github.switcherapi.ac.model.mapper.PlanMapper;
 import org.junit.jupiter.api.Test;
 
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.dto.PlanDTO;
-import com.github.switcherapi.ac.model.mapper.DefaultMapper;
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PlanUtilsTests {
 	
 	@Test
 	void shouldConvertDTO() {
 		//given
-		final Plan to = new Plan();
-		to.setName(PlanType.DEFAULT.name());
-		to.setMaxDomains(1);
-		to.setMaxGroups(2);
-		to.setMaxSwitchers(3);
-		to.setMaxEnvironments(2);
-		to.setMaxComponents(2);
-		to.setMaxTeams(1);
-		to.setMaxDailyExecution(100);
-		to.setEnableHistory(false);
-		to.setEnableMetrics(false);
+		final var to = PlanV2.builder()
+			.name(PlanType.DEFAULT.name())
+			.attributes(Arrays.asList(
+					PlanAttribute.builder().feature("domain").value(1).build(),
+					PlanAttribute.builder().feature("group").value(2).build(),
+					PlanAttribute.builder().feature("switcher").value(3).build(),
+					PlanAttribute.builder().feature("environment").value(2).build(),
+					PlanAttribute.builder().feature("component").value(2).build(),
+					PlanAttribute.builder().feature("team").value(1).build(),
+					PlanAttribute.builder().feature("daily_execution").value(100).build(),
+					PlanAttribute.builder().feature("history").value(false).build(),
+					PlanAttribute.builder().feature("metrics").value(false).build()
+			)).build();
 		
-		final PlanDTO from = new PlanDTO();
-		from.setMaxDomains(2);
+		final PlanV2DTO from = new PlanV2DTO();
+		from.addFeature("domain", 2);
 		
 		//test
-		DefaultMapper.copyProperties(from, to);
-		assertThat(to.getMaxDomains()).isEqualTo(2);
-		assertThat(to.getEnableHistory()).isFalse();
+		PlanMapper.copyProperties(from, to);
+		assertThat(to.getFeature("domain").getValue()).isEqualTo(2);
+		assertThat(Boolean.parseBoolean(to.getFeature("history").getValue().toString())).isFalse();
 	}
 	
 	@Test
 	void shouldPopulatePlan() {
 		//given
-		final Plan from = Plan.loadDefault();
-		Plan to = new Plan();
+		final var from = PlanV2.loadDefault();
+		PlanV2 to = new PlanV2();
 		
 		//test
-		DefaultMapper.copyProperties(from, to);
+		PlanMapper.copyProperties(from, to);
 		assertThat(from.getName()).isEqualTo(to.getName());
-		assertThat(from.getMaxDomains()).isEqualTo(to.getMaxDomains());
-		assertThat(from.getEnableHistory()).isEqualTo(to.getEnableHistory());
+		assertThat(from.getFeature("domain").getValue()).isEqualTo(to.getFeature("domain").getValue());
+		assertThat(from.getFeature("history").getValue()).isEqualTo(to.getFeature("history").getValue());
 	}
 
 }

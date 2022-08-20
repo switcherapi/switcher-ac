@@ -27,7 +27,7 @@ public class ValidatorService extends AbstractValidatorService {
                 .findFirst();
 
         if (maxPlanValue.isEmpty())
-            return new ResponseRelayDTO(false, MSG_INVALID_FEATURE);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MSG_INVALID_FEATURE);
 
         final var value = maxPlanValue.get().getValue();
         if (validate(value))

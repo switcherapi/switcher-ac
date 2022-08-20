@@ -1,18 +1,15 @@
 package com.github.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanV2;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
-import com.github.switcherapi.client.SwitcherMock;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,14 +45,9 @@ class SwitcherRelayV2ControllerTests {
 			.attributes(List.of(
 					PlanAttribute.builder().feature("feature_integer").value(1).build()
 			)).build());
-
-		var plan = Plan.loadDefault();
-		plan.setName("TEST");
-		planService.createPlan(plan);
 	}
 	
-	@ParameterizedTest()
-	@SwitcherMock(key = SwitcherFeatures.VALIDATOR_V2, result = true)
+	@Test
 	void shouldReturnTrue() throws Exception {
 		//given
 		givenAccount("adminid_ok");
@@ -66,8 +58,7 @@ class SwitcherRelayV2ControllerTests {
 				0, expectedResponse, 200);
 	}
 
-	@ParameterizedTest()
-	@SwitcherMock(key = SwitcherFeatures.VALIDATOR_V2, result = true)
+	@Test
 	void shouldReturnFalse() throws Exception {
 		//given
 		givenAccount("adminid_nok");
