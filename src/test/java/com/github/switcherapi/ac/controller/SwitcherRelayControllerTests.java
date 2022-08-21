@@ -37,10 +37,10 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 	@BeforeEach
 	void setupPlan() {
 		planService.createPlanV2(PlanV2.builder()
-				.name("TEST")
-				.attributes(List.of(
-						PlanAttribute.builder().feature("feature_integer").value(1).build()
-				)).build());
+			.name("TEST")
+			.attributes(List.of(
+				PlanAttribute.builder().feature("feature_integer").value(1).build()
+			)).build());
 	}
 	
 	@Test
@@ -109,10 +109,10 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 	void shouldBeOkWhenValidate_execution() throws Exception {
 		//given
 		givenAccount("adminid");
-		var expectedResponse = new ResponseRelayDTO(true);
 		
 		//test
-		this.executeTestExecution("adminid", expectedResponse, 200);
+		var expectedResponse = new ResponseRelayDTO(true);
+		this.assertExecution("adminid", expectedResponse, 200);
 	}
 	
 	@Test
@@ -123,21 +123,15 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		plan.getFeature("daily_execution").setValue(0);
 		planService.updatePlanV2(PlanType.DEFAULT.name(), plan);
 
-		var expectedResponse = new ResponseRelayDTO(false,
-				"Daily execution limit has been reached");
-
 		//test
-		this.executeTestExecution("adminid", expectedResponse, 200);
+		var expectedResponse = new ResponseRelayDTO(false,"Daily execution limit has been reached");
+		this.assertExecution("adminid", expectedResponse, 200);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_execution_accountNotFound() throws Exception {
-		//given
-		var expectedResponse = new ResponseRelayDTO(false,
-				"404 NOT_FOUND \"Account not found\"");
-		
-		//test
-		this.executeTestExecution("NOT_FOUND", expectedResponse, 404);
+		var expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
+		this.assertExecution("NOT_FOUND", expectedResponse, 404);
 	}
 	
 	@Test
@@ -152,10 +146,9 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		planService.createPlanV2(plan);
 		accountService.updateAccountPlanV2("masteradminid", "UNLIMITED");
 		
-		var expectedResponse = new ResponseRelayDTO(true);
-		
 		//test
-		this.executeTestValidate("masteradminid", "switcher",
+		var expectedResponse = new ResponseRelayDTO(true);
+		this.assertValidate("masteradminid", "switcher",
 				10000, expectedResponse, 200);
 	}
 
@@ -166,7 +159,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 
 		//test
 		var expectedResponse = new ResponseRelayDTO(true);
-		this.executeTestValidate("adminid_ok", "feature_integer",
+		this.assertValidate("adminid_ok", "feature_integer",
 				0, expectedResponse, 200);
 	}
 
@@ -177,24 +170,25 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 
 		//test
 		var expectedResponse = new ResponseRelayDTO(false, "Feature limit has been reached");
-		this.executeTestValidate("adminid_nok", "feature_integer",
+		this.assertValidate("adminid_nok", "feature_integer",
 				1, expectedResponse, 200);
 	}
 
 	@Test
 	void shouldNotBeOkWhenValidate_accountNotFound() throws Exception {
 		var expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
-		this.executeTestValidate("NOT_FOUND", "domain", 0, expectedResponse, 404);
+		this.assertValidate("NOT_FOUND", "domain",
+				0, expectedResponse, 404);
 	}
 	
 	@Test
 	void shouldNotBeOkWhenValidate_invalidFeatureName() throws Exception {
 		//given
 		givenAccount("adminid");
-		var expectedResponse = new ResponseRelayDTO(false, "400 BAD_REQUEST \"Invalid feature\"");
-		
+
 		//test
-		this.executeTestValidate("adminid", "INVALID_FEATURE",
+		var expectedResponse = new ResponseRelayDTO(false, "400 BAD_REQUEST \"Invalid feature\"");
+		this.assertValidate("adminid", "INVALID_FEATURE",
 				0, expectedResponse, 400);
 	}
 

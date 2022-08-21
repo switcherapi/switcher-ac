@@ -32,8 +32,8 @@ public class ControllerTestUtils {
 
     protected final Gson gson = new Gson();
 
-    protected void executeTestValidate(String adminId, String featureName,
-                                     Integer value, ResponseRelayDTO expectedResponse, int expectedStatus) throws Exception {
+    protected void assertValidate(String adminId, String featureName,
+                                  Integer value, ResponseRelayDTO expectedResponse, int expectedStatus) throws Exception {
         //given
         var feature = FeaturePayload.builder()
                 .feature(featureName)
@@ -44,26 +44,19 @@ public class ControllerTestUtils {
         var request = new RequestRelayDTO();
         request.setPayload(gson.toJson(feature));
 
-        var jsonRequest = gson.toJson(request);
-        var jsonResponse = gson.toJson(expectedResponse);
-
         //test
         this.mockMvc.perform(post("/switcher/v1/validate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
                         .with(csrf())
-                        .content(jsonRequest))
+                        .content(gson.toJson(request)))
                 .andDo(print())
                 .andExpect(status().is(expectedStatus))
-                .andExpect(content().string(containsString(jsonResponse)));
+                .andExpect(content().string(containsString(gson.toJson(expectedResponse))));
     }
 
-    protected void executeTestExecution(String value, ResponseRelayDTO expectedResponse,
-                                      int expectedStatus) throws Exception {
-        //given
-        var jsonResponse = gson.toJson(expectedResponse);
-
-        //test
+    protected void assertExecution(String value, ResponseRelayDTO expectedResponse,
+                                   int expectedStatus) throws Exception {
         this.mockMvc.perform(get("/switcher/v1/execution")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
@@ -71,7 +64,7 @@ public class ControllerTestUtils {
                         .queryParam("value", value))
                 .andDo(print())
                 .andExpect(status().is(expectedStatus))
-                .andExpect(content().string(containsString(jsonResponse)));
+                .andExpect(content().string(containsString(gson.toJson(expectedResponse))));
     }
 
     protected String givenTrueAsExpectedResponse() {
