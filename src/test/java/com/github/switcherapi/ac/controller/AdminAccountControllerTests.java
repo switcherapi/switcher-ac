@@ -39,24 +39,23 @@ class AdminAccountControllerTests {
 	@Autowired PlanService planService;
 	@Autowired AccountService accountService;
 	@Autowired ValidatorFactory validatorFactory;
-	
 	@Autowired MockMvc mockMvc;
-	
+
+	private static final String ADMIN_ID = "mock_account1";
 	private static Admin adminAccount;
-	
 	private String bearer;
-	
+
 	@BeforeAll
 	static void setup(
 			@Autowired AccountService accountService,
 			@Autowired AdminService adminService) {
-		accountService.createAccount("mock_account1");
+		accountService.createAccount(ADMIN_ID);
 		adminAccount = adminService.createAdminAccount("123456");
 	}
 	
 	@BeforeEach
 	void setup() {
-		final PlanV2 plan2 = PlanV2.loadDefault();
+		final var plan2 = PlanV2.loadDefault();
 		plan2.setName("BASIC");
 		planService.createPlanV2(plan2);
 		
@@ -74,66 +73,66 @@ class AdminAccountControllerTests {
 	@Test
 	void shouldChangeAccountPlan() throws Exception {
 		//validate before
-		Account account = accountService.getAccountByAdminId("mock_account1");
+		var account = accountService.getAccountByAdminId(ADMIN_ID);
 		assertThat(account.getPlanV2().getName()).isEqualTo(PlanType.DEFAULT.name());
 		
 		//test
-		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, bearer)
-			.with(csrf())
-			.queryParam("plan", "BASIC"))
+		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, bearer)
+				.with(csrf())
+				.queryParam("plan", "BASIC"))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andReturn().getResponse().getContentAsString();
 		
 		var accountDto = new ObjectMapper().readValue(json, AccountDTO.class);
-		assertThat(accountDto.getAdminId()).isEqualTo("mock_account1");
+		assertThat(accountDto.getAdminId()).isEqualTo(ADMIN_ID);
 		assertThat(accountDto.getPlan().getName()).isEqualTo("BASIC");
 		
-		account = accountService.getAccountByAdminId("mock_account1");
+		account = accountService.getAccountByAdminId(ADMIN_ID);
 		assertThat(account.getPlanV2().getName()).isEqualTo("BASIC");
 	}
 	
 	@Test
 	void shouldChangeAccountPlan_afterDeletingPlan() throws Exception {
 		//given
-		Account account = accountService.createAccount("mock_account1", "BASIC");
+		var account = accountService.createAccount(ADMIN_ID, "BASIC");
 		
 		//validate before
 		assertThat(account.getPlanV2().getName()).isEqualTo("BASIC");
 		
 		//test
 		this.mockMvc.perform(delete("/plan/v2/delete")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, bearer)
-			.with(csrf())
-			.queryParam("plan", "BASIC"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, bearer)
+				.with(csrf())
+				.queryParam("plan", "BASIC"))
 			.andExpect(status().isOk())
 			.andExpect(content().string("Plan deleted"));
 		
-		account = accountService.getAccountByAdminId("mock_account1");
+		account = accountService.getAccountByAdminId(ADMIN_ID);
 		assertThat(account.getPlanV2().getName()).isEqualTo(PlanType.DEFAULT.name());
 	}
 	
 	@Test
 	void shouldNotChangeAccountPlan_invalidAuthorizationKey() throws Exception {
-		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, "Bearer INVALID_KEY")
-			.with(csrf())
-			.queryParam("plan", "BASIC"))
+		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer INVALID_KEY")
+				.with(csrf())
+				.queryParam("plan", "BASIC"))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
 	void shouldNotChangeAccountPlan_planNotFound() throws Exception {
-		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", "mock_account1")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, bearer)
-			.with(csrf())
-			.queryParam("plan", "NOT_FOUND"))
+		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, bearer)
+				.with(csrf())
+				.queryParam("plan", "NOT_FOUND"))
 			.andDo(print())
 			.andExpect(status().isNotFound());
 	}
@@ -141,25 +140,26 @@ class AdminAccountControllerTests {
 	@Test
 	void shouldResetDailyExecution() throws Exception {
 		//given
-		var request = FeaturePayload.builder()
+		final var request = FeaturePayload.builder()
 				.feature("daily_execution")
-				.owner("mock_account1")
+				.owner(ADMIN_ID)
 				.build();
+
 		validatorFactory.runValidator(request);
 		
 		//validate before
-		Account account = accountService.getAccountByAdminId("mock_account1");
+		var account = accountService.getAccountByAdminId(ADMIN_ID);
 		assertThat(account.getCurrentDailyExecution()).isEqualTo(1);
 		
 		//test
-		this.mockMvc.perform(patch("/admin/v1/account/reset/{adminId}", "mock_account1")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, bearer)
-			.with(csrf()))
+		this.mockMvc.perform(patch("/admin/v1/account/reset/{adminId}", ADMIN_ID)
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, bearer)
+				.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());
 		
-		account = accountService.getAccountByAdminId("mock_account1");
+		account = accountService.getAccountByAdminId(ADMIN_ID);
 		assertThat(account.getCurrentDailyExecution()).isZero();
 	}
 

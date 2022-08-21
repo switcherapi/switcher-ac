@@ -39,7 +39,8 @@ class MockSwitcherRelayControllerTests {
 	@BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-		final var switcherRelayController = new SwitcherRelayController(mockAccountService, mockValidatorFactory, mockValidatorService);
+		final var switcherRelayController = new SwitcherRelayController(
+				mockAccountService, mockValidatorFactory, mockValidatorService);
         mockMvc = MockMvcBuilders.standaloneSetup(switcherRelayController).build();
     }
 	
@@ -50,15 +51,15 @@ class MockSwitcherRelayControllerTests {
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
         //given
-  		RequestRelayDTO request = new RequestRelayDTO();
+  		var request = new RequestRelayDTO();
   		request.setValue("adminid");
-  		String jsonRequest = new Gson().toJson(request);
+  		var jsonRequest = new Gson().toJson(request);
         
 		//test
 		this.mockMvc.perform(post("/switcher/v1/create")
-				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
-				.content(jsonRequest))
+					.contentType(MediaType.APPLICATION_JSON)
+					.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
+					.content(jsonRequest))
 				.andDo(print())
 				.andExpect(status().is5xxServerError());
 	}
