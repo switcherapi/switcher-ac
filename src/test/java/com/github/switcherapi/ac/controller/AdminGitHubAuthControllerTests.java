@@ -6,7 +6,6 @@ import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.GitHubDetail;
 import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
-import com.github.switcherapi.client.SwitcherExecutor;
 import com.github.switcherapi.client.SwitcherMock;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -38,12 +37,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
 class AdminGitHubAuthControllerTests {
-	
-	public static MockWebServer mockBackend;
-	private final ObjectMapper MAPPER = new ObjectMapper();
 
 	@Autowired MockMvc mockMvc;
 	@Autowired ApplicationContext context;
+	
+	public static MockWebServer mockBackend;
+	private final ObjectMapper MAPPER = new ObjectMapper();
 
 	@BeforeAll
     static void setup() throws IOException {
@@ -58,7 +57,7 @@ class AdminGitHubAuthControllerTests {
 	
 	@BeforeEach
 	void initialize() {
-	    String baseUrl = String.format("http://localhost:%s", mockBackend.getPort());
+	    var baseUrl = String.format("http://localhost:%s", mockBackend.getPort());
 		context.getBean(GitHubFacade.class).setGitUrlAccess(baseUrl);
 		context.getBean(GitHubFacade.class).setGitUrlDetail(baseUrl);
 	}
@@ -76,8 +75,8 @@ class AdminGitHubAuthControllerTests {
 		
 		//test
 		var json = this.mockMvc.perform(post("/admin/v1/auth/github")
-			.contentType(MediaType.APPLICATION_JSON)
-			.queryParam("code", "123"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.queryParam("code", "123"))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(content().string(containsString("admin")))
@@ -101,8 +100,8 @@ class AdminGitHubAuthControllerTests {
 		
 		//test
 		this.mockMvc.perform(post("/admin/v1/auth/github")
-			.contentType(MediaType.APPLICATION_JSON)
-			.queryParam("code", "123"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.queryParam("code", "123"))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
 	}
@@ -115,13 +114,14 @@ class AdminGitHubAuthControllerTests {
 		
 		//test
 		this.mockMvc.perform(post("/admin/v1/auth/github")
-			.contentType(MediaType.APPLICATION_JSON)
-			.queryParam("code", "123"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.queryParam("code", "123"))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
 	}
 	
-	@Test
+	@ParameterizedTest
+	@SwitcherMock(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
 	void shouldNotLoginWithGitHub_invalidCode() throws Exception {
 		//given
 		mockBackend.enqueue(new MockResponse()
@@ -130,8 +130,8 @@ class AdminGitHubAuthControllerTests {
 		
 		//test
 		this.mockMvc.perform(post("/admin/v1/auth/github")
-			.contentType(MediaType.APPLICATION_JSON)
-			.queryParam("code", "123"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.queryParam("code", "123"))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
 	}
@@ -140,12 +140,11 @@ class AdminGitHubAuthControllerTests {
 	void shouldNotLoginWithGitHub_notAvailable() throws Exception {
 		//given
 		givenGitHub();
-		SwitcherExecutor.assume("SWITCHER_AC_ADM", false);
 		
 		//test
 		this.mockMvc.perform(post("/admin/auth/github")
-			.contentType(MediaType.APPLICATION_JSON)
-			.queryParam("code", "123"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.queryParam("code", "123"))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
 	}
@@ -155,10 +154,10 @@ class AdminGitHubAuthControllerTests {
 			.setBody("{ \"access_token\": \"123\" }")
 			.addHeader("Content-Type", MediaType.APPLICATION_JSON));
 		
-		GitHubDetail githubAccountDetail = new GitHubDetail();
-		githubAccountDetail.setId("123");
-		githubAccountDetail.setLogin("login");
-		githubAccountDetail.setName("UserName");
+		var githubAccountDetail = GitHubDetail.builder()
+				.id("123")
+				.login("login")
+				.name("UserName").build();
 		
 		mockBackend.enqueue(new MockResponse()
 			.setBody(MAPPER.writeValueAsString(githubAccountDetail))

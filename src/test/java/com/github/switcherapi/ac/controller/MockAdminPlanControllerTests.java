@@ -30,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MockAdminPlanControllerTests {
 
 	@Mock private PlanService mockPlanService;
-	
+
+	private final Gson gson = new Gson();
 	private MockMvc mockMvc;
 	
 	@BeforeEach
@@ -47,15 +48,14 @@ class MockAdminPlanControllerTests {
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
 		//given
-        PlanV2 planObj = PlanV2.loadDefault();
-		Gson gson = new Gson();
-		String json = gson.toJson(planObj);
+        var planObj = PlanV2.loadDefault();
+		var json = gson.toJson(planObj);
 		
 		//test
 		this.mockMvc.perform(post("/plan/v2/create")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, "Bearer api_token")
-			.content(json))
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer api_token")
+				.content(json))
 			.andDo(print())
 			.andExpect(status().is5xxServerError());
 	}
@@ -68,8 +68,8 @@ class MockAdminPlanControllerTests {
 		
 		//test
 		this.mockMvc.perform(get("/plan/v2/list")
-			.contentType(MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, "Bearer api_token"))
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer api_token"))
 			.andDo(print())
 			.andExpect(status().is5xxServerError());
 	}

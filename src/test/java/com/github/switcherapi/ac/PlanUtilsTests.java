@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.service;
+package com.github.switcherapi.ac;
 
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanType;

@@ -24,7 +24,7 @@ class AccountServiceTest {
     void shouldUpdateAccount() {
         //given
         givenAccount();
-        givenPlan("PLAN_2");
+        givenPlan();
 
         var account = accountService.getAccountByAdminId("adminid");
         assertEquals(PlanType.DEFAULT.toString(), account.getPlanV2().getName());
@@ -51,9 +51,9 @@ class AccountServiceTest {
         accountService.createAccount("adminid");
     }
 
-    private void givenPlan(String planName) {
+    private void givenPlan() {
         planService.createPlanV2(PlanV2.builder()
-                .name(planName)
+                .name("PLAN_2")
                 .attributes(List.of(PlanAttribute.builder()
                         .feature("feature")
                         .value(true)

@@ -1,20 +1,18 @@
 package com.github.switcherapi.ac.service.validator;
 
-import java.util.EnumMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
-import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.*;
+import java.util.EnumMap;
+import java.util.Map;
+
+import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
 
 @Component
 public abstract class AbstractValidatorService {
@@ -51,25 +49,7 @@ public abstract class AbstractValidatorService {
 	public Object getParam(SwitcherValidatorParams param) {
 		return params.get(param);
 	}
-	
-	/**
-	 * Default request validation.
-	 * It adds ADMINID and TOTAL params to the validator input
-	 */
-	protected void validateRequest(FeaturePayload request) {
-		try {
-			Assert.notNull(request.getFeature(), "Feature is missing");
-			Assert.notNull(request.getTotal(), "Total is missing");
-			Assert.notNull(request.getOwner(), "Owner is missing");
-			
-			params.put(ADMINID, request.getOwner());
-			params.put(TOTAL, request.getTotal());
-			params.put(FEATURE, request.getFeature());
-		} catch (IllegalArgumentException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
-	}
-	
+
 	/**
 	 * Default validator handler
 	 */
@@ -88,5 +68,11 @@ public abstract class AbstractValidatorService {
 	 * Executes validator bean
 	 */
 	protected abstract ResponseRelayDTO executeValidator(final Account account);
+
+	/**
+	 * Default request validation.
+	 * It adds ADMINID and TOTAL params to the validator input
+	 */
+	protected abstract void validateRequest(FeaturePayload request);
 
 }

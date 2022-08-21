@@ -73,7 +73,8 @@
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.language>java</sonar.language>
 		<sonar.coverage.exclusions>
-	      **/model/**/*.java,
+			**/model/**/*.java,
+			**/config/SwitcherFeatures.java
 	    </sonar.coverage.exclusions>
 	</properties>
 	

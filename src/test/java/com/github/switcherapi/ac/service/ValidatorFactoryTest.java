@@ -36,20 +36,10 @@ class ValidatorFactoryTest {
 				validatorFactory.runValidator(request));
 	}
 	
-	@ParameterizedTest
-	@ValueSource(strings = {
-			"component",
-			"domain",
-			"environment",
-			"group",
-			"history",
-			"metrics",
-			"switcher",
-			"team"
-	}) 
-	void shouldThrowError_missingAdminId(String feature) {
+	@Test
+	void shouldThrowError_missingAdminId() {
 		var request = FeaturePayload.builder()
-				.feature(feature)
+				.feature("domain")
 				.total(0)
 				.build();
 		
