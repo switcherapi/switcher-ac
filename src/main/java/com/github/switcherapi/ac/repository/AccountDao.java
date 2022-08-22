@@ -30,12 +30,12 @@ public class AccountDao {
 		return mongoTemplate.findOne(query, Account.class);
 	}
 
-	public List<Account> findByPlanV2Name(String planName) {
-		final var planFound = planDao.findV2ByName(planName);
+	public List<Account> findByPlanName(String planName) {
+		final var planFound = planDao.findByName(planName);
 
 		if (planFound != null) {
 			final var query = new Query();
-			query.addCriteria(Criteria.where("planV2").is(planFound));
+			query.addCriteria(Criteria.where("plan").is(planFound));
 
 			return mongoTemplate.find(query, Account.class);
 		}

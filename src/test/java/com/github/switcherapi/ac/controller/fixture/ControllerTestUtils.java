@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.domain.PlanV2;
-import com.github.switcherapi.ac.model.dto.PlanV2DTO;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.dto.PlanDTO;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
@@ -90,9 +90,9 @@ public class ControllerTestUtils {
         accountService.createAccount(adminId, plan);
     }
 
-    protected void assertDtoResponse(PlanV2 planObj, String response)
+    protected void assertDtoResponse(Plan planObj, String response)
             throws JsonProcessingException {
-        var planDto = new ObjectMapper().readValue(response, PlanV2DTO.class);
+        var planDto = new ObjectMapper().readValue(response, PlanDTO.class);
         assertThat(planDto.getName()).isEqualTo(planObj.getName());
     }
 

@@ -31,9 +31,9 @@ public class AccountService {
 	}
 	
 	public Account createAccount(String adminId, String planName) {
-		final var planV2 = planDao.findV2ByName(planName);
+		final var plan = planDao.findByName(planName);
 
-		if (planV2 == null) {
+		if (plan == null) {
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
 		}
@@ -44,7 +44,7 @@ public class AccountService {
 			account.setAdminId(adminId);
 		}
 
-		account.setPlanV2(planV2);
+		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
 		
 		return account;
@@ -58,15 +58,15 @@ public class AccountService {
 		return account;
 	}
 
-	public void updateAccountPlanV2(String adminId, String planName) {
-		final var plan = planDao.findV2ByName(planName);
+	public void updateAccountPlan(String adminId, String planName) {
+		final var plan = planDao.findByName(planName);
 		if (plan == null) {
 			throw new ResponseStatusException(
 					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
 		}
 
 		final var account = getAccountByAdminId(adminId);
-		account.setPlanV2(plan);
+		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
 	}
 	
@@ -88,8 +88,8 @@ public class AccountService {
 		return account;
 	}
 
-	public List<Account> getAccountsByPlanV2Name(String planName) {
-		return accountDao.findByPlanV2Name(planName);
+	public List<Account> getAccountsByPlanName(String planName) {
+		return accountDao.findByPlanName(planName);
 	}
 	
 }

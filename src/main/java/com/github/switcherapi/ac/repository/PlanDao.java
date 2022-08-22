@@ -1,6 +1,6 @@
 package com.github.switcherapi.ac.repository;
 
-import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.domain.Plan;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -11,29 +11,29 @@ public class PlanDao {
 
 	private final MongoTemplate mongoTemplate;
 
-	private final PlanV2Repository planV2Repository;
+	private final PlanRepository planRepository;
 
 	public PlanDao(
 			MongoTemplate mongoTemplate,
-			PlanV2Repository planV2Repository) {
+			PlanRepository planRepository) {
 		this.mongoTemplate = mongoTemplate;
-		this.planV2Repository = planV2Repository;
+		this.planRepository = planRepository;
 	}
 
-	public PlanV2 findV2ByName(String name) {
+	public Plan findByName(String name) {
 		final var query = new Query();
 		query.addCriteria(Criteria.where("name").is(name));
-		return mongoTemplate.findOne(query, PlanV2.class);
+		return mongoTemplate.findOne(query, Plan.class);
 	}
 
-	public void deleteV2ByName(String planName) {
+	public void deleteByName(String planName) {
 		final var query = new Query();
 		query.addCriteria(Criteria.where("name").is(planName));
-		mongoTemplate.remove(query, PlanV2.class);
+		mongoTemplate.remove(query, Plan.class);
 	}
 
-	public PlanV2Repository getPlanV2Repository() {
-		return planV2Repository;
+	public PlanRepository getPlanRepository() {
+		return planRepository;
 	}
 
 }

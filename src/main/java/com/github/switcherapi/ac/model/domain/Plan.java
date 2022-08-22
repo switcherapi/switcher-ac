@@ -13,12 +13,12 @@ import java.util.List;
 
 @Generated
 @JsonInclude(Include.NON_NULL)
-@Document(collection = "plansV2")
+@Document(collection = "plans")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlanV2 {
+public class Plan {
 
 	@Id
 	private String id;
@@ -44,8 +44,8 @@ public class PlanV2 {
 				.value(value).build());
 	}
 
-	public static PlanV2 loadDefault() {
-		return PlanV2.builder()
+	public static Plan loadDefault() {
+		return Plan.builder()
 			.name(PlanType.DEFAULT.name())
 			.attributes(Arrays.asList(
 				PlanAttribute.builder().feature("domain").value(1).build(),

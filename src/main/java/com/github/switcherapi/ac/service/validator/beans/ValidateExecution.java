@@ -24,7 +24,7 @@ public class ValidateExecution extends AbstractActiveCheckValidator {
 		}
 		
 		if (validate(account.getCurrentDailyExecution(),
-				Integer.parseInt(account.getPlanV2().getFeature("daily_execution").getValue().toString()))) {
+				Integer.parseInt(account.getPlan().getFeature("daily_execution").getValue().toString()))) {
 			account.setCurrentDailyExecution(account.getCurrentDailyExecution() + 1);
 			accountDao.getAccountRepository().save(account);				
 		} else {

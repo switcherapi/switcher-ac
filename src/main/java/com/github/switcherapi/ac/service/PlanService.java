@@ -1,7 +1,7 @@
 package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.mapper.PlanMapper;
 import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
@@ -24,40 +24,40 @@ public class PlanService {
 		this.accountService = accountService;
 	}
 
-	public PlanV2 createPlanV2(PlanV2 plan) {
-		var newPlan = planDao.findV2ByName(plan.getName());
-		newPlan = newPlan != null ? newPlan : new PlanV2();
+	public Plan createPlan(Plan plan) {
+		var newPlan = planDao.findByName(plan.getName());
+		newPlan = newPlan != null ? newPlan : new Plan();
 
 		PlanMapper.copyProperties(plan, newPlan);
-		return planDao.getPlanV2Repository().save(newPlan);
+		return planDao.getPlanRepository().save(newPlan);
 	}
 
-	public PlanV2 updatePlanV2(String planName, PlanV2 plan) {
-		var planFound = getPlanV2ByName(planName);
+	public Plan updatePlan(String planName, Plan plan) {
+		var planFound = getPlanByName(planName);
 		PlanMapper.copyProperties(plan, planFound);
-		planDao.getPlanV2Repository().save(planFound);
+		planDao.getPlanRepository().save(planFound);
 
 		return planFound;
 	}
 
-	public void deletePlanV2(String planName) {
+	public void deletePlan(String planName) {
 		if (PlanType.DEFAULT.name().equals(planName)) {
 			throw new ResponseStatusException(
 					HttpStatus.BAD_REQUEST, "Invalid plan name");
 		}
 
-		accountService.getAccountsByPlanV2Name(planName).forEach(account ->
-				accountService.updateAccountPlanV2(account.getAdminId(), PlanType.DEFAULT.name()));
+		accountService.getAccountsByPlanName(planName).forEach(account ->
+				accountService.updateAccountPlan(account.getAdminId(), PlanType.DEFAULT.name()));
 
-		planDao.deleteV2ByName(planName);
+		planDao.deleteByName(planName);
 	}
 
-	public List<PlanV2> listAllV2() {
-		return planDao.getPlanV2Repository().findAll();
+	public List<Plan> listAll() {
+		return planDao.getPlanRepository().findAll();
 	}
 
-	public PlanV2 getPlanV2ByName(String planName) {
-		var plan = planDao.findV2ByName(planName);
+	public Plan getPlanByName(String planName) {
+		var plan = planDao.findByName(planName);
 
 		if (plan == null) {
 			throw new ResponseStatusException(

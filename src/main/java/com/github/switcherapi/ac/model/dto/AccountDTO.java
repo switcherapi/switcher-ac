@@ -14,7 +14,7 @@ public class AccountDTO {
 
 	private String adminId;
 
-	private PlanV2DTO plan;
+	private PlanDTO plan;
 
 	private Date lastReset;
 

@@ -3,7 +3,7 @@ package com.github.switcherapi.ac.controller;
 import com.github.switcherapi.ac.controller.fixture.ControllerTestUtils;
 import com.github.switcherapi.ac.model.domain.Admin;
 import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.ac.service.PlanService;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
-class PlanV2ControllerTests extends ControllerTestUtils {
+class PlanControllerTests extends ControllerTestUtils {
 	
 	@Autowired AdminService adminService;
 	@Autowired JwtTokenService jwtService;
@@ -71,7 +71,7 @@ class PlanV2ControllerTests extends ControllerTestUtils {
 	@Test
 	void shouldCreateNewPlan() throws Exception {
 		//given
-		var planObj = PlanV2.loadDefault();
+		var planObj = Plan.loadDefault();
 		var json = gson.toJson(planObj);
 		
 		//test
@@ -91,13 +91,13 @@ class PlanV2ControllerTests extends ControllerTestUtils {
 	@Test
 	void shouldUpdatePlan() throws Exception {
 		//given
-		var planObj = PlanV2.loadDefault();
+		var planObj = Plan.loadDefault();
 		planObj.setName(PlanType.DEFAULT.name());
 		planObj.getFeature("history").setValue(true);
 		var json = gson.toJson(planObj);
 		
 		//test
-		final var old = planService.getPlanV2ByName(PlanType.DEFAULT.name());
+		final var old = planService.getPlanByName(PlanType.DEFAULT.name());
 		assertEquals(false, old.getFeature("history").getValue());
 		
 		var response = this.mockMvc.perform(patch("/plan/v2/update")
@@ -111,14 +111,14 @@ class PlanV2ControllerTests extends ControllerTestUtils {
 			.andReturn().getResponse().getContentAsString();
 		
 		assertDtoResponse(planObj, response);
-		final var planUpdated = planService.getPlanV2ByName(PlanType.DEFAULT.name());
+		final var planUpdated = planService.getPlanByName(PlanType.DEFAULT.name());
 		assertEquals(true, planUpdated.getFeature("history").getValue());
 	}
 	
 	@Test
 	void shouldNotUpdatePlan_planNotFound() throws Exception {
 		//given
-		var planObj = PlanV2.loadDefault();
+		var planObj = Plan.loadDefault();
 		planObj.setName("NOT_FOUND");
 		var json = gson.toJson(planObj);
 		
@@ -135,7 +135,7 @@ class PlanV2ControllerTests extends ControllerTestUtils {
 	@Test
 	void shouldDeletePlan() throws Exception {
 		//given
-		final var planObj = PlanV2.loadDefault();
+		final var planObj = Plan.loadDefault();
 		planObj.setName("DELETE_ME");
 		var json = gson.toJson(planObj);
 		
@@ -147,7 +147,7 @@ class PlanV2ControllerTests extends ControllerTestUtils {
 				.andExpect(status().isOk());
 		
 		//test
-		final var planBeforeDelete = planService.getPlanV2ByName("DELETE_ME");
+		final var planBeforeDelete = planService.getPlanByName("DELETE_ME");
 		assertThat(planBeforeDelete).isNotNull();
 		
 		this.mockMvc.perform(delete("/plan/v2/delete")
@@ -160,7 +160,7 @@ class PlanV2ControllerTests extends ControllerTestUtils {
 			.andExpect(content().string(containsString("Plan deleted")));
 		
 		assertThrows(ResponseStatusException.class, () ->
-				planService.getPlanV2ByName("DELETE_ME"), "Unable to find plan DELETE_ME");
+				planService.getPlanByName("DELETE_ME"), "Unable to find plan DELETE_ME");
 	}
 	
 	@Test
@@ -178,7 +178,7 @@ class PlanV2ControllerTests extends ControllerTestUtils {
 	@Test
 	void shouldListPlans() throws Exception {
 		//given
-		final var plans = planService.listAllV2();
+		final var plans = planService.listAll();
 		assertThat(plans).isNotNull();
 		
 		//test
@@ -194,7 +194,7 @@ class PlanV2ControllerTests extends ControllerTestUtils {
 	@Test
 	void shouldGetPlanByName() throws Exception {
 		//given
-		final var plan = planService.getPlanV2ByName(PlanType.DEFAULT.name());
+		final var plan = planService.getPlanByName(PlanType.DEFAULT.name());
 		assertThat(plan).isNotNull();
 		
 		//test

@@ -3,7 +3,7 @@ package com.github.switcherapi.ac.controller;
 import com.github.switcherapi.ac.controller.fixture.ControllerTestUtils;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
@@ -36,7 +36,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 
 	@BeforeEach
 	void setupPlan() {
-		planService.createPlanV2(PlanV2.builder()
+		planService.createPlan(Plan.builder()
 			.name("TEST")
 			.attributes(List.of(
 				PlanAttribute.builder().feature("feature_integer").value(1).build()
@@ -119,9 +119,9 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 	void shouldNotBeOkWhenValidate_execution() throws Exception {
 		//given
 		givenAccount("adminid");
-		var plan = PlanV2.loadDefault();
+		var plan = Plan.loadDefault();
 		plan.getFeature("daily_execution").setValue(0);
-		planService.updatePlanV2(PlanType.DEFAULT.name(), plan);
+		planService.updatePlan(PlanType.DEFAULT.name(), plan);
 
 		//test
 		var expectedResponse = new ResponseRelayDTO(false,"Daily execution limit has been reached");
@@ -139,12 +139,12 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		//given
 		givenAccount("masteradminid");
 
-		var plan = PlanV2.loadDefault();
+		var plan = Plan.loadDefault();
 		plan.getFeature("switcher").setValue(-1);
 		plan.setName("UNLIMITED");
 
-		planService.createPlanV2(plan);
-		accountService.updateAccountPlanV2("masteradminid", "UNLIMITED");
+		planService.createPlan(plan);
+		accountService.updateAccountPlan("masteradminid", "UNLIMITED");
 		
 		//test
 		var expectedResponse = new ResponseRelayDTO(true);

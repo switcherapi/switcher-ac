@@ -1,6 +1,6 @@
 package com.github.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.service.PlanService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,11 +44,11 @@ class MockAdminPlanControllerTests {
 	@Test
 	void shouldNotCreateNewPlan() throws Exception {
 		//mock
-        Mockito.when(mockPlanService.createPlanV2(Mockito.any(PlanV2.class)))
+        Mockito.when(mockPlanService.createPlan(Mockito.any(Plan.class)))
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
 		//given
-        var planObj = PlanV2.loadDefault();
+        var planObj = Plan.loadDefault();
 		var json = gson.toJson(planObj);
 		
 		//test
@@ -63,7 +63,7 @@ class MockAdminPlanControllerTests {
 	@Test
 	void shouldNotListPlans() throws Exception {
 		//mock
-        Mockito.when(mockPlanService.listAllV2())
+        Mockito.when(mockPlanService.listAll())
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
 		
 		//test

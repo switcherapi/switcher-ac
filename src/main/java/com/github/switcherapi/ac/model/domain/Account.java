@@ -22,7 +22,7 @@ public class Account {
 	private String adminId;
 
 	@DBRef
-	private PlanV2 planV2;
+	private Plan plan;
 
 	private Date lastReset = new Date();
 

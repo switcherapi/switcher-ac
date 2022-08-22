@@ -55,9 +55,9 @@ class AdminAccountControllerTests {
 	
 	@BeforeEach
 	void setup() {
-		final var plan2 = PlanV2.loadDefault();
+		final var plan2 = Plan.loadDefault();
 		plan2.setName("BASIC");
-		planService.createPlanV2(plan2);
+		planService.createPlan(plan2);
 		
 		final var token = jwtService.generateToken(adminAccount.getId())[0];
 		adminService.updateAdminAccountToken(adminAccount, token);
@@ -74,7 +74,7 @@ class AdminAccountControllerTests {
 	void shouldChangeAccountPlan() throws Exception {
 		//validate before
 		var account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlanV2().getName()).isEqualTo(PlanType.DEFAULT.name());
+		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
 		
 		//test
 		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
@@ -91,7 +91,7 @@ class AdminAccountControllerTests {
 		assertThat(accountDto.getPlan().getName()).isEqualTo("BASIC");
 		
 		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlanV2().getName()).isEqualTo("BASIC");
+		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
 	}
 	
 	@Test
@@ -100,7 +100,7 @@ class AdminAccountControllerTests {
 		var account = accountService.createAccount(ADMIN_ID, "BASIC");
 		
 		//validate before
-		assertThat(account.getPlanV2().getName()).isEqualTo("BASIC");
+		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
 		
 		//test
 		this.mockMvc.perform(delete("/plan/v2/delete")
@@ -112,7 +112,7 @@ class AdminAccountControllerTests {
 			.andExpect(content().string("Plan deleted"));
 		
 		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlanV2().getName()).isEqualTo(PlanType.DEFAULT.name());
+		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
 	}
 	
 	@Test
