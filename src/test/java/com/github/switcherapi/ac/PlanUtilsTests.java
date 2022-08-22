@@ -2,8 +2,8 @@ package com.github.switcherapi.ac;
 
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.domain.PlanV2;
-import com.github.switcherapi.ac.model.dto.PlanV2DTO;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.dto.PlanDTO;
 import com.github.switcherapi.ac.model.mapper.PlanMapper;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class PlanUtilsTests {
 	@Test
 	void shouldConvertDTO() {
 		//given
-		final var to = PlanV2.builder()
+		final var to = Plan.builder()
 			.name(PlanType.DEFAULT.name())
 			.attributes(Arrays.asList(
 					PlanAttribute.builder().feature("domain").value(1).build(),
@@ -30,7 +30,7 @@ class PlanUtilsTests {
 					PlanAttribute.builder().feature("metrics").value(false).build()
 			)).build();
 		
-		final PlanV2DTO from = new PlanV2DTO();
+		final PlanDTO from = new PlanDTO();
 		from.addFeature("domain", 2);
 		
 		//test
@@ -42,8 +42,8 @@ class PlanUtilsTests {
 	@Test
 	void shouldPopulatePlan() {
 		//given
-		final var from = PlanV2.loadDefault();
-		PlanV2 to = new PlanV2();
+		final var from = Plan.loadDefault();
+		Plan to = new Plan();
 		
 		//test
 		PlanMapper.copyProperties(from, to);

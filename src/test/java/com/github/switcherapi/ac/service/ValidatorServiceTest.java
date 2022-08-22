@@ -2,7 +2,7 @@ package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
-import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.domain.Plan;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -143,7 +143,7 @@ class ValidatorServiceTest {
     }
 
     private void givenPlan(String planName, String featureName, Object value) {
-        planService.createPlanV2(PlanV2.builder()
+        planService.createPlan(Plan.builder()
             .name(planName)
             .attributes(List.of(PlanAttribute.builder()
                     .feature(featureName)

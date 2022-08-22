@@ -2,7 +2,7 @@ package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.domain.PlanV2;
+import com.github.switcherapi.ac.model.domain.Plan;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,12 +27,12 @@ class AccountServiceTest {
         givenPlan();
 
         var account = accountService.getAccountByAdminId("adminid");
-        assertEquals(PlanType.DEFAULT.toString(), account.getPlanV2().getName());
+        assertEquals(PlanType.DEFAULT.toString(), account.getPlan().getName());
 
         //test
-        accountService.updateAccountPlanV2("adminid", "PLAN_2");
+        accountService.updateAccountPlan("adminid", "PLAN_2");
         account = accountService.getAccountByAdminId("adminid");
-        assertEquals("PLAN_2", account.getPlanV2().getName());
+        assertEquals("PLAN_2", account.getPlan().getName());
     }
 
     @Test
@@ -43,7 +43,7 @@ class AccountServiceTest {
 
         //test
         var exception = assertThrows(ResponseStatusException.class,
-                () -> accountService.updateAccountPlanV2("adminid", plan));
+                () -> accountService.updateAccountPlan("adminid", plan));
         assertEquals(exception.getReason(), String.format(PLAN_NOT_FOUND, plan));
     }
 
@@ -52,7 +52,7 @@ class AccountServiceTest {
     }
 
     private void givenPlan() {
-        planService.createPlanV2(PlanV2.builder()
+        planService.createPlan(Plan.builder()
                 .name("PLAN_2")
                 .attributes(List.of(PlanAttribute.builder()
                         .feature("feature")

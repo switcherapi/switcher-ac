@@ -22,7 +22,7 @@ public class ValidatorService extends AbstractValidatorService {
 
     @Override
     protected ResponseRelayDTO executeValidator(final Account account) {
-        final var maxPlanValue = account.getPlanV2().getAttributes().stream()
+        final var maxPlanValue = account.getPlan().getAttributes().stream()
                 .filter(attrib -> attrib.getFeature().equals(getParam(FEATURE)))
                 .findFirst();
 
