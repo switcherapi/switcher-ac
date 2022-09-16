@@ -14,7 +14,8 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "switcher")
 @Data
 public class SwitcherConfig {
-	
+
+	private String url;
 	private String apikey;
 	private String domain;
 	private String component;
@@ -34,6 +35,7 @@ public class SwitcherConfig {
 	public void configureSwitcher() {
 		configure(ContextBuilder.builder()
 				.contextLocation(SwitcherFeatures.class.getName())
+				.url(url)
 				.apiKey(apikey)
 				.domain(domain)
 				.environment(environment)
