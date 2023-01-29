@@ -12,29 +12,25 @@ import lombok.Setter;
 @Setter
 public class ConfigProperties {
 
-	private String title;
-	private String description;
-	private String version;
-	private String url;
-	private License license;
-	private Contact contact;
+    private String title;
+    private String description;
+    private String version;
+    private String url;
+    private License license;
+    private Contact contact;
 
-	@Getter
-	@Setter
-	public static class License {
+    @Getter
+    @Setter
+    public static class License {
+        private String type;
+        private String url;
+    }
 
-		private String type;
-		private String url;
-
-	}
-
-	@Getter
-	@Setter
-	public static class Contact {
-
-		private String author;
-		private String email;
-
-	}
+    @Getter
+    @Setter
+    public static class Contact {
+        private String author;
+        private String email;
+    }
 
 }
