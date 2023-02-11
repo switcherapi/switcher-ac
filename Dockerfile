@@ -1,4 +1,4 @@
-FROM maven:3.6.3 AS maven
+FROM maven:3.8.5 AS maven
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app
