@@ -6,16 +6,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
 	private final String healthChecker;
 
@@ -39,10 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		SWITCHER, ROLE_SWITCHER
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-			.authorizeRequests()
+				.authorizeRequests()
 				.antMatchers(healthChecker).permitAll()
 				.antMatchers("/admin/v1/auth/**").permitAll()
 				.antMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
@@ -50,20 +50,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/plan/**").hasRole(Roles.ADMIN.name())
 				.antMatchers("/switcher/**").hasRole(Roles.SWITCHER.name())
 				.antMatchers(SWAGGER_MATCHERS).authenticated()
-					.and().httpBasic().authenticationEntryPoint(authenticationEntryPoint())
-			
-			.and()
+				.and().httpBasic().authenticationEntryPoint(authenticationEntryPoint())
+
+				.and()
 				.exceptionHandling()
 				.authenticationEntryPoint(authenticationEntryPoint())
-			
-			.and()
+
+				.and()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				
-			.and()
+
+				.and()
 				.cors().and().csrf().disable();
-		
+
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+		return http.build();
 	}
 	
 	@Bean
