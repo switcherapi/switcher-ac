@@ -18,18 +18,28 @@
 			<name>Roger Floriano</name>
 			<email>switcher.project@gmail.com</email>
 			<url>https://github.com/petruki</url>
-			<organization>switcherapi</organization>
-			<organizationUrl>https://github.com/switcherapi</organizationUrl>
 			<roles>
 				<role>Lead developer</role>
 			</roles>
 		</developer>
  	</developers>
+
+	<organization>
+		<name>switcherapi</name>
+		<url>https://github.com/switcherapi</url>
+	</organization>
  	
     <ciManagement>
         <system>GitHub Actions</system>
         <url>https://github.com/switcherapi/switcher-ac/actions</url>
     </ciManagement>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://github.com/switcherapi/switcher-ac/blob/master/LICENSE</url>
+		</license>
+	</licenses>
  	
 	<scm>
 		<connection>scm:git:git://github.com:switcherapi/switcher-ac.git</connection>
@@ -40,7 +50,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.6</version>
+		<version>2.7.8</version>
 		<relativePath />
 	</parent>
 
