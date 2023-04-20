@@ -3,7 +3,7 @@ package com.github.switcherapi.ac.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
 	private final String healthChecker;
@@ -42,14 +42,14 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-				.authorizeRequests()
-				.antMatchers(healthChecker).permitAll()
-				.antMatchers("/admin/v1/auth/**").permitAll()
-				.antMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
-				.antMatchers("/admin/**").hasRole(Roles.ADMIN.name())
-				.antMatchers("/plan/**").hasRole(Roles.ADMIN.name())
-				.antMatchers("/switcher/**").hasRole(Roles.SWITCHER.name())
-				.antMatchers(SWAGGER_MATCHERS).authenticated()
+				.authorizeHttpRequests()
+					.requestMatchers(healthChecker).permitAll()
+					.requestMatchers("/admin/v1/auth/**").permitAll()
+					.requestMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
+					.requestMatchers("/admin/**").hasRole(Roles.ADMIN.name())
+					.requestMatchers("/plan/**").hasRole(Roles.ADMIN.name())
+					.requestMatchers("/switcher/**").hasRole(Roles.SWITCHER.name())
+					.requestMatchers(SWAGGER_MATCHERS).authenticated()
 				.and().httpBasic().authenticationEntryPoint(authenticationEntryPoint())
 
 				.and()

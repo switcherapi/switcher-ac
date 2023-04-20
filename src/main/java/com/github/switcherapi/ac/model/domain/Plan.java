@@ -16,7 +16,6 @@ import java.util.List;
 @Document(collection = "plans")
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Plan {
 
@@ -26,7 +25,11 @@ public class Plan {
 	@Indexed(unique = true)
 	private String name;
 
-	private List<PlanAttribute> attributes = new ArrayList<>();
+	private List<PlanAttribute> attributes;
+
+	public Plan() {
+		attributes = new ArrayList<>();
+	}
 
 	public PlanAttribute getFeature(String feature) {
 		return attributes.stream().filter(a -> a.getFeature().equals(feature))
