@@ -7,10 +7,9 @@ import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import jakarta.ws.rs.core.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.ws.rs.core.HttpHeaders;
 
 @RestController
 @RequestMapping("admin/v1")

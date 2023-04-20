@@ -66,7 +66,7 @@ public class SwitcherRelayController {
 
 			return ResponseEntity.ok(validatorFactory.runValidator(request));
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
+			return ResponseEntity.status(e.getStatusCode()).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
 	}
 	
@@ -77,7 +77,7 @@ public class SwitcherRelayController {
 			var featureRequest = gson.fromJson(request.getPayload(), FeaturePayload.class);
 			return ResponseEntity.ok(validatorService.execute(featureRequest));
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatus()).body(new ResponseRelayDTO(false, e.getMessage()));
+			return ResponseEntity.status(e.getStatusCode()).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
 	}
 

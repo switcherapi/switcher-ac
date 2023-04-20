@@ -5,6 +5,7 @@ import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.repository.AdminRepository;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
+import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 

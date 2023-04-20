@@ -7,6 +7,7 @@ import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
+import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
