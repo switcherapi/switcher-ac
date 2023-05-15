@@ -15,6 +15,7 @@ public class ConfigProperties {
     private String title;
     private String description;
     private String version;
+    private String releaseTime;
     private String url;
     private License license;
     private Contact contact;
