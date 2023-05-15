@@ -1,9 +1,9 @@
 package com.github.switcherapi.ac.controller;
 
 import com.github.switcherapi.ac.controller.fixture.ControllerTestUtils;
+import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
@@ -20,8 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,6 +40,17 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 			.attributes(List.of(
 				PlanAttribute.builder().feature("feature_integer").value(1).build()
 			)).build());
+	}
+
+	@Test
+	void shouldReturnRelayVerificationCode() throws Exception {
+		this.mockMvc.perform(get("/switcher/v1/verify")
+						.contentType(MediaType.APPLICATION_JSON)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
+						.with(csrf()))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("{\"code\":\"[relay_code]\"}")));
 	}
 	
 	@Test

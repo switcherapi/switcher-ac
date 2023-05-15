@@ -1,5 +1,6 @@
 package com.github.switcherapi.ac.controller;
 
+import com.github.switcherapi.ac.config.SwitcherConfig;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("switcher/v1")
 public class SwitcherRelayController {
@@ -19,18 +22,27 @@ public class SwitcherRelayController {
 	private final Gson gson = new Gson();
 
 	private final AccountService accountService;
-	
+
 	private final ValidatorFactory validatorFactory;
 
 	private final ValidatorService validatorService;
+
+	private final SwitcherConfig switcherConfig;
 	
 	public SwitcherRelayController(
 			AccountService accountService, 
 			ValidatorFactory validatorFactory,
-			ValidatorService validatorService) {
+			ValidatorService validatorService,
+			SwitcherConfig switcherConfig) {
 		this.accountService = accountService;
 		this.validatorFactory = validatorFactory;
 		this.validatorService = validatorService;
+		this.switcherConfig = switcherConfig;
+	}
+
+	@GetMapping(value = "/verify")
+	public ResponseEntity<Object> verify() {
+		return ResponseEntity.ok(Map.of("code", switcherConfig.getRelayCode()));
 	}
 
 	@Operation(summary = "Load new account to Switcher AC")

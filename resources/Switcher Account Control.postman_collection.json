@@ -420,6 +420,47 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Switcher - Verify",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{switcherToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/switcher/v1/verify",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"switcher",
+								"v1",
+								"verify"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

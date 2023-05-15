@@ -1,5 +1,6 @@
 package com.github.switcherapi.ac.controller;
 
+import com.github.switcherapi.ac.config.SwitcherConfig;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.ValidatorService;
@@ -32,6 +33,7 @@ class MockSwitcherRelayControllerTests {
 	@Mock private AccountService mockAccountService;
 	@Mock private ValidatorFactory mockValidatorFactory;
 	@Mock private ValidatorService mockValidatorService;
+	@Mock private SwitcherConfig mockSwitcherConfig;
 	
 	private MockMvc mockMvc;
 	
@@ -39,7 +41,7 @@ class MockSwitcherRelayControllerTests {
     void setup() {
         MockitoAnnotations.openMocks(this);
 		final var switcherRelayController = new SwitcherRelayController(
-				mockAccountService, mockValidatorFactory, mockValidatorService);
+				mockAccountService, mockValidatorFactory, mockValidatorService, mockSwitcherConfig);
         mockMvc = MockMvcBuilders.standaloneSetup(switcherRelayController).build();
     }
 	

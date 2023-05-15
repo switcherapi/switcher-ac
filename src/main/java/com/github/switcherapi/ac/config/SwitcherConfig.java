@@ -24,6 +24,7 @@ public class SwitcherConfig {
 	private boolean silent;
 	private String retry;
 	private SnapshotConfig snapshot;
+	private String relayCode;
 	
 	@Data
 	static class SnapshotConfig {
