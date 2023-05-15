@@ -26,7 +26,8 @@ public class ApiController {
 	public ResponseEntity<Map<String, Object>> check() {
 		return ResponseEntity.ok(Map.of(
 				"status", "All good",
-				"version", configProperties.getVersion()
+				"version", configProperties.getVersion(),
+				"release_time", configProperties.getReleaseTime()
 		));
 	}
 
