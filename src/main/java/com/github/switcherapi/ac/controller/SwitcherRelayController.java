@@ -81,6 +81,21 @@ public class SwitcherRelayController {
 			return ResponseEntity.status(e.getStatusCode()).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
 	}
+
+	@Operation(summary = "Returns rate limit for API usage")
+	@GetMapping(value = "/limiter")
+	public ResponseEntity<ResponseRelayDTO> limiter(@RequestParam String value) {
+		try {
+			final var request = FeaturePayload.builder()
+					.feature("rate_limit")
+					.owner(value)
+					.build();
+
+			return ResponseEntity.ok(validatorFactory.runValidator(request));
+		} catch (ResponseStatusException e) {
+			return ResponseEntity.status(e.getStatusCode()).body(new ResponseRelayDTO(false, e.getMessage()));
+		}
+	}
 	
 	@Operation(summary = "Perform account validation given input value")
 	@PostMapping(value = "/validate")

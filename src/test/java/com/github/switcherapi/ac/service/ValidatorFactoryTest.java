@@ -49,7 +49,8 @@ class ValidatorFactoryTest {
 	
 	@ParameterizedTest
 	@ValueSource(strings = {
-			"daily_execution"
+			"daily_execution",
+			"rate_limit"
 	}) 
 	void shouldNotThrowError(String feature) {
 		accountService.createAccount("adminid");

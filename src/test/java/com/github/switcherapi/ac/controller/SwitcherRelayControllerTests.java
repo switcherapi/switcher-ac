@@ -7,6 +7,7 @@ import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
+import com.github.switcherapi.ac.service.validator.beans.ValidateRateLimit;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -142,6 +143,22 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 	void shouldNotBeOkWhenValidate_execution_accountNotFound() throws Exception {
 		var expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
 		this.assertExecution("NOT_FOUND", expectedResponse, 404);
+	}
+
+	@Test
+	void shouldBeOkWhenValidate_limiter() throws Exception {
+		//given
+		givenAccount("adminid");
+
+		//test
+		var expectedResponse = new ResponseRelayDTO(true, String.format(ValidateRateLimit.MESSAGE_TEMPLATE, 100));
+		this.assertLimiter("adminid", expectedResponse, 200);
+	}
+
+	@Test
+	void shouldNotBeOkWhenValidate_limiter_accountNotFound() throws Exception {
+		var expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
+		this.assertLimiter("NOT_FOUND", expectedResponse, 404);
 	}
 	
 	@Test
