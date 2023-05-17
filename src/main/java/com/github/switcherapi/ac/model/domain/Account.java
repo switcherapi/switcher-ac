@@ -8,8 +8,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @JsonInclude(Include.NON_NULL)
 @Document(collection = "accounts")
 @Data
@@ -23,9 +21,5 @@ public class Account {
 
 	@DBRef
 	private Plan plan;
-
-	private Date lastReset = new Date();
-
-	private int currentDailyExecution;
 
 }

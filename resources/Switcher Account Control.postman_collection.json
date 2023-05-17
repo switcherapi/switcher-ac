@@ -214,46 +214,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Admin - Account Reset",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{authToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/admin/v1/account/reset/ACCOUNT_ID",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"admin",
-								"v1",
-								"account",
-								"reset",
-								"ACCOUNT_ID"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -375,53 +335,6 @@
 					"response": []
 				},
 				{
-					"name": "Switcher - Execution",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{switcherToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/switcher/v1/execution?value=ACCOUNT_ID",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"switcher",
-								"v1",
-								"execution"
-							],
-							"query": [
-								{
-									"key": "value",
-									"value": "ACCOUNT_ID"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Switcher - Verify",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -457,6 +370,53 @@
 								"switcher",
 								"v1",
 								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Switcher - Limiter",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{switcherToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/switcher/v1/limiter?value=adminid",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"switcher",
+								"v1",
+								"limiter"
+							],
+							"query": [
+								{
+									"key": "value",
+									"value": "adminid"
+								}
 							]
 						}
 					},
@@ -560,7 +520,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"BASIC\",\r\n    \"attributes\": [\r\n        {\r\n            \"feature\": \"domain\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"group\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"switcher\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"environment\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"component\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"team\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"daily_execution\",\r\n            \"value\": 10\r\n        },\r\n        {\r\n            \"feature\": \"history\",\r\n            \"value\": false\r\n        },\r\n        {\r\n            \"feature\": \"metrics\",\r\n            \"value\": false\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"BASIC\",\r\n    \"attributes\": [\r\n        {\r\n            \"feature\": \"domain\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"group\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"switcher\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"environment\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"component\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"team\",\r\n            \"value\": 1\r\n        },\r\n        {\r\n            \"feature\": \"rate_limit\",\r\n            \"value\": 100\r\n        },\r\n        {\r\n            \"feature\": \"history\",\r\n            \"value\": false\r\n        },\r\n        {\r\n            \"feature\": \"metrics\",\r\n            \"value\": false\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -598,7 +558,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"UNLIMITED\",\r\n    \"attributes\": [\r\n        {\r\n            \"feature\": \"domain\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"group\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"switcher\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"environment\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"component\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"team\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"daily_execution\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"history\",\r\n            \"value\": true\r\n        },\r\n        {\r\n            \"feature\": \"metrics\",\r\n            \"value\": true\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\": \"UNLIMITED\",\r\n    \"attributes\": [\r\n        {\r\n            \"feature\": \"domain\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"group\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"switcher\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"environment\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"component\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"team\",\r\n            \"value\": -1\r\n        },\r\n        {\r\n            \"feature\": \"rate_limit\",\r\n            \"value\": 100000\r\n        },\r\n        {\r\n            \"feature\": \"history\",\r\n            \"value\": true\r\n        },\r\n        {\r\n            \"feature\": \"metrics\",\r\n            \"value\": true\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

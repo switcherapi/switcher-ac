@@ -49,7 +49,6 @@ class ValidatorFactoryTest {
 	
 	@ParameterizedTest
 	@ValueSource(strings = {
-			"daily_execution",
 			"rate_limit"
 	}) 
 	void shouldNotThrowError(String feature) {

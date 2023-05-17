@@ -31,7 +31,7 @@ class ValidatorServiceTest {
                 Arguments.of("environment", 1),
                 Arguments.of("component", 1),
                 Arguments.of("team", 0),
-                Arguments.of("daily_execution", 99)
+                Arguments.of("rate_limit", 0)
         );
     }
 
@@ -55,9 +55,9 @@ class ValidatorServiceTest {
                 Arguments.of("environment", 2),
                 Arguments.of("component", 2),
                 Arguments.of("team", 1),
-                Arguments.of("daily_execution", 100),
                 Arguments.of("history", null),
-                Arguments.of("metrics", null)
+                Arguments.of("metrics", null),
+                Arguments.of("rate_limit", 100)
         );
     }
 

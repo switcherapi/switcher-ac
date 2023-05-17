@@ -3,7 +3,6 @@ package com.github.switcherapi.ac.controller;
 import com.github.switcherapi.ac.controller.fixture.ControllerTestUtils;
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
-import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
@@ -114,35 +113,6 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 			.andDo(print())
 			.andExpect(status().is5xxServerError())
 			.andExpect(content().string(containsString(jsonResponse)));
-	}
-	
-	@Test
-	void shouldBeOkWhenValidate_execution() throws Exception {
-		//given
-		givenAccount("adminid");
-		
-		//test
-		var expectedResponse = new ResponseRelayDTO(true);
-		this.assertExecution("adminid", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldNotBeOkWhenValidate_execution() throws Exception {
-		//given
-		givenAccount("adminid");
-		var plan = Plan.loadDefault();
-		plan.getFeature("daily_execution").setValue(0);
-		planService.updatePlan(PlanType.DEFAULT.name(), plan);
-
-		//test
-		var expectedResponse = new ResponseRelayDTO(false,"Daily execution limit has been reached");
-		this.assertExecution("adminid", expectedResponse, 200);
-	}
-	
-	@Test
-	void shouldNotBeOkWhenValidate_execution_accountNotFound() throws Exception {
-		var expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
-		this.assertExecution("NOT_FOUND", expectedResponse, 404);
 	}
 
 	@Test

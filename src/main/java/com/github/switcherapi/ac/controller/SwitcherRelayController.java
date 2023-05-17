@@ -66,21 +66,6 @@ public class SwitcherRelayController {
 			return ResponseEntity.status(500).body(new ResponseRelayDTO(false, e.getMessage()));
 		}
 	}
-	
-	@Operation(summary = "Perform account validation on execution credits")
-	@GetMapping(value = "/execution")
-	public ResponseEntity<ResponseRelayDTO> execution(@RequestParam String value) {
-		try {
-			final var request = FeaturePayload.builder()
-					.feature("daily_execution")
-					.owner(value)
-					.build();
-
-			return ResponseEntity.ok(validatorFactory.runValidator(request));
-		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatusCode()).body(new ResponseRelayDTO(false, e.getMessage()));
-		}
-	}
 
 	@Operation(summary = "Returns rate limit for API usage")
 	@GetMapping(value = "/limiter")
