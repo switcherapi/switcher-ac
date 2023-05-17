@@ -135,31 +135,5 @@ class AdminAccountControllerTests {
 			.andDo(print())
 			.andExpect(status().isNotFound());
 	}
-	
-	@Test
-	void shouldResetDailyExecution() throws Exception {
-		//given
-		final var request = FeaturePayload.builder()
-				.feature("daily_execution")
-				.owner(ADMIN_ID)
-				.build();
-
-		validatorFactory.runValidator(request);
-		
-		//validate before
-		var account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getCurrentDailyExecution()).isEqualTo(1);
-		
-		//test
-		this.mockMvc.perform(patch("/admin/v1/account/reset/{adminId}", ADMIN_ID)
-				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, bearer)
-				.with(csrf()))
-			.andDo(print())
-			.andExpect(status().isOk());
-		
-		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getCurrentDailyExecution()).isZero();
-	}
 
 }

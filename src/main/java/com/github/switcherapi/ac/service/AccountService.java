@@ -1,16 +1,14 @@
 package com.github.switcherapi.ac.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Service
 public class AccountService {
@@ -47,14 +45,6 @@ public class AccountService {
 		account.setPlan(plan);
 		accountDao.getAccountRepository().save(account);
 		
-		return account;
-	}
-	
-	public Account resetDailyExecution(String adminId) {
-		var account = getAccountByAdminId(adminId);
-		account.setCurrentDailyExecution(0);
-		account.setLastReset(new Date());
-		accountDao.getAccountRepository().save(account);
 		return account;
 	}
 

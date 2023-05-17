@@ -57,7 +57,6 @@ public class Plan {
 				PlanAttribute.builder().feature("environment").value(2).build(),
 				PlanAttribute.builder().feature("component").value(2).build(),
 				PlanAttribute.builder().feature("team").value(1).build(),
-				PlanAttribute.builder().feature("daily_execution").value(100).build(),
 				PlanAttribute.builder().feature("rate_limit").value(100).build(),
 				PlanAttribute.builder().feature("history").value(false).build(),
 				PlanAttribute.builder().feature("metrics").value(false).build()

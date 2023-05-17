@@ -81,10 +81,6 @@ the GIT_CODE will be given to access this resource and eventually proceed with t
 
 When authenticating it will be given a pair of tokens. The refresh token will be used to re-generate a new pair once the access token has expired.
 
-- **Loging Out** - /admin/v1/logout [POST]
-
-Well, it logout the admin user.
-
 - **List plans** - /admin/v1/plan/list [GET]
 
 Return all registered plans.
@@ -96,18 +92,6 @@ Return a specific plan.
 - **Create plan** - /admin/v1/plan [POST]
 
 Create new plan.
-```json
-{
-    "name": "BASIC",
-    "maxDomains": 1,
-    "maxGroups": 5,
-    "maxSwitchers": 20,
-    "maxComponents": 5,
-    "maxEnvironments": 3,
-    "maxTeams": 5,
-    "maxDailyExecution": 500
-}
-```
 
 - **Delete plan** - /admin/v1/plan?plan={PLAN_NAME} [POST]
 
@@ -115,11 +99,7 @@ Delete a specific plan.
 
 - **Change account plan** - /admin/v1/account/change/:externalId?plan={PLAN_NAME} [PATCH]
 
-Change account plan to the one especified.
-
-- **Reset account execution daily limit** - /admin/v1/account/reset/:externalId [PATCH]
-
-Reset the number of executions for a specific account.
+Change account plan to the one specified.
 
 ### Switcher
 Switcher authorization token is required.
@@ -151,6 +131,10 @@ Execute the validation based on the name of the feature and account externalId.
 }
 ```
 
-- **Usage validation** - /switcher/v1/execution?value={externalId} [POST]
+- **Rate Limiter** - /switcher/v1/limiter?value=externalId [GET]
 
-Verify account usage.
+Return rate limit allowed for an account externalId.
+
+- **Verify** - /switcher/v1/verify [GET]
+
+Return code verification used to verify deployment ownership.

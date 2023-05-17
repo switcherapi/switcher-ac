@@ -54,12 +54,5 @@ public class AdminController {
 		final var account = accountService.createAccount(adminId, plan);
 		return ResponseEntity.ok(AccountMapper.createCopy(account));
 	}
-	
-	@Operation(summary = "Reset execution credits")
-	@PatchMapping(value = "/account/reset/{adminId}")
-	public ResponseEntity<AccountDTO> changeAccountPlan(@PathVariable(value="adminId") String adminId) {
-		final var account = accountService.resetDailyExecution(adminId);
-		return ResponseEntity.ok(AccountMapper.createCopy(account));
-	}
 
 }
