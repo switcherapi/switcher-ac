@@ -7,7 +7,6 @@ import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Generated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,7 +15,7 @@ public class PlanMapper {
 	public static <T> List<PlanDTO> createCopy(List<T> from) {
 		return from.stream()
 				.map(item -> DefaultMapper.createCopy(item, new PlanDTO()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	public static void copyProperties(Plan from, Plan to) {
