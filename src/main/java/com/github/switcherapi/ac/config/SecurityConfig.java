@@ -22,9 +22,9 @@ public class SecurityConfig {
 	private final JwtRequestFilter jwtRequestFilter;
 	
     private static final String[] SWAGGER_MATCHERS = {
-			"/ac/swagger-ui/**",
-			"/ac/v3/api-docs/**",
-			"/ac/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
     };
 
 	public SecurityConfig(

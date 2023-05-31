@@ -65,7 +65,7 @@ class ApiResourcesTests {
 	
 	@Test
 	void shouldAccessSwagger() throws Exception {
-		this.mockMvc.perform(get("/ac/v3/api-docs")
+		this.mockMvc.perform(get("/v3/api-docs")
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(httpBasic("admin", "admin"))
 				.with(csrf()))
@@ -75,7 +75,7 @@ class ApiResourcesTests {
 	
 	@Test
 	void shouldNotAccessSwagger() throws Exception {
-		this.mockMvc.perform(get("/ac/v3/api-docs")
+		this.mockMvc.perform(get("/v3/api-docs")
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(csrf()))
 			.andDo(print())
@@ -84,7 +84,7 @@ class ApiResourcesTests {
 	
 	@Test
 	void shouldAccessSwaggerUI() throws Exception {
-		this.mockMvc.perform(get("/ac/swagger-ui/index.html")
+		this.mockMvc.perform(get("/swagger-ui/index.html")
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(httpBasic("admin", "admin"))
 				.with(csrf()))
@@ -94,7 +94,7 @@ class ApiResourcesTests {
 	
 	@Test
 	void shouldNotAccessSwaggerUI() throws Exception {
-		this.mockMvc.perform(get("/ac/swagger-ui/index.html")
+		this.mockMvc.perform(get("/swagger-ui/index.html")
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(csrf()))
 			.andDo(print())
