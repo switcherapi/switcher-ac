@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,27 +42,19 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http
-				.authorizeHttpRequests()
-					.requestMatchers(healthChecker).permitAll()
+		http.authorizeHttpRequests(auth ->
+				auth.requestMatchers(healthChecker).permitAll()
 					.requestMatchers("/admin/v1/auth/**").permitAll()
 					.requestMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
 					.requestMatchers("/admin/**").hasRole(Roles.ADMIN.name())
 					.requestMatchers("/plan/**").hasRole(Roles.ADMIN.name())
 					.requestMatchers("/switcher/**").hasRole(Roles.SWITCHER.name())
-					.requestMatchers(SWAGGER_MATCHERS).authenticated()
-				.and().httpBasic().authenticationEntryPoint(authenticationEntryPoint())
+					.requestMatchers(SWAGGER_MATCHERS).authenticated());
 
-				.and()
-				.exceptionHandling()
-				.authenticationEntryPoint(authenticationEntryPoint())
-
-				.and()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-				.and()
-				.cors().and().csrf().disable();
+		http.httpBasic(auth -> auth.authenticationEntryPoint(authenticationEntryPoint()));
+		http.exceptionHandling(auth -> auth.authenticationEntryPoint(authenticationEntryPoint()));
+		http.sessionManagement(auth -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.csrf(AbstractHttpConfigurer::disable);
 
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
