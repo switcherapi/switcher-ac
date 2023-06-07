@@ -50,7 +50,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.7</version>
+		<version>3.1.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -67,16 +67,15 @@
 		<springdoc.version>2.1.0</springdoc.version>
 
 		<!-- Test-->
-		<flapdoodle.embed.mongo.version>4.6.2</flapdoodle.embed.mongo.version>
-		
+		<flapdoodle.embed.mongo.version>4.7.0</flapdoodle.embed.mongo.version>
+
 		<!-- Managed -->
-		<spring-expression.version>6.0.8</spring-expression.version>
 		<snakeyaml.version>2.0</snakeyaml.version>
 
 		<!-- Plugins -->
 		<maven-compiler.version>3.11.0</maven-compiler.version>
-		<sonar.version>3.7.0.1746</sonar.version>
-		<jacoco.version>0.8.9</jacoco.version>
+		<sonar.version>3.9.1.2184</sonar.version>
+		<jacoco.version>0.8.10</jacoco.version>
 		
 		<!-- Sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -318,12 +317,6 @@
 				<groupId>org.yaml</groupId>
 				<artifactId>snakeyaml</artifactId>
 				<version>${snakeyaml.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-expression</artifactId>
-				<version>${spring-expression.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
