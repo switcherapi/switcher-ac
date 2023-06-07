@@ -18,15 +18,13 @@ public class PlanAttribute {
     private Object value;
 
     public boolean validate(Object request) {
-        if (request instanceof Integer && value instanceof Integer) {
-            var requestObj = (Integer) request;
-            var attributeObj = (Integer) value;
+        if (request instanceof Integer requestObj &&
+                value instanceof Integer attributeObj) {
             return attributeObj <= requestObj;
         }
 
-        if (request instanceof Boolean && value instanceof Boolean) {
-            var requestObj = (Boolean) request;
-            var attributeObj = (Boolean) value;
+        if (request instanceof Boolean requestObj &&
+                value instanceof Boolean attributeObj) {
             return Objects.equals(attributeObj, requestObj);
         }
 
