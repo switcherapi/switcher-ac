@@ -1,9 +1,9 @@
 target/
 **/src/main/resources/application-local.properties
+**/src/main/resources/keystore/*
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
 
 ### STS ###
 .apt_generated

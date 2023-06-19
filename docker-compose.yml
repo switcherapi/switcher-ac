@@ -28,6 +28,12 @@ services:
       - ADMIN_USER=${ADMIN_USER}
       - ADMIN_PASS=${ADMIN_PASS}
 
+      # SSL
+      - SSL_ENABLED=${SSL_ENABLED}
+      - SSL_KEY_STORE=${SSL_KEY_STORE}
+      - SSL_KEY_PASSWORD=${SSL_KEY_PASSWORD}
+      - SSL_KEY_ALIAS=${SSL_KEY_ALIAS}
+
       # Switcher API settings
       - SWITCHER_URL=${SWITCHER_URL}
       - SWITCHER_KEY=${SWITCHER_KEY}
