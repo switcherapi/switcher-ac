@@ -133,7 +133,8 @@
             <id>sonar</id>
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                <sonar.organization>switcherapi</sonar.organization>
+				<sonar.projectName>switcher-ac</sonar.projectName>
+				<sonar.organization>switcherapi</sonar.organization>
                 <sonar.projectKey>switcherapi_switcher-ac</sonar.projectKey>
                 <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
             </properties>
