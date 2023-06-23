@@ -8,6 +8,13 @@ volumes:
       type: none
       device: [CHANGE_ME]
 
+  switcherapi-tls:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: [CHANGE_ME]
+
 services:
   switcherapi:
     image: trackerforce/switcher-ac
@@ -16,6 +23,7 @@ services:
       - 8090:8090
     volumes:
       - switcherapi-snapshot:/snapshots
+      - switcherapi-tls:/etc/certs
     environment:
       # API settings
       - PORT=8090
