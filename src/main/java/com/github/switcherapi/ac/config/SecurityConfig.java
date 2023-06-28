@@ -44,6 +44,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth ->
 				auth.requestMatchers(healthChecker).permitAll()
+					.requestMatchers("/error").permitAll()
 					.requestMatchers("/admin/v1/auth/**").permitAll()
 					.requestMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
 					.requestMatchers("/admin/**").hasRole(Roles.ADMIN.name())
