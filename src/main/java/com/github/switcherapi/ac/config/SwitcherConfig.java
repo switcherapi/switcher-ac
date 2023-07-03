@@ -1,14 +1,11 @@
 package com.github.switcherapi.ac.config;
 
+import com.github.switcherapi.ac.util.FileUtil;
 import com.github.switcherapi.client.ContextBuilder;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ResourceUtils;
-
-import java.io.IOException;
 
 import static com.github.switcherapi.ac.config.SwitcherFeatures.configure;
 import static com.github.switcherapi.ac.config.SwitcherFeatures.initializeClient;
@@ -43,12 +40,7 @@ public class SwitcherConfig {
 	}
 	
 	@Bean
-	public void configureSwitcher() throws IOException {
-		var truststorePath = StringUtils.EMPTY;
-		if (StringUtils.isNotBlank(truststore.getPath())) {
-			truststorePath = ResourceUtils.getFile(truststore.getPath()).getAbsoluteFile().getPath();
-		}
-
+	public void configureSwitcher() {
 		configure(ContextBuilder.builder()
 				.contextLocation(SwitcherFeatures.class.getName())
 				.url(url)
@@ -61,7 +53,7 @@ public class SwitcherConfig {
 				.retryAfter(retry)
 				.snapshotLocation(snapshot.getLocation())
 				.snapshotAutoLoad(snapshot.isAuto())
-				.truststorePath(truststorePath)
+				.truststorePath(FileUtil.getFilePathFromResource(truststore.getPath()))
 				.truststorePassword(truststore.getPassword())
 		);
 
