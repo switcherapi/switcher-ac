@@ -50,7 +50,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.1</version>
+		<version>3.1.2</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -59,7 +59,7 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
     	<maven.compiler.target>${java.version}</maven.compiler.target>
 		
-		<jersey.version>3.1.2</jersey.version>
+		<jersey.version>3.1.3</jersey.version>
 		<switcher-client.version>2.0.3</switcher-client.version>
 		<jsonwebtoken.version>0.11.5</jsonwebtoken.version>
 		<joda-time.version>2.12.5</joda-time.version>
