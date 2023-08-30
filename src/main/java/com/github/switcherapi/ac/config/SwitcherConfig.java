@@ -21,14 +21,14 @@ public class SwitcherConfig {
 	private String component;
 	private String environment;
 	private boolean offline;
-	private boolean silent;
-	private String retry;
+	private String silent;
 	private SnapshotConfig snapshot;
 	private String relayCode;
 	private TruststoreConfig truststore;
 	
 	@Data
 	static class SnapshotConfig {
+		private String autoUpdateInterval;
 		private String location;
 		private boolean auto;
 	}
@@ -50,7 +50,7 @@ public class SwitcherConfig {
 				.component(component)
 				.offlineMode(offline)
 				.silentMode(silent)
-				.retryAfter(retry)
+				.snapshotAutoUpdateInterval(snapshot.getAutoUpdateInterval())
 				.snapshotLocation(snapshot.getLocation())
 				.snapshotAutoLoad(snapshot.isAuto())
 				.truststorePath(FileUtil.getFilePathFromResource(truststore.getPath()))

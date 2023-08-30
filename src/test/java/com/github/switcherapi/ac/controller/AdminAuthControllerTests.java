@@ -5,9 +5,11 @@ import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.repository.AdminRepository;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
+import com.github.switcherapi.client.SwitcherMock;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -62,6 +64,21 @@ class AdminAuthControllerTests {
 		assertThat(authDto.getAdmin().getGitHubId()).isEqualTo("123456");
 		assertThat(authDto.getToken()).isNotEqualTo(tokens[0]);
 		assertThat(authDto.getRefreshToken()).isNotEqualTo(tokens[1]);
+	}
+
+	@SwitcherMock(key = "SWITCHER_AC_ADM", result = false)
+	@ParameterizedTest
+	void shouldNotRefreshToken_accountUnauthorized() throws Exception {
+		var count = new CountDownLatch(1);
+		assertFalse(count.await(1, TimeUnit.SECONDS));
+
+		this.mockMvc.perform(post("/admin/v1/auth/refresh")
+						.contentType(MediaType.APPLICATION_JSON)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens[0])
+						.with(csrf())
+						.queryParam("refreshToken", tokens[1]))
+				.andDo(print())
+				.andExpect(status().isUnauthorized());
 	}
 	
 	@Test
