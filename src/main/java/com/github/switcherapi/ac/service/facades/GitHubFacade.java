@@ -6,7 +6,6 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,37 +31,38 @@ public class GitHubFacade {
 
 	private final String oauthSecret;
 
-	@Setter
-	private String gitUrlAccess;
+	private final String gitUrlAccess;
 
-	@Setter
-	private String gitUrlDetail;
+	private final String gitUrlDetail;
 	
 	private final Client client;
 
 	public GitHubFacade(
 			@Value("${service.github.clientid}") String clientId,
-			@Value("${service.github.secret}") String oauthSecret) {
+			@Value("${service.github.secret}") String oauthSecret,
+			@Value("${service.github.url.access}") String gitUrlAccess,
+			@Value("${service.github.url.detail}") String gitUrlDetail) {
 		this.clientId = clientId;
 		this.oauthSecret = oauthSecret;
-		this.gitUrlAccess = "https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s";
-		this.gitUrlDetail = "https://api.github.com/user";
+		this.gitUrlAccess = gitUrlAccess;
+		this.gitUrlDetail = gitUrlDetail;
 		this.client = ClientBuilder.newClient();
 	}
 	
 	public String getToken(String code) {
-		try {
-			final WebTarget myResource = client.target(
-					String.format(gitUrlAccess, clientId, oauthSecret, code));
-			
-			final var response = myResource
+		final WebTarget myResource = client.target(
+				String.format(gitUrlAccess, clientId, oauthSecret, code));
+
+		try (var response = myResource
 				.request(MediaType.APPLICATION_JSON)
 				.header(HEADER_ACCEPT, MediaType.APPLICATION_JSON)
-				.post(null);
-			
-			Map<?, ?> responseEntity = response.readEntity(Map.class);
-			if (responseEntity.containsKey(ACCESS_TOKEN))
-				return responseEntity.get(ACCESS_TOKEN).toString();
+				.post(null)) {
+
+			if (response.getStatus() == 200) {
+				final var responseEntity = response.readEntity(Map.class);
+				if (responseEntity.containsKey(ACCESS_TOKEN))
+					return responseEntity.get(ACCESS_TOKEN).toString();
+			}
 			
 			return StringUtils.EMPTY;
 		} catch (Exception e) {
@@ -74,15 +74,22 @@ public class GitHubFacade {
 	
 	public GitHubDetail getGitHubDetail(String token) {
 		final WebTarget myResource = client.target(gitUrlDetail);
-		final var response = myResource
+
+		try (var response = myResource
 			.request(MediaType.APPLICATION_JSON)
 			.header(HEADER_ACCEPT, MediaType.APPLICATION_JSON)
 			.header(HttpHeaders.AUTHORIZATION, String.format("token %s", token))
-			.get();
+			.get()) {
 		
-		if (response.getStatus() == 200)
-			return response.readEntity(GitHubDetail.class);
-		return null;
+			if (response.getStatus() == 200)
+				return response.readEntity(GitHubDetail.class);
+
+			return null;
+		} catch (Exception e) {
+			logger.error("Failed to get GitHub detail - {}", e.getMessage());
+			throw new ResponseStatusException(
+					HttpStatus.UNAUTHORIZED, INVALID_ACCOUNT);
+		}
 	}
 
 }
