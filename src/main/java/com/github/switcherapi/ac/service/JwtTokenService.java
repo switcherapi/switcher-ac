@@ -3,16 +3,15 @@ package com.github.switcherapi.ac.service;
 import com.github.switcherapi.ac.repository.AdminRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
@@ -20,7 +19,7 @@ public class JwtTokenService {
 	
 	private static final Logger logger = LogManager.getLogger(JwtTokenService.class);
 	
-	public static final int JWT_TOKEN_VALIDITY = 5; //min
+	public static final int JWT_TOKEN_VALIDITY = 5 * 60 * 1000;
 
 	private final String jwtSecret;
 
@@ -44,28 +43,58 @@ public class JwtTokenService {
 	public boolean validateRelayToken(String token) {
 		return relayToken.equals(token);
 	}
-	
-	public String[] generateToken(String subject) {
+
+
+	/**
+	 * Generates a refresh token for a given token.
+	 *
+	 * @param token - the token to be refreshed
+	 * @return a refresh token
+	 */
+	private String generateRefreshToken(String token) {
+		final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+		final var claims = Jwts.claims()
+				.expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
+				.subject(token.substring(token.length() - 8)).build();
+
+		return Jwts.builder().claims(claims).signWith(key).compact();
+	}
+
+	/**
+	 * Generates a pair of token (token and refreshToken) for a given subject
+	 * in which the expiration date is the current date plus the JWT_TOKEN_VALIDITY.
+	 *
+	 * @param subject - the subject of the token
+	 * @return a pair of token (token and refreshToken)
+	 */
+	public Pair<String, String> generateToken(String subject) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Generating token for {}", subject);
 		}
-		
-		final SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-		final String token = Jwts.builder()
-				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 60 * 1000))
-				.setSubject(subject)
-				.signWith(key)
-				.compact();
-		
-		return new String[] { token, generateRefreshToken(token) };
+
+		final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+		final var claims = Jwts.claims()
+				.expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
+				.subject(subject).build();
+
+		final var token = Jwts.builder().claims(claims).signWith(key).compact();
+
+		return Pair.of(token, generateRefreshToken(token));
 	}
-	
-	public String[] refreshToken(String subject, String token, String refreshToken) {
-		final String refreshSubject = 
-				Jwts.parserBuilder()
-					.setSigningKey(jwtSecret.getBytes(StandardCharsets.UTF_8)).build()
-					.parseClaimsJws(refreshToken).getBody().getSubject();
-		
+
+	/**
+	 * Refreshes a token given a subject, a token and a refresh token.
+	 *
+	 * @param subject - the subject of the token
+	 * @param token - the token to be refreshed
+	 * @param refreshToken - the refresh token
+	 * @return a pair of token (token and refreshToken)
+	 */
+	public Pair<String, String> refreshToken(String subject, String token, String refreshToken) {
+		final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+		final var jwtParser = Jwts.parser().verifyWith(key).build();
+		final var refreshSubject = jwtParser.parseSignedClaims(refreshToken).getPayload().getSubject();
+
 		if (token != null && refreshSubject.equals(token.substring(token.length() - 8))) {
 			return generateToken(subject);
 		}
@@ -73,16 +102,21 @@ public class JwtTokenService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Refresh token could not be processed for {}", subject);
 		}
-		
-		return ArrayUtils.EMPTY_STRING_ARRAY;
+
+		return null;
 	}
-	
+
+	/**
+	 * Validates token based on subject in the payload.
+	 *
+	 * @param token - the token to be validated
+	 * @return the subject of the token if it is valid, otherwise an empty string
+	 */
 	public String validateToken(String token) {
 		try {
-			final String subject = 
-					Jwts.parserBuilder()
-						.setSigningKey(jwtSecret.getBytes(StandardCharsets.UTF_8)).build()
-						.parseClaimsJws(token).getBody().getSubject();
+			final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+			final var jwtParser = Jwts.parser().verifyWith(key).build();
+			final var subject = jwtParser.parseSignedClaims(token).getPayload().getSubject();
 			
 			final var adminAccount = adminRepository.findByToken(token);
 			return adminAccount != null ? subject : null;
@@ -90,14 +124,6 @@ public class JwtTokenService {
 			logger.error("Failed to validate JWT - {}", e.getMessage());
 			return StringUtils.EMPTY;
 		}
-	}
-	
-	private String generateRefreshToken(String token) {
-		final SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-		return Jwts.builder()
-					.setSubject(token.substring(token.length() - 8))
-					.signWith(key)
-					.compact();
 	}
 	
 }

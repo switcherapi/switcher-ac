@@ -32,8 +32,8 @@ public class AdminService {
 		this.jwtService = jwtService;
 	}
 
-	private boolean isAvailable(String githubId) {
-		return getSwitcher(SWITCHER_AC_ADM)
+	private boolean isNotAvailable(String githubId) {
+		return !getSwitcher(SWITCHER_AC_ADM)
 				.checkValue(githubId)
 				.isItOn();
 	}
@@ -42,7 +42,7 @@ public class AdminService {
 		final var gitHubToken = githubService.getToken(code);
 		final var gitHubDetail = githubService.getGitHubDetail(gitHubToken);
 		
-		if (!isAvailable(gitHubDetail.getId())) {
+		if (isNotAvailable(gitHubDetail.getId())) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not allowed");
 		}
 
@@ -51,8 +51,8 @@ public class AdminService {
 			admin = createAdminAccount(gitHubDetail.getId());
 		}
 
-		final String[] tokens = jwtService.generateToken(admin.getId());
-		updateAdminAccountToken(admin, tokens[0]);
+		final var tokens = jwtService.generateToken(admin.getId());
+		updateAdminAccountToken(admin, tokens.getLeft());
 
 		return GitHubAuthMapper.createCopy(admin, tokens);
 
@@ -93,13 +93,13 @@ public class AdminService {
 				var admin = adminRepository.findByToken(token);
 
 				if (admin != null) {
-					if (!isAvailable(admin.getGitHubId())) {
+					if (isNotAvailable(admin.getGitHubId())) {
 						throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not allowed");
 					}
 
-					String[] tokens = jwtService.refreshToken(admin.getId(), token, refreshToken);
-					if (tokens.length == 2) {
-						updateAdminAccountToken(admin, tokens[0]);
+					final var tokens = jwtService.refreshToken(admin.getId(), token, refreshToken);
+					if (tokens != null) {
+						updateAdminAccountToken(admin, tokens.getLeft());
 						return GitHubAuthMapper.createCopy(admin, tokens);
 					}
 				}

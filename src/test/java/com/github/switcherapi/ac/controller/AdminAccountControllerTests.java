@@ -58,7 +58,7 @@ class AdminAccountControllerTests {
 		plan2.setName("BASIC");
 		planService.createPlan(plan2);
 		
-		final var token = jwtService.generateToken(adminAccount.getId())[0];
+		final var token = jwtService.generateToken(adminAccount.getId()).getLeft();
 		adminService.updateAdminAccountToken(adminAccount, token);
 		bearer = String.format("Bearer %s", token);
 	}
