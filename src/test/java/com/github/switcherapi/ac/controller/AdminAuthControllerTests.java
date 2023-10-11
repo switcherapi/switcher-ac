@@ -7,6 +7,7 @@ import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.client.SwitcherMock;
 import jakarta.ws.rs.core.HttpHeaders;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,13 +38,13 @@ class AdminAuthControllerTests {
 	@Autowired JwtTokenService jwtService;
 	@Autowired MockMvc mockMvc;
 	
-	private String[] tokens;
+	private Pair<String, String> tokens;
 	
 	@BeforeEach
 	void setup() {
 		final var admin = adminService.createAdminAccount("123456");
 		tokens = jwtService.generateToken(admin.getId());
-		adminService.updateAdminAccountToken(admin, tokens[0]);
+		adminService.updateAdminAccountToken(admin, tokens.getLeft());
 	}
 	
 	@Test
@@ -53,17 +54,17 @@ class AdminAuthControllerTests {
 		
 		var json = this.mockMvc.perform(post("/admin/v1/auth/refresh")
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens[0])
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.getLeft())
 				.with(csrf())
-				.queryParam("refreshToken", tokens[1]))
+				.queryParam("refreshToken", tokens.getRight()))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andReturn().getResponse().getContentAsString();
 		
 		var authDto = new ObjectMapper().readValue(json, GitHubAuthDTO.class);
 		assertThat(authDto.getAdmin().getGitHubId()).isEqualTo("123456");
-		assertThat(authDto.getToken()).isNotEqualTo(tokens[0]);
-		assertThat(authDto.getRefreshToken()).isNotEqualTo(tokens[1]);
+		assertThat(authDto.getToken()).isNotEqualTo(tokens.getLeft());
+		assertThat(authDto.getRefreshToken()).isNotEqualTo(tokens.getRight());
 	}
 
 	@SwitcherMock(key = "SWITCHER_AC_ADM", result = false)
@@ -74,9 +75,9 @@ class AdminAuthControllerTests {
 
 		this.mockMvc.perform(post("/admin/v1/auth/refresh")
 						.contentType(MediaType.APPLICATION_JSON)
-						.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens[0])
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.getLeft())
 						.with(csrf())
-						.queryParam("refreshToken", tokens[1]))
+						.queryParam("refreshToken", tokens.getRight()))
 				.andDo(print())
 				.andExpect(status().isUnauthorized());
 	}
@@ -85,7 +86,7 @@ class AdminAuthControllerTests {
 	void shouldNotRefreshToken_invalidRefreshToken() throws Exception {
 		this.mockMvc.perform(post("/admin/v1/auth/refresh")
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens[0])
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.getLeft())
 				.with(csrf())
 				.queryParam("refreshToken", "INVALID_REFRESH_TOKEN"))
 			.andDo(print())
@@ -96,7 +97,7 @@ class AdminAuthControllerTests {
 	void shouldLogout() throws Exception {
 		this.mockMvc.perform(post("/admin/v1/logout")
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens[0])
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.getLeft())
 				.with(csrf()))
 			.andDo(print())
 			.andExpect(status().isOk());

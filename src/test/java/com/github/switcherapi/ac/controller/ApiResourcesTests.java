@@ -38,7 +38,7 @@ class ApiResourcesTests {
 	
 	@BeforeEach
 	void setup() {
-		final var token = jwtService.generateToken(adminAccount.getId())[0];
+		final var token = jwtService.generateToken(adminAccount.getId()).getLeft();
 		adminService.updateAdminAccountToken(adminAccount, token);
 		bearer = String.format("Bearer %s", token);
 	}

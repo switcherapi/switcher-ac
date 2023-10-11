@@ -47,7 +47,7 @@ class PlanControllerTests extends ControllerTestUtils {
 	
 	@BeforeEach
 	void setup() {
-		final var token = jwtService.generateToken(admin.getId())[0];
+		final var token = jwtService.generateToken(admin.getId()).getLeft();
 		
 		adminService.updateAdminAccountToken(admin, token);
 		bearer = String.format("Bearer %s", token);
