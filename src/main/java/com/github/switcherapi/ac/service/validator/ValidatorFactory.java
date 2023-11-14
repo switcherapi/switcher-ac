@@ -2,6 +2,7 @@ package com.github.switcherapi.ac.service.validator;
 
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
+import com.github.switcherapi.ac.repository.AccountDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -23,11 +24,14 @@ public class ValidatorFactory {
 	private static final String VALIDATORS_PATH = "com.github.switcherapi.ac.service.validator.beans";
 
 	private final AutowireCapableBeanFactory autowireCapableBeanFactory;
+
+	private final AccountDao accountDao;
 	
 	private final Map<String, AbstractValidatorService> validatorHandlers = new HashMap<>();
 
-	public ValidatorFactory(AutowireCapableBeanFactory autowireCapableBeanFactory) {
+	public ValidatorFactory(AutowireCapableBeanFactory autowireCapableBeanFactory, AccountDao accountDao) {
 		this.autowireCapableBeanFactory = autowireCapableBeanFactory;
+		this.accountDao = accountDao;
 		this.scanValidators();
 	}
 
@@ -50,7 +54,7 @@ public class ValidatorFactory {
             	SwitcherValidator sValidator = validatorClass.getAnnotation(SwitcherValidator.class);
             	
     			final AbstractValidatorService validatorService = 
-    					(AbstractValidatorService) validatorClass.getConstructor().newInstance();
+    					(AbstractValidatorService) validatorClass.getConstructor(AccountDao.class).newInstance(this.accountDao);
 
     			autowireCapableBeanFactory.autowireBean(validatorService);
     			validatorHandlers.put(sValidator.value(), validatorService);
