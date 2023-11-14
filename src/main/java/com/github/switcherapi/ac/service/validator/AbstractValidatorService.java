@@ -4,9 +4,7 @@ import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.EnumMap;
@@ -14,15 +12,17 @@ import java.util.Map;
 
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
 
-@Component
 public abstract class AbstractValidatorService {
 	
 	public static final String ACCOUNT_NOT_FOUND = "Account not found";
-	
-	@Autowired
-	protected AccountDao accountDao;
+
+	protected final AccountDao accountDao;
 	
 	protected Map<SwitcherValidatorParams, Object> params;
+
+	protected AbstractValidatorService(AccountDao accountDao) {
+		this.accountDao = accountDao;
+	}
 	
 	/**
 	 * Executes validator by validating the request and then calling the validator service

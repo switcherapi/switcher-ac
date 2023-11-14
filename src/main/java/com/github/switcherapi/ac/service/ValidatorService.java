@@ -3,6 +3,7 @@ package com.github.switcherapi.ac.service;
 import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
+import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,10 @@ public class ValidatorService extends AbstractValidatorService {
     public static final String MSG_FEATURE_MISSING = "Feature is missing";
     public static final String MSG_OWNER_MISSING = "Owner is missing";
     public static final String MSG_PLAN_INVALID_VALUE = "Plan has invalid value";
+
+    protected ValidatorService(AccountDao accountDao) {
+        super(accountDao);
+    }
 
     @Override
     protected ResponseRelayDTO executeValidator(final Account account) {
