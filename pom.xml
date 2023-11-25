@@ -50,7 +50,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.5</version>
+		<version>3.2.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -71,7 +71,7 @@
 
 		<!-- Managed -->
 		<snakeyaml.version>2.0</snakeyaml.version>
-		<tomcat-embed-core.version>10.1.15</tomcat-embed-core.version>
+		<tomcat-embed-core.version>10.1.16</tomcat-embed-core.version>
 
 		<!-- Plugins -->
 		<maven-compiler.version>3.11.0</maven-compiler.version>
