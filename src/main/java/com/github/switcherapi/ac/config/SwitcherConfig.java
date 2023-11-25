@@ -2,9 +2,9 @@ package com.github.switcherapi.ac.config;
 
 import com.github.switcherapi.ac.util.FileUtil;
 import com.github.switcherapi.client.ContextBuilder;
+import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static com.github.switcherapi.ac.config.SwitcherFeatures.configure;
@@ -39,8 +39,8 @@ public class SwitcherConfig {
 		private String password;
 	}
 	
-	@Bean
-	public void configureSwitcher() {
+	@PostConstruct
+	private void configureSwitcher() {
 		configure(ContextBuilder.builder()
 				.contextLocation(SwitcherFeatures.class.getName())
 				.url(url)
