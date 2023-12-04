@@ -72,6 +72,7 @@
 		<!-- Managed -->
 		<snakeyaml.version>2.0</snakeyaml.version>
 		<tomcat-embed-core.version>10.1.16</tomcat-embed-core.version>
+		<logback-core.version>1.4.14</logback-core.version>
 
 		<!-- Plugins -->
 		<maven-compiler.version>3.11.0</maven-compiler.version>
@@ -337,6 +338,18 @@
 				<groupId>org.apache.tomcat.embed</groupId>
 				<artifactId>tomcat-embed-websocket</artifactId>
 				<version>${tomcat-embed-core.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback-core.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback-core.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
