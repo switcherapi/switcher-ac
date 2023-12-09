@@ -10,7 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.github.switcherapi.ac.service.AccountService.PLAN_NOT_FOUND;
+import static com.github.switcherapi.ac.util.Constants.PLAN_NAME_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -44,7 +44,7 @@ class AccountServiceTest {
         //test
         var exception = assertThrows(ResponseStatusException.class,
                 () -> accountService.updateAccountPlan("adminid", plan));
-        assertEquals(exception.getReason(), String.format(PLAN_NOT_FOUND, plan));
+        assertEquals(exception.getReason(), String.format(PLAN_NAME_NOT_FOUND.getValue(), plan));
     }
 
     private void givenAccount() {

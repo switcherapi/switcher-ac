@@ -54,18 +54,6 @@ public class ControllerTestUtils {
                 .andExpect(content().string(containsString(gson.toJson(expectedResponse))));
     }
 
-    protected void assertExecution(String value, ResponseRelayDTO expectedResponse,
-                                   int expectedStatus) throws Exception {
-        this.mockMvc.perform(get("/switcher/v1/execution")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
-                        .with(csrf())
-                        .queryParam("value", value))
-                .andDo(print())
-                .andExpect(status().is(expectedStatus))
-                .andExpect(content().string(containsString(gson.toJson(expectedResponse))));
-    }
-
     protected void assertLimiter(String value, ResponseRelayDTO expectedResponse,
                                    int expectedStatus) throws Exception {
         this.mockMvc.perform(get("/switcher/v1/limiter")

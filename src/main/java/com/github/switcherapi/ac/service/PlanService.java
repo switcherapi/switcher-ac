@@ -10,10 +10,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static com.github.switcherapi.ac.util.Constants.PLAN_NAME_NOT_FOUND;
+
 @Service
 public class PlanService {
-	
-	private static final String PLAN_NOT_FOUND = "Unable to find plan %s";
 
 	private final PlanDao planDao;
 
@@ -61,7 +61,7 @@ public class PlanService {
 
 		if (plan == null) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
+					HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName));
 		}
 
 		return plan;

@@ -1,8 +1,8 @@
 package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.github.switcherapi.ac.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -71,7 +72,7 @@ class ValidatorServiceTest {
         //test
         var responseRelayDTO = validatorService.execute(request);
         assertFalse(responseRelayDTO.isResult());
-        assertEquals(ValidatorService.MSG_FEATURE_LIMIT_REACHED, responseRelayDTO.getMessage());
+        assertEquals(MSG_FEATURE_LIMIT_REACHED.getValue(), responseRelayDTO.getMessage());
     }
 
     @Test
@@ -83,7 +84,7 @@ class ValidatorServiceTest {
         //test
         final var exception =
                 assertThrows(ResponseStatusException.class, () -> validatorService.execute(request));
-        assertEquals(ValidatorService.MSG_INVALID_FEATURE, exception.getReason());
+        assertEquals(MSG_INVALID_FEATURE.getValue(), exception.getReason());
     }
 
     @Test
@@ -95,7 +96,7 @@ class ValidatorServiceTest {
         //test
         final var exception =
                 assertThrows(ResponseStatusException.class, () -> validatorService.execute(request));
-        assertEquals(ValidatorService.MSG_FEATURE_MISSING, exception.getReason());
+        assertEquals(MSG_FEATURE_MISSING.getValue(), exception.getReason());
     }
 
     @Test
@@ -120,7 +121,7 @@ class ValidatorServiceTest {
         //test
         final var exception =
                 assertThrows(ResponseStatusException.class, () -> validatorService.execute(request));
-        assertEquals(ValidatorService.MSG_PLAN_INVALID_VALUE, exception.getReason());
+        assertEquals(MSG_PLAN_INVALID_VALUE.getValue(), exception.getReason());
     }
 
     private FeaturePayload givenRequest(String feature, String owner, Integer total) {
