@@ -1,14 +1,14 @@
 package com.github.switcherapi.ac.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.github.switcherapi.ac.model.domain.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.switcherapi.ac.model.domain.Admin;
+import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.dto.AccountDTO;
+import com.github.switcherapi.ac.service.AccountService;
+import com.github.switcherapi.ac.service.AdminService;
+import com.github.switcherapi.ac.service.JwtTokenService;
+import com.github.switcherapi.ac.service.PlanService;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,13 +20,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.switcherapi.ac.model.dto.AccountDTO;
-import com.github.switcherapi.ac.service.AccountService;
-import com.github.switcherapi.ac.service.AdminService;
-import com.github.switcherapi.ac.service.JwtTokenService;
-import com.github.switcherapi.ac.service.PlanService;
-import com.github.switcherapi.ac.service.validator.ValidatorFactory;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
@@ -37,7 +37,6 @@ class AdminAccountControllerTests {
 	@Autowired JwtTokenService jwtService;
 	@Autowired PlanService planService;
 	@Autowired AccountService accountService;
-	@Autowired ValidatorFactory validatorFactory;
 	@Autowired MockMvc mockMvc;
 
 	private static final String ADMIN_ID = "mock_account1";

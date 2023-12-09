@@ -11,15 +11,10 @@ import org.springframework.util.Assert;
 import org.springframework.web.server.ResponseStatusException;
 
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.*;
+import static com.github.switcherapi.ac.util.Constants.*;
 
 @Service
 public class ValidatorService extends AbstractValidatorService {
-
-    public static final String MSG_INVALID_FEATURE = "Invalid feature";
-    public static final String MSG_FEATURE_LIMIT_REACHED = "Feature limit has been reached";
-    public static final String MSG_FEATURE_MISSING = "Feature is missing";
-    public static final String MSG_OWNER_MISSING = "Owner is missing";
-    public static final String MSG_PLAN_INVALID_VALUE = "Plan has invalid value";
 
     protected ValidatorService(AccountDao accountDao) {
         super(accountDao);
@@ -32,11 +27,11 @@ public class ValidatorService extends AbstractValidatorService {
                 .findFirst();
 
         if (maxPlanValue.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MSG_INVALID_FEATURE);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MSG_INVALID_FEATURE.getValue());
 
         final var value = maxPlanValue.get().getValue();
         if (validate(value))
-            return new ResponseRelayDTO(false, MSG_FEATURE_LIMIT_REACHED);
+            return new ResponseRelayDTO(false, MSG_FEATURE_LIMIT_REACHED.getValue());
 
         return new ResponseRelayDTO(true);
     }
@@ -44,8 +39,8 @@ public class ValidatorService extends AbstractValidatorService {
     @Override
     protected void validateRequest(FeaturePayload request) {
         try {
-            Assert.notNull(request.getFeature(), MSG_FEATURE_MISSING);
-            Assert.notNull(request.getOwner(), MSG_OWNER_MISSING);
+            Assert.notNull(request.getFeature(), MSG_FEATURE_MISSING.getValue());
+            Assert.notNull(request.getOwner(), MSG_OWNER_MISSING.getValue());
 
             params.put(ADMINID, request.getOwner());
             params.put(TOTAL, request.getTotal());
@@ -66,7 +61,7 @@ public class ValidatorService extends AbstractValidatorService {
             return validate(intValue, getParam(TOTAL, Integer.class));
         }
 
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MSG_PLAN_INVALID_VALUE);
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MSG_PLAN_INVALID_VALUE.getValue());
     }
 
 }

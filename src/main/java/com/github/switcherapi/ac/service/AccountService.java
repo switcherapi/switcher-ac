@@ -10,11 +10,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static com.github.switcherapi.ac.util.Constants.ACCOUNT_NAME_NOT_FOUND;
+import static com.github.switcherapi.ac.util.Constants.PLAN_NAME_NOT_FOUND;
+
 @Service
 public class AccountService {
-	
-	public static final String PLAN_NOT_FOUND = "Unable to find plan named %s";
-	public static final String ACCOUNT_NOT_FOUND = "Unable to find account %s";
 	
 	private final PlanDao planDao;
 	private final AccountDao accountDao;
@@ -33,7 +33,7 @@ public class AccountService {
 
 		if (plan == null) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
+					HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName));
 		}
 		
 		var account = accountDao.findByAdminId(adminId);
@@ -52,7 +52,7 @@ public class AccountService {
 		final var plan = planDao.findByName(planName);
 		if (plan == null) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, String.format(PLAN_NOT_FOUND, planName));
+					HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName));
 		}
 
 		final var account = getAccountByAdminId(adminId);
@@ -72,7 +72,7 @@ public class AccountService {
 		
 		if (account == null) {
 			throw new ResponseStatusException(
-					HttpStatus.NOT_FOUND, String.format(ACCOUNT_NOT_FOUND, adminId));
+					HttpStatus.NOT_FOUND, String.format(ACCOUNT_NAME_NOT_FOUND.getValue(), adminId));
 		}
 		
 		return account;

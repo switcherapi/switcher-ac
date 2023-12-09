@@ -11,10 +11,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
+import static com.github.switcherapi.ac.util.Constants.ACCOUNT_NOT_FOUND;
 
 public abstract class AbstractValidatorService {
-	
-	public static final String ACCOUNT_NOT_FOUND = "Account not found";
 
 	protected final AccountDao accountDao;
 	
@@ -61,7 +60,7 @@ public abstract class AbstractValidatorService {
 			return executeValidator(account);
 		}
 		
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND.getValue());
 	}
 	
 	/**
