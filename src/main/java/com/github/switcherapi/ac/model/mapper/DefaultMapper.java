@@ -1,18 +1,19 @@
 package com.github.switcherapi.ac.model.mapper;
 
-import lombok.AccessLevel;
+import com.github.switcherapi.client.exception.SwitcherException;
 import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.beans.FeatureDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 @Generated
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class DefaultMapper {
 	
 	public static <T, Y> void copyProperties(T from, Y to, String... ignoreProperties) {
@@ -22,9 +23,14 @@ public class DefaultMapper {
 		BeanUtils.copyProperties(from, to, ignored.toArray(String[]::new));
 	}
 
-	public static <T, Y> Y createCopy(T from, Y to) {
-		BeanUtils.copyProperties(from, to, getNullPropertyNames(from));
-		return to;
+	public static <T, Y> Y createCopy(T from, Class<Y> type) {
+		try {
+			var to = type.getConstructor().newInstance();
+			BeanUtils.copyProperties(from, to, getNullPropertyNames(from));
+			return to;
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+			throw new SwitcherException(String.format("Failed to create a copy of %s", from), e);
+		}
 	}
 	
 	public static String[] getNullPropertyNames(Object source) {

@@ -24,15 +24,15 @@ public class PlanController {
 	@Operation(summary = "Create a new plan")
 	@PostMapping(value = "/create")
 	public ResponseEntity<PlanDTO> createPlan(@RequestBody PlanDTO planRequest) {
-		final var plan = DefaultMapper.createCopy(planRequest, new Plan());
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.createPlan(plan), new PlanDTO()));
+		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.createPlan(plan), PlanDTO.class));
 	}
 	
 	@Operation(summary = "Update existing plan")
 	@PatchMapping(value = "/update")
 	public ResponseEntity<PlanDTO> updatePlan(@RequestBody PlanDTO planRequest) {
-		final var plan = DefaultMapper.createCopy(planRequest, new Plan());
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.updatePlan(plan.getName(), plan), new PlanDTO()));
+		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.updatePlan(plan.getName(), plan), PlanDTO.class));
 	}
 	
 	@Operation(summary = "Delete existing plan")
@@ -51,6 +51,6 @@ public class PlanController {
 	@Operation(summary = "Return one plan")
 	@GetMapping(value = "/get")
 	public ResponseEntity<PlanDTO> listPlans(@RequestParam String plan) {
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.getPlanByName(plan), new PlanDTO()));
+		return ResponseEntity.ok(DefaultMapper.createCopy(planService.getPlanByName(plan), PlanDTO.class));
 	}
 }

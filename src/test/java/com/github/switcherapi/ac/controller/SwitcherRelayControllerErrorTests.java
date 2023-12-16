@@ -1,7 +1,10 @@
 package com.github.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.service.PlanService;
+import com.github.switcherapi.ac.config.SwitcherConfig;
+import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.github.switcherapi.ac.service.AccountService;
+import com.github.switcherapi.ac.service.ValidatorService;
+import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 import com.google.gson.Gson;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,51 +28,41 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
-class MockAdminPlanControllerTests {
+class SwitcherRelayControllerErrorTests {
 
-	@Mock private PlanService mockPlanService;
-
-	private final Gson gson = new Gson();
+	@Mock private AccountService mockAccountService;
+	@Mock private ValidatorFactory mockValidatorFactory;
+	@Mock private ValidatorService mockValidatorService;
+	@Mock private SwitcherConfig mockSwitcherConfig;
+	
 	private MockMvc mockMvc;
 	
 	@BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-		final var planService = new PlanController(mockPlanService);
-        mockMvc = MockMvcBuilders.standaloneSetup(planService).build();
+		final var switcherRelayController = new SwitcherRelayController(
+				mockAccountService, mockValidatorFactory, mockValidatorService, mockSwitcherConfig);
+        mockMvc = MockMvcBuilders.standaloneSetup(switcherRelayController).build();
     }
 	
 	@Test
-	void shouldNotCreateNewPlan() throws Exception {
+	void shouldNotCreateAccount() throws Exception {
 		//mock
-        Mockito.when(mockPlanService.createPlan(Mockito.any(Plan.class)))
+        Mockito.when(mockAccountService.createAccount(Mockito.any(String.class)))
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
-		//given
-        var planObj = Plan.loadDefault();
-		var json = gson.toJson(planObj);
-		
+        //given
+  		var request = new RequestRelayDTO();
+  		request.setValue("adminid");
+  		var jsonRequest = new Gson().toJson(request);
+        
 		//test
-		this.mockMvc.perform(post("/plan/v2/create")
-				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, "Bearer api_token")
-				.content(json))
-			.andDo(print())
-			.andExpect(status().is5xxServerError());
-	}
-	
-	@Test
-	void shouldNotListPlans() throws Exception {
-		//mock
-        Mockito.when(mockPlanService.listAll())
-        	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
-		
-		//test
-		this.mockMvc.perform(get("/plan/v2/list")
-				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, "Bearer api_token"))
-			.andDo(print())
-			.andExpect(status().is5xxServerError());
+		this.mockMvc.perform(post("/switcher/v1/create")
+					.contentType(MediaType.APPLICATION_JSON)
+					.header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
+					.content(jsonRequest))
+				.andDo(print())
+				.andExpect(status().is5xxServerError());
 	}
 
 }
