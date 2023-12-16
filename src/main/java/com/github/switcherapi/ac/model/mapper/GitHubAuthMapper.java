@@ -17,7 +17,7 @@ public class GitHubAuthMapper {
 		var to = new GitHubAuthDTO();
 		to.setToken(tokens.getLeft());
 		to.setRefreshToken(tokens.getRight());
-		to.setAdmin(DefaultMapper.createCopy(from, new AdminDTO()));
+		to.setAdmin(DefaultMapper.createCopy(from, AdminDTO.class));
 		return to;
 	}
 
