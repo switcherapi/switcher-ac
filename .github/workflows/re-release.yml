@@ -1,8 +1,12 @@
-name: Release CI
+name: Re-release CI
+run-name: Re-releasing - ${{ github.event.inputs.tag }} by @${{ github.actor }}
 
 on:
-  release:
-    types: [ created ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag'
+        required: true
 
 jobs:
   build-test:
@@ -10,7 +14,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Git checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.tag }}
+
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
@@ -29,12 +38,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.tag }}
 
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: trackerforce/switcher-ac
+          tags: ${{ github.event.inputs.tag }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
