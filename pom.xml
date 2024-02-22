@@ -72,9 +72,12 @@
 		<!-- Managed -->
 		<snakeyaml.version>2.2</snakeyaml.version>
 		<tomcat-embed-core.version>10.1.18</tomcat-embed-core.version>
-		<logback-core.version>1.4.14</logback-core.version>
+		<logback-core.version>1.5.0</logback-core.version>
 		<jackson-core.version>2.16.1</jackson-core.version>
 		<json-path.version>2.9.0</json-path.version>
+		<json-smart.version>2.4.7</json-smart.version>
+		<spring-security-web.version>6.2.2</spring-security-web.version>
+		<json-smart.version>2.5.0</json-smart.version>
 
 		<!-- Plugins -->
 		<maven-compiler.version>3.12.1</maven-compiler.version>
@@ -312,6 +315,37 @@
 	
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring-security-web.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring-security-web.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-test</artifactId>
+				<version>${spring-security-web.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-crypto</artifactId>
+				<version>${spring-security-web.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring-security-web.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.yaml</groupId>
 				<artifactId>snakeyaml</artifactId>
