@@ -50,7 +50,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.2</version>
+		<version>3.2.3</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -71,17 +71,17 @@
 
 		<!-- Managed -->
 		<snakeyaml.version>2.2</snakeyaml.version>
-		<tomcat-embed-core.version>10.1.18</tomcat-embed-core.version>
+		<tomcat-embed-core.version>10.1.19</tomcat-embed-core.version>
 		<logback-core.version>1.5.0</logback-core.version>
 		<jackson-core.version>2.16.1</jackson-core.version>
 		<json-path.version>2.9.0</json-path.version>
-		<json-smart.version>2.4.7</json-smart.version>
-		<spring-security-web.version>6.2.2</spring-security-web.version>
 		<json-smart.version>2.5.0</json-smart.version>
+		<spring-security-web.version>6.2.2</spring-security-web.version>
+		<commons-compress.version>1.26.0</commons-compress.version>
 
 		<!-- Plugins -->
 		<maven-compiler.version>3.12.1</maven-compiler.version>
-		<sonar.version>3.9.1.2184</sonar.version>
+		<sonar.version>3.10.0.2594</sonar.version>
 		<jacoco.version>0.8.11</jacoco.version>
 		
 		<!-- Sonar -->
@@ -428,6 +428,13 @@
 				<groupId>com.fasterxml.jackson.module</groupId>
 				<artifactId>jackson-module-parameter-names</artifactId>
 				<version>${jackson-core.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-compress</artifactId>
+				<version>${commons-compress.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
