@@ -20,7 +20,7 @@ public class SwitcherConfig {
 	private String domain;
 	private String component;
 	private String environment;
-	private boolean offline;
+	private boolean local;
 	private String silent;
 	private SnapshotConfig snapshot;
 	private String relayCode;
@@ -48,7 +48,7 @@ public class SwitcherConfig {
 				.domain(domain)
 				.environment(environment)
 				.component(component)
-				.offlineMode(offline)
+				.local(local)
 				.silentMode(silent)
 				.snapshotAutoUpdateInterval(snapshot.getAutoUpdateInterval())
 				.snapshotLocation(snapshot.getLocation())
