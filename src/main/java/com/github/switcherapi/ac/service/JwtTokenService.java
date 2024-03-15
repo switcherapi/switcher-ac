@@ -68,9 +68,7 @@ public class JwtTokenService {
 	 * @return a pair of token (token and refreshToken)
 	 */
 	public Pair<String, String> generateToken(String subject) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Generating token for {}", subject);
-		}
+		logger.debug("Generating token for {}", subject);
 
 		final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
 		final var claims = Jwts.claims()
@@ -98,11 +96,8 @@ public class JwtTokenService {
 		if (token != null && refreshSubject.equals(token.substring(token.length() - 8))) {
 			return generateToken(subject);
 		}
-		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Refresh token could not be processed for {}", subject);
-		}
 
+		logger.debug("Refresh token could not be processed for {}", subject);
 		return null;
 	}
 
