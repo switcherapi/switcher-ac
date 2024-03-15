@@ -1,29 +1,29 @@
 version: '3.8'
 
-volumes:
-  switcherapi-snapshot:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: [CHANGE_ME]
+# volumes:
+  # switcherapi-snapshot:
+  #   driver: local
+  #   driver_opts:
+  #     o: bind
+  #     type: none
+  #     device: [CHANGE_ME]
 
-  switcherapi-tls:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: [CHANGE_ME]
+  # switcherapi-tls:
+  #   driver: local
+  #   driver_opts:
+  #     o: bind
+  #     type: none
+  #     device: [CHANGE_ME]
 
 services:
   switcherapi:
-    image: trackerforce/switcher-ac
+    image: trackerforce/switcher-ac:dev
     container_name: switcherac
     ports:
       - 8090:8090
-    volumes:
-      - switcherapi-snapshot:/snapshots
-      - switcherapi-tls:/etc/certs
+    # volumes:
+      # - switcherapi-snapshot:/data/snapshots
+      # - switcherapi-tls:/etc/certs
     environment:
       # API settings
       - PORT=8090

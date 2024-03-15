@@ -55,12 +55,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final Optional<String> jwt = getJwtFromRequest(request);
 
         jwt.ifPresent(token -> {
-            if (jwtLogger.isDebugEnabled()) {
-                jwtLogger.debug("Token {}", token);
-            }
+            jwtLogger.debug("Token {}", token);
 
-            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            if (validateToken(token, request, authorities)) {
+            var authorities = validateToken(token, request);
+            if (!authorities.isEmpty()) {
                 final var authUser = new UsernamePasswordAuthenticationToken(SWITCHER_AC, null, authorities);
                 authUser.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authUser);
@@ -73,18 +71,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     /**
      * Validate token given the accessed resource
      */
-    private boolean validateToken(String token, HttpServletRequest request,
-                                  List<SimpleGrantedAuthority> authorities) {
-
+    private List<SimpleGrantedAuthority> validateToken(String token, HttpServletRequest request) {
+        final var authorities = new ArrayList<SimpleGrantedAuthority>();
         if (request.getRequestURI().startsWith("/switcher")) {
             if (jwtTokenService.validateRelayToken(token)) {
-                return authorities.add(grantedAuthorities.get(Roles.ROLE_SWITCHER));
+                authorities.add(grantedAuthorities.get(Roles.ROLE_SWITCHER));
             }
         } else if (jwtTokenService.validateAdminToken(token)) {
-            return authorities.add(grantedAuthorities.get(Roles.ROLE_ADMIN));
+            authorities.add(grantedAuthorities.get(Roles.ROLE_ADMIN));
         }
 
-        return false;
+        return authorities;
     }
 
     private static Optional<String> getJwtFromRequest(HttpServletRequest request) {
