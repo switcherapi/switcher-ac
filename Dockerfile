@@ -8,4 +8,13 @@ FROM eclipse-temurin:21-jre-alpine AS builder
 ARG JAR_FILE=/usr/src/app/target/*.jar
 COPY --from=maven ${JAR_FILE} app.jar
 
+RUN adduser -D user
+
+RUN mkdir /etc/certs \
+    && mkdir -p /data/snapshots \
+    && chown -R user:user /etc/certs \
+    && chown -R user:user /data/snapshots
+
+USER user
+
 ENTRYPOINT ["java","-jar","/app.jar"]
