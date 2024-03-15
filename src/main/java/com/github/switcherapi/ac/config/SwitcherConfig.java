@@ -4,6 +4,7 @@ import com.github.switcherapi.ac.util.FileUtil;
 import com.github.switcherapi.client.ContextBuilder;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -51,10 +52,10 @@ public class SwitcherConfig {
 				.local(local)
 				.silentMode(silent)
 				.snapshotAutoUpdateInterval(snapshot.getAutoUpdateInterval())
-				.snapshotLocation(snapshot.getLocation())
+				.snapshotLocation(StringUtils.isNotBlank(snapshot.getLocation()) ? snapshot.getLocation() : null)
 				.snapshotAutoLoad(snapshot.isAuto())
-				.truststorePath(FileUtil.getFilePathFromResource(truststore.getPath()))
-				.truststorePassword(truststore.getPassword())
+				.truststorePath(StringUtils.isNotBlank(truststore.getPath()) ? FileUtil.getFilePathFromResource(truststore.getPath()) : null)
+				.truststorePassword(StringUtils.isNotBlank(truststore.getPassword()) ? truststore.getPassword() : null)
 		);
 
 		initializeClient();
