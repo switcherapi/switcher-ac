@@ -21,8 +21,8 @@ public abstract class AbstractActiveCheckValidator extends AbstractValidatorServ
 	@Override
 	public void validateRequest(FeaturePayload request) {
 		try {
-			Assert.notNull(request.getOwner(), "Admin ID is missing");
-			params.put(ADMINID, request.getOwner());
+			Assert.notNull(request.owner(), "Admin ID is missing");
+			params.put(ADMINID, request.owner());
 		} catch (IllegalArgumentException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}

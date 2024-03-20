@@ -39,12 +39,12 @@ public class ValidatorService extends AbstractValidatorService {
     @Override
     protected void validateRequest(FeaturePayload request) {
         try {
-            Assert.notNull(request.getFeature(), MSG_FEATURE_MISSING.getValue());
-            Assert.notNull(request.getOwner(), MSG_OWNER_MISSING.getValue());
+            Assert.notNull(request.feature(), MSG_FEATURE_MISSING.getValue());
+            Assert.notNull(request.owner(), MSG_OWNER_MISSING.getValue());
 
-            params.put(ADMINID, request.getOwner());
-            params.put(TOTAL, request.getTotal());
-            params.put(FEATURE, request.getFeature());
+            params.put(ADMINID, request.owner());
+            params.put(TOTAL, request.total());
+            params.put(FEATURE, request.feature());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
