@@ -40,7 +40,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private void setupComponent() {
-        final EnumMap<Roles, SimpleGrantedAuthority> roles = new EnumMap<>(Roles.class);
+        final var roles = new EnumMap<Roles, SimpleGrantedAuthority>(Roles.class);
         roles.put(Roles.ROLE_SWITCHER, new SimpleGrantedAuthority(Roles.ROLE_SWITCHER.name()));
         roles.put(Roles.ROLE_ADMIN, new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name()));
         grantedAuthorities = Collections.unmodifiableMap(roles);
@@ -52,7 +52,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        final Optional<String> jwt = getJwtFromRequest(request);
+        final var jwt = getJwtFromRequest(request);
 
         jwt.ifPresent(token -> {
             jwtLogger.debug("Token {}", token);
@@ -85,10 +85,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private static Optional<String> getJwtFromRequest(HttpServletRequest request) {
-        final String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final var bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER)) {
             return Optional.of(bearerToken.substring(7));
         }
+
         return Optional.empty();
     }
 
