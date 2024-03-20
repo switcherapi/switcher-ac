@@ -64,7 +64,7 @@
 		<jsonwebtoken.version>0.12.5</jsonwebtoken.version>
 		<joda-time.version>2.12.7</joda-time.version>
 		<gson.version>2.10.1</gson.version>
-		<springdoc.version>2.3.0</springdoc.version>
+		<springdoc.version>2.4.0</springdoc.version>
 
 		<!-- Test-->
 		<flapdoodle.embed.mongo.version>4.12.2</flapdoodle.embed.mongo.version>
@@ -73,10 +73,11 @@
 		<snakeyaml.version>2.2</snakeyaml.version>
 		<tomcat-embed-core.version>10.1.19</tomcat-embed-core.version>
 		<logback-core.version>1.5.3</logback-core.version>
-		<jackson-core.version>2.16.2</jackson-core.version>
+		<jackson-core.version>2.17.0</jackson-core.version>
 		<json-path.version>2.9.0</json-path.version>
 		<json-smart.version>2.5.0</json-smart.version>
-		<spring-security-web.version>6.2.2</spring-security-web.version>
+		<spring-security-web.version>6.2.3</spring-security-web.version>
+		<spring-web.version>6.1.5</spring-web.version>
 		<commons-compress.version>1.26.1</commons-compress.version>
 
 		<!-- Plugins -->
@@ -344,6 +345,24 @@
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-config</artifactId>
 				<version>${spring-security-web.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring-web.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring-web.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring-web.version}</version>
 			</dependency>
 
 			<dependency>
