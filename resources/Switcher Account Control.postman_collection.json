@@ -313,7 +313,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"value\": \"metrics#ACCOUNT_ID\"\r\n}",
+							"raw": "{\r\n    \"payload\": \"{\\\"owner\\\": \\\"\\\",\\\"feature\\\": \\\"domain\\\",\\\"total\\\": 1}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
