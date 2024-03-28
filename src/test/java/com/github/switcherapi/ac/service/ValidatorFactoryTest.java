@@ -1,6 +1,5 @@
 package com.github.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.domain.Feature;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,7 @@ class ValidatorFactoryTest {
 	@Test
 	void shouldThrowError_requestIsEmpty() {
 		var request = FeaturePayload.builder().build();
-		assertThrows(ResponseStatusException.class, () ->
-				validatorFactory.runValidator(request));
+		assertThrows(ResponseStatusException.class, () -> validatorFactory.runValidator(request));
 	}
 	
 	@Test
@@ -34,8 +32,7 @@ class ValidatorFactoryTest {
 				.owner("adminid")
 				.build();
 		
-		assertThrows(ResponseStatusException.class, () ->
-				validatorFactory.runValidator(request));
+		assertThrows(ResponseStatusException.class, () -> validatorFactory.runValidator(request));
 	}
 	
 	@Test
@@ -45,8 +42,7 @@ class ValidatorFactoryTest {
 				.total(0)
 				.build();
 		
-		assertThrows(ResponseStatusException.class, () ->
-				validatorFactory.runValidator(request));
+		assertThrows(ResponseStatusException.class, () -> validatorFactory.runValidator(request));
 	}
 	
 	@ParameterizedTest
@@ -62,9 +58,7 @@ class ValidatorFactoryTest {
 				.total(0)
 				.build();
 		
-		assertDoesNotThrow(() -> {
-			validatorFactory.runValidator(request);
-		});
+		assertDoesNotThrow(() -> validatorFactory.runValidator(request));
 	}
 
 }

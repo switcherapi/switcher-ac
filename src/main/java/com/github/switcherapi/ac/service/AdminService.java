@@ -5,8 +5,7 @@ import com.github.switcherapi.ac.model.domain.Admin;
 import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.model.mapper.GitHubAuthMapper;
 import com.github.switcherapi.ac.repository.AdminRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,9 +14,8 @@ import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
 import static com.github.switcherapi.ac.config.SwitcherFeatures.getSwitcher;
 
 @Service
+@Slf4j
 public class AdminService {
-	
-	private static final Logger logger = LogManager.getLogger(AdminService.class);
 	
 	private final AdminRepository adminRepository;
 	
@@ -105,7 +103,7 @@ public class AdminService {
 				}
 			}
 		} catch (Exception e) {
-			logger.info("Attempting to refresh token with Invalid refresh tokens");
+			log.warn("Attempting to refresh token with Invalid refresh tokens");
 		}
 		
 		throw new ResponseStatusException(

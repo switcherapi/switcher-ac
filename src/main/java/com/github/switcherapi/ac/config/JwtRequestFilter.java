@@ -8,8 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import lombok.NonNull;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,9 +21,8 @@ import java.io.IOException;
 import java.util.*;
 
 @Component
+@Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
-
-    private static final Logger jwtLogger = LogManager.getLogger(JwtRequestFilter.class);
 
     public static final String SWITCHER_AC = "SWITCHER_AC";
 
@@ -55,7 +53,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final var jwt = getJwtFromRequest(request);
 
         jwt.ifPresent(token -> {
-            jwtLogger.debug("Token {}", token);
+            log.debug("Token {}", token);
 
             var authorities = validateToken(token, request);
             if (!authorities.isEmpty()) {

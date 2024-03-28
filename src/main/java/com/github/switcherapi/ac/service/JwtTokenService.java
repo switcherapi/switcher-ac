@@ -5,19 +5,17 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
+@Slf4j
 public class JwtTokenService {
-	
-	private static final Logger logger = LogManager.getLogger(JwtTokenService.class);
 	
 	public static final int JWT_TOKEN_VALIDITY = 5 * 60 * 1000;
 
@@ -68,7 +66,7 @@ public class JwtTokenService {
 	 * @return a pair of token (token and refreshToken)
 	 */
 	public Pair<String, String> generateToken(String subject) {
-		logger.debug("Generating token for {}", subject);
+		log.debug("Generating token for {}", subject);
 
 		final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
 		final var claims = Jwts.claims()
@@ -97,7 +95,7 @@ public class JwtTokenService {
 			return generateToken(subject);
 		}
 
-		logger.debug("Refresh token could not be processed for {}", subject);
+		log.debug("Refresh token could not be processed for {}", subject);
 		return null;
 	}
 
@@ -116,7 +114,7 @@ public class JwtTokenService {
 			final var adminAccount = adminRepository.findByToken(token);
 			return adminAccount != null ? subject : null;
 		} catch (JwtException e) {
-			logger.error("Failed to validate JWT - {}", e.getMessage());
+			log.error("Failed to validate JWT - {}", e.getMessage());
 			return StringUtils.EMPTY;
 		}
 	}

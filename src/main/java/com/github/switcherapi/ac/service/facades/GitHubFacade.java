@@ -6,20 +6,16 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
 @Component
+@Slf4j
 public class GitHubFacade {
-	
-	private static final Logger logger = LogManager.getLogger(GitHubFacade.class);
 	
 	public static final String INVALID_ACCOUNT = "Invalid GitHub account";
 	
@@ -63,12 +59,9 @@ public class GitHubFacade {
 				if (responseEntity.containsKey(ACCESS_TOKEN))
 					return responseEntity.get(ACCESS_TOKEN).toString();
 			}
-			
+
+			log.error("Failed to get token from GitHub");
 			return StringUtils.EMPTY;
-		} catch (Exception e) {
-			logger.error("Failed to get token from GitHub - {}", e.getMessage());
-			throw new ResponseStatusException(
-					HttpStatus.UNAUTHORIZED, INVALID_ACCOUNT);
 		}
 	}
 	
@@ -84,11 +77,8 @@ public class GitHubFacade {
 			if (response.getStatus() == 200)
 				return response.readEntity(GitHubDetail.class);
 
+			log.error("Failed to get GitHub detail");
 			return null;
-		} catch (Exception e) {
-			logger.error("Failed to get GitHub detail - {}", e.getMessage());
-			throw new ResponseStatusException(
-					HttpStatus.UNAUTHORIZED, INVALID_ACCOUNT);
 		}
 	}
 
