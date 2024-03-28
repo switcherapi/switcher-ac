@@ -2,7 +2,10 @@ package com.github.switcherapi.ac.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Generated;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.github.switcherapi.ac.model.domain.Feature.*;
 
 @Generated
 @JsonInclude(Include.NON_NULL)
@@ -31,19 +36,19 @@ public class Plan {
 		attributes = new ArrayList<>();
 	}
 
-	public PlanAttribute getFeature(String feature) {
-		return attributes.stream().filter(a -> a.getFeature().equals(feature))
+	public PlanAttribute getFeature(Feature feature) {
+		return attributes.stream().filter(a -> a.getFeature().equals(feature.getValue()))
 				.findFirst()
 				.orElseThrow();
 	}
 
-	public boolean hasFeature(String feature) {
-		return attributes.stream().anyMatch(a -> a.getFeature().equals(feature));
+	public boolean hasFeature(Feature feature) {
+		return attributes.stream().anyMatch(a -> a.getFeature().equals(feature.getValue()));
 	}
 
-	public void addFeature(String feature, Object value) {
+	public void addFeature(Feature feature, Object value) {
 		attributes.add(PlanAttribute.builder()
-				.feature(feature)
+				.feature(feature.getValue())
 				.value(value).build());
 	}
 
@@ -51,15 +56,15 @@ public class Plan {
 		return Plan.builder()
 			.name(PlanType.DEFAULT.name())
 			.attributes(Arrays.asList(
-				PlanAttribute.builder().feature("domain").value(1).build(),
-				PlanAttribute.builder().feature("group").value(2).build(),
-				PlanAttribute.builder().feature("switcher").value(3).build(),
-				PlanAttribute.builder().feature("environment").value(2).build(),
-				PlanAttribute.builder().feature("component").value(2).build(),
-				PlanAttribute.builder().feature("team").value(1).build(),
-				PlanAttribute.builder().feature("rate_limit").value(100).build(),
-				PlanAttribute.builder().feature("history").value(false).build(),
-				PlanAttribute.builder().feature("metrics").value(false).build()
+				PlanAttribute.builder().feature(DOMAIN.getValue()).value(1).build(),
+				PlanAttribute.builder().feature(GROUP.getValue()).value(2).build(),
+				PlanAttribute.builder().feature(SWITCHER.getValue()).value(3).build(),
+				PlanAttribute.builder().feature(ENVIRONMENT.getValue()).value(2).build(),
+				PlanAttribute.builder().feature(COMPONENT.getValue()).value(2).build(),
+				PlanAttribute.builder().feature(TEAM.getValue()).value(1).build(),
+				PlanAttribute.builder().feature(RATE_LIMIT.getValue()).value(100).build(),
+				PlanAttribute.builder().feature(HISTORY.getValue()).value(false).build(),
+				PlanAttribute.builder().feature(METRICS.getValue()).value(false).build()
 			)).build();
 	}
 

@@ -1,7 +1,9 @@
 package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.Account;
+import com.github.switcherapi.ac.model.domain.Feature;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
+import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
@@ -24,14 +26,12 @@ public class ValidatorService extends AbstractValidatorService {
     protected ResponseRelayDTO executeValidator(final Account account) {
         final var maxPlanValue = account.getPlan().getAttributes().stream()
                 .filter(attrib -> attrib.getFeature().equals(getParam(FEATURE)))
-                .findFirst();
+                .findFirst().orElseGet(() -> PlanAttribute.builder().build());
 
-        if (maxPlanValue.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MSG_INVALID_FEATURE.getValue());
-
-        final var value = maxPlanValue.get().getValue();
-        if (validate(value))
+        final var value = maxPlanValue.getValue();
+        if (validate(value)) {
             return new ResponseRelayDTO(false, MSG_FEATURE_LIMIT_REACHED.getValue());
+        }
 
         return new ResponseRelayDTO(true);
     }
@@ -41,6 +41,7 @@ public class ValidatorService extends AbstractValidatorService {
         try {
             Assert.notNull(request.feature(), MSG_FEATURE_MISSING.getValue());
             Assert.notNull(request.owner(), MSG_OWNER_MISSING.getValue());
+            Assert.notNull(Feature.getFeatureEnum(request.feature()), MSG_INVALID_FEATURE.getValue());
 
             params.put(ADMINID, request.owner());
             params.put(TOTAL, request.total());

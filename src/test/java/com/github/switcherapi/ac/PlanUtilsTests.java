@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static com.github.switcherapi.ac.model.domain.Feature.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PlanUtilsTests {
@@ -19,24 +20,24 @@ class PlanUtilsTests {
 		final var to = Plan.builder()
 			.name(PlanType.DEFAULT.name())
 			.attributes(Arrays.asList(
-					PlanAttribute.builder().feature("domain").value(1).build(),
-					PlanAttribute.builder().feature("group").value(2).build(),
-					PlanAttribute.builder().feature("switcher").value(3).build(),
-					PlanAttribute.builder().feature("environment").value(2).build(),
-					PlanAttribute.builder().feature("component").value(2).build(),
-					PlanAttribute.builder().feature("team").value(1).build(),
-					PlanAttribute.builder().feature("rate_limit").value(100).build(),
-					PlanAttribute.builder().feature("history").value(false).build(),
-					PlanAttribute.builder().feature("metrics").value(false).build()
+					PlanAttribute.builder().feature(DOMAIN.getValue()).value(1).build(),
+					PlanAttribute.builder().feature(GROUP.getValue()).value(2).build(),
+					PlanAttribute.builder().feature(SWITCHER.getValue()).value(3).build(),
+					PlanAttribute.builder().feature(ENVIRONMENT.getValue()).value(2).build(),
+					PlanAttribute.builder().feature(COMPONENT.getValue()).value(2).build(),
+					PlanAttribute.builder().feature(TEAM.getValue()).value(1).build(),
+					PlanAttribute.builder().feature(RATE_LIMIT.getValue()).value(100).build(),
+					PlanAttribute.builder().feature(HISTORY.getValue()).value(false).build(),
+					PlanAttribute.builder().feature(METRICS.getValue()).value(false).build()
 			)).build();
 		
 		final PlanDTO from = new PlanDTO();
-		from.addFeature("domain", 2);
+		from.addFeature(DOMAIN, 2);
 		
 		//test
 		PlanMapper.copyProperties(from, to);
-		assertThat(to.getFeature("domain").getValue()).isEqualTo(2);
-		assertThat(Boolean.parseBoolean(to.getFeature("history").getValue().toString())).isFalse();
+		assertThat(to.getFeature(DOMAIN).getValue()).isEqualTo(2);
+		assertThat(Boolean.parseBoolean(to.getFeature(HISTORY).getValue().toString())).isFalse();
 	}
 	
 	@Test
@@ -48,8 +49,8 @@ class PlanUtilsTests {
 		//test
 		PlanMapper.copyProperties(from, to);
 		assertThat(from.getName()).isEqualTo(to.getName());
-		assertThat(from.getFeature("domain").getValue()).isEqualTo(to.getFeature("domain").getValue());
-		assertThat(from.getFeature("history").getValue()).isEqualTo(to.getFeature("history").getValue());
+		assertThat(from.getFeature(DOMAIN).getValue()).isEqualTo(to.getFeature(DOMAIN).getValue());
+		assertThat(from.getFeature(HISTORY).getValue()).isEqualTo(to.getFeature(HISTORY).getValue());
 	}
 
 }

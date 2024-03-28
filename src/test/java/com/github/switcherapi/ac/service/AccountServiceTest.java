@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static com.github.switcherapi.ac.model.domain.Feature.DOMAIN;
 import static com.github.switcherapi.ac.util.Constants.PLAN_NAME_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -55,7 +56,7 @@ class AccountServiceTest {
         planService.createPlan(Plan.builder()
                 .name("PLAN_2")
                 .attributes(List.of(PlanAttribute.builder()
-                        .feature("feature")
+                        .feature(DOMAIN.getValue())
                         .value(true)
                         .build()))
                 .build());
