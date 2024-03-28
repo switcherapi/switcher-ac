@@ -18,6 +18,8 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static com.github.switcherapi.ac.model.domain.Feature.DOMAIN;
+import static com.github.switcherapi.ac.model.domain.Feature.SWITCHER;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,7 +40,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		planService.createPlan(Plan.builder()
 			.name("TEST")
 			.attributes(List.of(
-				PlanAttribute.builder().feature("feature_integer").value(1).build()
+				PlanAttribute.builder().feature(DOMAIN.getValue()).value(1).build()
 			)).build());
 	}
 
@@ -137,7 +139,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		givenAccount("masteradminid");
 
 		var plan = Plan.loadDefault();
-		plan.getFeature("switcher").setValue(-1);
+		plan.getFeature(SWITCHER).setValue(-1);
 		plan.setName("UNLIMITED");
 
 		planService.createPlan(plan);
@@ -145,7 +147,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		
 		//test
 		var expectedResponse = new ResponseRelayDTO(true);
-		this.assertValidate("masteradminid", "switcher",
+		this.assertValidate("masteradminid", SWITCHER.getValue(),
 				10000, expectedResponse, 200);
 	}
 
@@ -156,7 +158,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 
 		//test
 		var expectedResponse = new ResponseRelayDTO(true);
-		this.assertValidate("adminid_ok", "feature_integer",
+		this.assertValidate("adminid_ok", DOMAIN.getValue(),
 				0, expectedResponse, 200);
 	}
 
@@ -167,14 +169,14 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 
 		//test
 		var expectedResponse = new ResponseRelayDTO(false, "Feature limit has been reached");
-		this.assertValidate("adminid_nok", "feature_integer",
+		this.assertValidate("adminid_nok", DOMAIN.getValue(),
 				1, expectedResponse, 200);
 	}
 
 	@Test
 	void shouldNotBeOkWhenValidate_accountNotFound() throws Exception {
 		var expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
-		this.assertValidate("NOT_FOUND", "domain",
+		this.assertValidate("NOT_FOUND", DOMAIN.getValue(),
 				0, expectedResponse, 404);
 	}
 	
@@ -184,7 +186,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		givenAccount("adminid");
 
 		//test
-		var expectedResponse = new ResponseRelayDTO(false, "400 BAD_REQUEST \"Invalid feature\"");
+		var expectedResponse = new ResponseRelayDTO(false, "400 BAD_REQUEST \"Invalid feature: INVALID_FEATURE\"");
 		this.assertValidate("adminid", "INVALID_FEATURE",
 				0, expectedResponse, 400);
 	}

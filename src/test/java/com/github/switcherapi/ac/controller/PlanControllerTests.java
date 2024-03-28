@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.web.server.ResponseStatusException;
 
+import static com.github.switcherapi.ac.model.domain.Feature.HISTORY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -92,12 +93,12 @@ class PlanControllerTests extends ControllerTestUtils {
 		//given
 		var planObj = Plan.loadDefault();
 		planObj.setName(PlanType.DEFAULT.name());
-		planObj.getFeature("history").setValue(true);
+		planObj.getFeature(HISTORY).setValue(true);
 		var json = gson.toJson(planObj);
 		
 		//test
 		final var old = planService.getPlanByName(PlanType.DEFAULT.name());
-		assertEquals(false, old.getFeature("history").getValue());
+		assertEquals(false, old.getFeature(HISTORY).getValue());
 		
 		var response = this.mockMvc.perform(patch("/plan/v2/update")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +112,7 @@ class PlanControllerTests extends ControllerTestUtils {
 		
 		assertDtoResponse(planObj, response);
 		final var planUpdated = planService.getPlanByName(PlanType.DEFAULT.name());
-		assertEquals(true, planUpdated.getFeature("history").getValue());
+		assertEquals(true, planUpdated.getFeature(HISTORY).getValue());
 	}
 	
 	@Test

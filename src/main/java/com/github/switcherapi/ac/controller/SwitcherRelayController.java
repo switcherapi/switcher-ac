@@ -15,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
+import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
+
 @RestController
 @RequestMapping("switcher/v1")
 public class SwitcherRelayController {
@@ -72,7 +74,7 @@ public class SwitcherRelayController {
 	public ResponseEntity<ResponseRelayDTO> limiter(@RequestParam String value) {
 		try {
 			final var request = FeaturePayload.builder()
-					.feature("rate_limit")
+					.feature(RATE_LIMIT.getValue())
 					.owner(value)
 					.build();
 

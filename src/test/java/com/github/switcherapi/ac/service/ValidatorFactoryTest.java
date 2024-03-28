@@ -1,5 +1,6 @@
 package com.github.switcherapi.ac.service;
 
+import com.github.switcherapi.ac.model.domain.Feature;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
+import static com.github.switcherapi.ac.model.domain.Feature.DOMAIN;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,7 +30,7 @@ class ValidatorFactoryTest {
 	@Test
 	void shouldThrowError_missingParameter() {
 		var request = FeaturePayload.builder()
-				.feature("domain")
+				.feature(DOMAIN.getValue())
 				.owner("adminid")
 				.build();
 		
@@ -39,7 +41,7 @@ class ValidatorFactoryTest {
 	@Test
 	void shouldThrowError_missingAdminId() {
 		var request = FeaturePayload.builder()
-				.feature("domain")
+				.feature(DOMAIN.getValue())
 				.total(0)
 				.build();
 		
@@ -50,7 +52,7 @@ class ValidatorFactoryTest {
 	@ParameterizedTest
 	@ValueSource(strings = {
 			"rate_limit"
-	}) 
+	})
 	void shouldNotThrowError(String feature) {
 		accountService.createAccount("adminid");
 		

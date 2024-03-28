@@ -1,5 +1,6 @@
 package com.github.switcherapi.ac.model.mapper;
 
+import com.github.switcherapi.ac.model.domain.Feature;
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.dto.PlanDTO;
 import lombok.AccessLevel;
@@ -21,10 +22,13 @@ public class PlanMapper {
 	public static void copyProperties(Plan from, Plan to) {
 		DefaultMapper.copyProperties(from, to, "attributes");
 		from.getAttributes().forEach(planAttribute -> {
-			if (to.hasFeature(planAttribute.getFeature()))
-				to.getFeature(planAttribute.getFeature()).setValue(planAttribute.getValue());
-			else
-				to.addFeature(planAttribute.getFeature(), planAttribute.getValue());
+			var feature = Feature.getFeatureEnum(planAttribute.getFeature());
+
+			if (to.hasFeature(feature)) {
+				to.getFeature(feature).setValue(planAttribute.getValue());
+			} else {
+                to.addFeature(feature, planAttribute.getValue());
+			}
 		});
 	}
 }
