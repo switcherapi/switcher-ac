@@ -3,8 +3,7 @@ package com.github.switcherapi.ac.service.validator;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -17,9 +16,8 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 
 @Component
+@Slf4j
 public class ValidatorFactory {
-	
-	private static final Logger logger = LogManager.getLogger(ValidatorFactory.class);
 	
 	private static final String VALIDATORS_PATH = "com.github.switcherapi.ac.service.validator.beans";
 
@@ -60,7 +58,7 @@ public class ValidatorFactory {
     			validatorHandlers.put(sValidator.value(), validatorService);
             }
         } catch (ReflectiveOperationException e) {
-        	logger.error("Failed to initialize validator - {}", e.getMessage());
+        	log.error("Failed to initialize validator - {}", e.getMessage());
         }
     }
     
