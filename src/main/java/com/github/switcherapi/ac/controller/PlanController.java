@@ -25,14 +25,14 @@ public class PlanController {
 	@PostMapping(value = "/create")
 	public ResponseEntity<PlanDTO> createPlan(@RequestBody PlanDTO planRequest) {
 		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.createPlan(plan), PlanDTO.class));
+		return ResponseEntity.ok(PlanMapper.createCopy(planService.createPlan(plan)));
 	}
 	
 	@Operation(summary = "Update existing plan")
 	@PatchMapping(value = "/update")
 	public ResponseEntity<PlanDTO> updatePlan(@RequestBody PlanDTO planRequest) {
 		final var plan = DefaultMapper.createCopy(planRequest, Plan.class);
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.updatePlan(plan.getName(), plan), PlanDTO.class));
+		return ResponseEntity.ok(PlanMapper.createCopy(planService.updatePlan(plan.getName(), plan)));
 	}
 	
 	@Operation(summary = "Delete existing plan")
@@ -51,6 +51,6 @@ public class PlanController {
 	@Operation(summary = "Return one plan")
 	@GetMapping(value = "/get")
 	public ResponseEntity<PlanDTO> listPlans(@RequestParam String plan) {
-		return ResponseEntity.ok(DefaultMapper.createCopy(planService.getPlanByName(plan), PlanDTO.class));
+		return ResponseEntity.ok(PlanMapper.createCopy(planService.getPlanByName(plan)));
 	}
 }
