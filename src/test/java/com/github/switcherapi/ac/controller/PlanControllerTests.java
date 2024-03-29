@@ -174,6 +174,17 @@ class PlanControllerTests extends ControllerTestUtils {
 			.andExpect(status().is4xxClientError())
 			.andExpect(status().reason(containsString("Invalid plan name")));
 	}
+
+	@Test
+	void shouldNotDeletePlan_planNotFound() throws Exception {
+		this.mockMvc.perform(delete("/plan/v2/delete")
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, bearer)
+				.with(csrf())
+				.queryParam("plan", "NOT_FOUND"))
+			.andDo(print())
+			.andExpect(status().isNotFound());
+	}
 	
 	@Test
 	void shouldListPlans() throws Exception {
