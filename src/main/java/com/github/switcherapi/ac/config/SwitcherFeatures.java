@@ -8,4 +8,7 @@ public class SwitcherFeatures extends SwitcherContextBase {
 	@SwitcherKey
 	public static final String SWITCHER_AC_ADM = "SWITCHER_AC_ADM";
 
+	@SwitcherKey
+	public static final String SWITCHER_AC_METADATA = "SWITCHER_AC_METADATA";
+
 }

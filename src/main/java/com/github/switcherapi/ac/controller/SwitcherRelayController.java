@@ -52,9 +52,9 @@ public class SwitcherRelayController {
 	public ResponseEntity<ResponseRelayDTO> loadAccount(@RequestBody RequestRelayDTO request) {
 		try {
 			accountService.createAccount(request.getValue());
-			return ResponseEntity.ok(new ResponseRelayDTO(true));
+			return ResponseEntity.ok(ResponseRelayDTO.create(true));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body(new ResponseRelayDTO(false, e.getMessage()));
+			return ResponseEntity.status(500).body(ResponseRelayDTO.create(false).withMessage(e.getMessage()));
 		}
 	}
 
@@ -63,9 +63,9 @@ public class SwitcherRelayController {
 	public ResponseEntity<ResponseRelayDTO> removeAccount(@RequestBody RequestRelayDTO request) {
 		try {
 			accountService.deleteAccount(request.getValue());
-			return ResponseEntity.ok(new ResponseRelayDTO(true));
+			return ResponseEntity.ok(ResponseRelayDTO.create(true));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body(new ResponseRelayDTO(false, e.getMessage()));
+			return ResponseEntity.status(500).body(ResponseRelayDTO.create(false).withMessage(e.getMessage()));
 		}
 	}
 
@@ -80,7 +80,7 @@ public class SwitcherRelayController {
 
 			return ResponseEntity.ok(validatorFactory.runValidator(request));
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatusCode()).body(new ResponseRelayDTO(false, e.getMessage()));
+			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.create(false).withMessage(e.getMessage()));
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class SwitcherRelayController {
 			var featureRequest = gson.fromJson(request.getPayload(), FeaturePayload.class);
 			return ResponseEntity.ok(validatorService.execute(featureRequest));
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatusCode()).body(new ResponseRelayDTO(false, e.getMessage()));
+			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.create(false).withMessage(e.getMessage()));
 		}
 	}
 

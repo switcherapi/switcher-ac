@@ -3,13 +3,16 @@ package com.github.switcherapi.ac.controller;
 import com.github.switcherapi.ac.controller.fixture.ControllerTestUtils;
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
+import com.github.switcherapi.ac.model.dto.Metadata;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
 import com.github.switcherapi.ac.service.validator.beans.ValidateRateLimit;
+import com.github.switcherapi.client.SwitcherMock;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,6 +21,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_METADATA;
 import static com.github.switcherapi.ac.model.domain.Feature.DOMAIN;
 import static com.github.switcherapi.ac.model.domain.Feature.SWITCHER;
 import static org.hamcrest.Matchers.containsString;
@@ -117,19 +121,40 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 			.andExpect(content().string(containsString(jsonResponse)));
 	}
 
-	@Test
+	@SwitcherMock(key = SWITCHER_AC_METADATA, result = true)
+	@ParameterizedTest
 	void shouldBeOkWhenValidate_limiter() throws Exception {
 		//given
 		givenAccount("adminid");
 
 		//test
-		var expectedResponse = new ResponseRelayDTO(true, String.format(ValidateRateLimit.MESSAGE_TEMPLATE, 100));
+		var expectedResponse = ResponseRelayDTO
+				.create(true)
+				.withMetadata(Metadata.builder().rateLimit(100).build());
+
+		this.assertLimiter("adminid", expectedResponse, 200);
+	}
+
+	@SwitcherMock(key = SWITCHER_AC_METADATA, result = false)
+	@ParameterizedTest
+	void shouldBeOkWhenValidate_limiter_usingMessage() throws Exception {
+		//given
+		givenAccount("adminid");
+
+		//test
+		var expectedResponse = ResponseRelayDTO
+				.create(true)
+				.withMessage(String.format(ValidateRateLimit.MESSAGE_TEMPLATE, 100));
+
 		this.assertLimiter("adminid", expectedResponse, 200);
 	}
 
 	@Test
 	void shouldNotBeOkWhenValidate_limiter_accountNotFound() throws Exception {
-		var expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
+		var expectedResponse = ResponseRelayDTO
+				.create(false)
+				.withMessage("404 NOT_FOUND \"Account not found\"");
+
 		this.assertLimiter("NOT_FOUND", expectedResponse, 404);
 	}
 	
@@ -146,7 +171,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		accountService.updateAccountPlan("masteradminid", "UNLIMITED");
 		
 		//test
-		var expectedResponse = new ResponseRelayDTO(true);
+		var expectedResponse = ResponseRelayDTO.create(true);
 		this.assertValidate("masteradminid", SWITCHER.getValue(),
 				10000, expectedResponse, 200);
 	}
@@ -157,7 +182,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		givenAccount("adminid_ok", "TEST");
 
 		//test
-		var expectedResponse = new ResponseRelayDTO(true);
+		var expectedResponse = ResponseRelayDTO.create(true);
 		this.assertValidate("adminid_ok", DOMAIN.getValue(),
 				0, expectedResponse, 200);
 	}
@@ -168,14 +193,18 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		givenAccount("adminid_nok", "TEST");
 
 		//test
-		var expectedResponse = new ResponseRelayDTO(false, "Feature limit has been reached");
+		var expectedResponse = ResponseRelayDTO.create(false)
+				.withMessage("Feature limit has been reached");
+
 		this.assertValidate("adminid_nok", DOMAIN.getValue(),
 				1, expectedResponse, 200);
 	}
 
 	@Test
 	void shouldNotBeOkWhenValidate_accountNotFound() throws Exception {
-		var expectedResponse = new ResponseRelayDTO(false, "404 NOT_FOUND \"Account not found\"");
+		var expectedResponse = ResponseRelayDTO.create(false)
+				.withMessage("404 NOT_FOUND \"Account not found\"");
+
 		this.assertValidate("NOT_FOUND", DOMAIN.getValue(),
 				0, expectedResponse, 404);
 	}
@@ -186,7 +215,9 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		givenAccount("adminid");
 
 		//test
-		var expectedResponse = new ResponseRelayDTO(false, "400 BAD_REQUEST \"Invalid feature: INVALID_FEATURE\"");
+		var expectedResponse = ResponseRelayDTO.create(false)
+				.withMessage("400 BAD_REQUEST \"Invalid feature: INVALID_FEATURE\"");
+
 		this.assertValidate("adminid", "INVALID_FEATURE",
 				0, expectedResponse, 400);
 	}

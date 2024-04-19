@@ -59,7 +59,7 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
     	<maven.compiler.target>${java.version}</maven.compiler.target>
 		
-		<jersey.version>3.1.5</jersey.version>
+		<jersey.version>4.0.0-M1</jersey.version>
 		<switcher-client.version>2.0.6</switcher-client.version>
 		<jsonwebtoken.version>0.12.5</jsonwebtoken.version>
 		<joda-time.version>2.12.7</joda-time.version>
@@ -71,11 +71,11 @@
 
 		<!-- Managed -->
 		<snakeyaml.version>2.2</snakeyaml.version>
-		<tomcat-embed-core.version>10.1.19</tomcat-embed-core.version>
-		<logback-core.version>1.5.3</logback-core.version>
+		<tomcat-embed-core.version>10.1.20</tomcat-embed-core.version>
+		<logback-core.version>1.5.5</logback-core.version>
 		<jackson-core.version>2.17.0</jackson-core.version>
 		<json-path.version>2.9.0</json-path.version>
-		<json-smart.version>2.5.0</json-smart.version>
+		<json-smart.version>2.5.1</json-smart.version>
 		<commons-compress.version>1.26.1</commons-compress.version>
 
 		<!-- Plugins -->
