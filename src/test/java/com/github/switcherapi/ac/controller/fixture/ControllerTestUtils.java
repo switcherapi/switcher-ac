@@ -71,7 +71,7 @@ public class ControllerTestUtils {
     }
 
     protected String givenExpectedResponse(boolean result, String message) {
-        var response = new ResponseRelayDTO(result, message);
+        var response = ResponseRelayDTO.create(result).withMessage(message);
         return gson.toJson(response);
     }
 

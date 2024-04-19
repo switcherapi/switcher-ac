@@ -2,13 +2,21 @@
   "data": {
     "domain": {
       "name": "Switcher API",
-      "version": 1645220827625,
+      "version": 1713498539215,
       "group": [
         {
           "name": "Features",
           "config": [
             {
               "key": "SWITCHER_AC_ADM",
+              "strategies": [],
+              "components": [
+                "switcher-ac"
+              ],
+              "activated": true
+            },
+            {
+              "key": "SWITCHER_AC_METADATA",
               "strategies": [],
               "components": [
                 "switcher-ac"
