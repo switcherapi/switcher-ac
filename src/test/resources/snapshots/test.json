@@ -14,14 +14,6 @@
                 "switcher-ac"
               ],
               "activated": true
-            },
-            {
-              "key": "SWITCHER_AC_METADATA",
-              "strategies": [],
-              "components": [
-                "switcher-ac"
-              ],
-              "activated": true
             }
           ],
           "activated": true
