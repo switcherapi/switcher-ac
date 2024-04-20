@@ -7,12 +7,9 @@ import com.github.switcherapi.ac.model.dto.Metadata;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
-import com.github.switcherapi.ac.service.validator.beans.ValidateRateLimit;
-import com.github.switcherapi.client.SwitcherMock;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,7 +18,6 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_METADATA;
 import static com.github.switcherapi.ac.model.domain.Feature.DOMAIN;
 import static com.github.switcherapi.ac.model.domain.Feature.SWITCHER;
 import static org.hamcrest.Matchers.containsString;
@@ -121,8 +117,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 			.andExpect(content().string(containsString(jsonResponse)));
 	}
 
-	@SwitcherMock(key = SWITCHER_AC_METADATA, result = true)
-	@ParameterizedTest
+	@Test
 	void shouldBeOkWhenValidate_limiter() throws Exception {
 		//given
 		givenAccount("adminid");
@@ -131,20 +126,6 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		var expectedResponse = ResponseRelayDTO
 				.create(true)
 				.withMetadata(Metadata.builder().rateLimit(100).build());
-
-		this.assertLimiter("adminid", expectedResponse, 200);
-	}
-
-	@SwitcherMock(key = SWITCHER_AC_METADATA, result = false)
-	@ParameterizedTest
-	void shouldBeOkWhenValidate_limiter_usingMessage() throws Exception {
-		//given
-		givenAccount("adminid");
-
-		//test
-		var expectedResponse = ResponseRelayDTO
-				.create(true)
-				.withMessage(String.format(ValidateRateLimit.MESSAGE_TEMPLATE, 100));
 
 		this.assertLimiter("adminid", expectedResponse, 200);
 	}
