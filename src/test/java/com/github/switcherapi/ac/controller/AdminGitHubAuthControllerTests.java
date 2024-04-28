@@ -6,7 +6,7 @@ import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.GitHubDetail;
 import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
-import com.github.switcherapi.client.SwitcherMock;
+import com.github.switcherapi.client.test.SwitcherTest;
 import jakarta.ws.rs.core.MediaType;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
@@ -71,8 +70,7 @@ class AdminGitHubAuthControllerTests {
 		assertDoesNotThrow(SwitcherFeatures::checkSwitchers);
 	}
 
-	@SwitcherMock(key = SwitcherFeatures.SWITCHER_AC_ADM, result = true)
-	@ParameterizedTest
+	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM)
 	void shouldLoginWithGitHub() throws Exception {
 		//given
 		givenGitHubToken();
@@ -120,9 +118,8 @@ class AdminGitHubAuthControllerTests {
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
 	}
-	
-	@ParameterizedTest
-	@SwitcherMock(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
+
+	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
 	void shouldNotLoginWithGitHub_invalidCode() throws Exception {
 		//given
 		givenResponseInvalidCode();
