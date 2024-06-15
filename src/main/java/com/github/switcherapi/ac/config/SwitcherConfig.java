@@ -61,14 +61,14 @@ public class SwitcherConfig {
 				.truststorePassword(StringUtils.isNotBlank(truststore.getPassword()) ? truststore.getPassword() : null)
 		);
 
+		initializeClient();
+
 		scheduleSnapshotAutoUpdate(snapshot.getAutoUpdateInterval(), new SnapshotCallback() {
 			@Override
 			public void onSnapshotUpdate(long version) {
 				log.info("Snapshot updated: {}", version);
 			}
 		});
-
-		initializeClient();
 	}
 
 }
