@@ -89,7 +89,8 @@
 		<sonar.language>java</sonar.language>
 		<sonar.coverage.exclusions>
 			**/model/**/*.java,
-			**/config/SwitcherFeatures.java
+			**/config/SwitcherFeatures.java,
+			**/config/SwitcherConfig.java,
 	    </sonar.coverage.exclusions>
 	</properties>
 	
