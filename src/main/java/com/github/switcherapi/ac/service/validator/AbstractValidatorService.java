@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
 import static com.github.switcherapi.ac.util.Constants.ACCOUNT_NOT_FOUND;
@@ -16,13 +17,13 @@ import static com.github.switcherapi.ac.util.Constants.ACCOUNT_NOT_FOUND;
 public abstract class AbstractValidatorService {
 
 	protected final AccountDao accountDao;
-	
+
 	protected Map<SwitcherValidatorParams, Object> params;
 
 	protected AbstractValidatorService(AccountDao accountDao) {
 		this.accountDao = accountDao;
 	}
-	
+
 	/**
 	 * Executes validator by validating the request and then calling the validator service
 	 */
@@ -31,16 +32,17 @@ public abstract class AbstractValidatorService {
 		validateRequest(request);
 		return executeValidator();
 	}
-	
+
 	/**
 	 * Returns the result of the executed validator
 	 */
 	protected boolean validate(int planValue, int accountValue) {
-		if (planValue == -1)
+		if (planValue == -1) {
 			return false;
+		}
 		return planValue <= accountValue;
 	}
-	
+
 	public <T> T getParam(SwitcherValidatorParams param, Class<T> clazz) {
 		return clazz.cast(params.get(param));
 	}
@@ -55,14 +57,14 @@ public abstract class AbstractValidatorService {
 	protected ResponseRelayDTO executeValidator() {
 		final var account = accountDao.findByAdminId(
 				getParam(ADMINID, String.class));
-		
-		if (account != null) {
+
+		if (Objects.nonNull(account)) {
 			return executeValidator(account);
 		}
-		
+
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND.getValue());
 	}
-	
+
 	/**
 	 * Executes validator bean
 	 */

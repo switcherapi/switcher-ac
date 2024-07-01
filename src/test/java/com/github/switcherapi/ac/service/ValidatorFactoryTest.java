@@ -3,13 +3,11 @@ package com.github.switcherapi.ac.service;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.service.validator.ValidatorFactory;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.github.switcherapi.ac.model.domain.Feature.DOMAIN;
+import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -26,36 +24,21 @@ class ValidatorFactoryTest {
 	}
 	
 	@Test
-	void shouldThrowError_missingParameter() {
-		var request = FeaturePayload.builder()
-				.feature(DOMAIN.getValue())
-				.owner("adminid")
-				.build();
-		
-		assertThrows(ResponseStatusException.class, () -> validatorFactory.runValidator(request));
-	}
-	
-	@Test
 	void shouldThrowError_missingAdminId() {
 		var request = FeaturePayload.builder()
-				.feature(DOMAIN.getValue())
-				.total(0)
+				.feature(RATE_LIMIT.getValue())
 				.build();
 		
 		assertThrows(ResponseStatusException.class, () -> validatorFactory.runValidator(request));
 	}
-	
-	@ParameterizedTest
-	@ValueSource(strings = {
-			"rate_limit"
-	})
-	void shouldNotThrowError(String feature) {
+
+	@Test
+	void shouldNotThrowError() {
 		accountService.createAccount("adminid");
 		
 		var request = FeaturePayload.builder()
-				.feature(feature)
+				.feature(RATE_LIMIT.getValue())
 				.owner("adminid")
-				.total(0)
 				.build();
 		
 		assertDoesNotThrow(() -> validatorFactory.runValidator(request));

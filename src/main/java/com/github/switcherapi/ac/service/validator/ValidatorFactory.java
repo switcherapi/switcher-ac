@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -48,7 +49,8 @@ public class ValidatorFactory {
         try {
             var validatorClass = Class.forName(controllerClassName);
             var validatorAnnotation = validatorClass.getDeclaredAnnotation(SwitcherValidator.class);
-            if (validatorAnnotation != null) {
+
+            if (Objects.nonNull(validatorAnnotation)) {
             	var sValidator = validatorClass.getAnnotation(SwitcherValidator.class);
             	var validatorService = (AbstractValidatorService) validatorClass.getConstructor(AccountDao.class).newInstance(this.accountDao);
 

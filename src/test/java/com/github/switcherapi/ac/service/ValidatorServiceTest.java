@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.github.switcherapi.ac.model.domain.Feature.*;
+import static com.github.switcherapi.ac.model.domain.Plan.*;
 import static com.github.switcherapi.ac.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,13 +29,13 @@ class ValidatorServiceTest {
 
     static Stream<Arguments> validatorInput() {
         return Stream.of(
-                Arguments.of(DOMAIN, 0),
-                Arguments.of(GROUP, 1),
-                Arguments.of(SWITCHER, 2),
-                Arguments.of(ENVIRONMENT, 1),
-                Arguments.of(COMPONENT, 1),
-                Arguments.of(TEAM, 0),
-                Arguments.of(RATE_LIMIT, 0)
+                Arguments.of(DOMAIN, DEFAULT_DOMAIN - 1),
+                Arguments.of(GROUP, DEFAULT_GROUP - 1),
+                Arguments.of(SWITCHER, DEFAULT_SWITCHER - 1),
+                Arguments.of(ENVIRONMENT, DEFAULT_ENVIRONMENT - 1),
+                Arguments.of(COMPONENT, DEFAULT_COMPONENT - 1),
+                Arguments.of(TEAM, DEFAULT_TEAM - 1),
+                Arguments.of(RATE_LIMIT, DEFAULT_RATE_LIMIT - 1)
         );
     }
 
@@ -52,15 +53,15 @@ class ValidatorServiceTest {
 
     static Stream<Arguments> validatorLimitInput() {
         return Stream.of(
-                Arguments.of(DOMAIN, 1),
-                Arguments.of(GROUP, 2),
-                Arguments.of(SWITCHER, 3),
-                Arguments.of(ENVIRONMENT, 2),
-                Arguments.of(COMPONENT, 2),
-                Arguments.of(TEAM, 1),
+                Arguments.of(DOMAIN, DEFAULT_DOMAIN),
+                Arguments.of(GROUP, DEFAULT_GROUP),
+                Arguments.of(SWITCHER, DEFAULT_SWITCHER),
+                Arguments.of(ENVIRONMENT, DEFAULT_ENVIRONMENT),
+                Arguments.of(COMPONENT, DEFAULT_COMPONENT),
+                Arguments.of(TEAM, DEFAULT_TEAM),
                 Arguments.of(HISTORY, null),
                 Arguments.of(METRICS, null),
-                Arguments.of(RATE_LIMIT, 100)
+                Arguments.of(RATE_LIMIT, DEFAULT_RATE_LIMIT)
         );
     }
 

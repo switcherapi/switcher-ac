@@ -61,14 +61,9 @@ public class PlanService {
     }
 
     public Plan getPlanByName(String planName) {
-        var planToFind = Optional.ofNullable(planDao.findByName(planName));
-
-        if (planToFind.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName));
-        }
-
-        return planToFind.get();
+        return Optional.ofNullable(planDao.findByName(planName))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName)));
     }
 
 }

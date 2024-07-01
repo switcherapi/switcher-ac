@@ -7,6 +7,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.github.switcherapi.ac.model.GitHubDetail;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
 
+import java.util.Objects;
+
 @Service
 public class GitHubService {
 
@@ -18,16 +20,18 @@ public class GitHubService {
 
 	public String getToken(String code) {
 		final String token = githubFacade.getToken(code);
-		if (!token.isEmpty())
+		if (!token.isEmpty()) {
 			return token;
+		}
 		
 		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, GitHubFacade.INVALID_ACCOUNT);
 	}
 	
 	public GitHubDetail getGitHubDetail(String token) {
 		final GitHubDetail response = githubFacade.getGitHubDetail(token);
-		if (response != null)
+		if (Objects.nonNull(response)) {
 			return response;
+		}
 			
 		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, GitHubFacade.INVALID_ACCOUNT);
 	}

@@ -50,7 +50,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.0</version>
+		<version>3.3.1</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -60,8 +60,8 @@
     	<maven.compiler.target>${java.version}</maven.compiler.target>
 		
 		<jersey.version>4.0.0-M1</jersey.version>
-		<switcher-client.version>2.0.7</switcher-client.version>
-		<jsonwebtoken.version>0.12.5</jsonwebtoken.version>
+		<switcher-client.version>2.1.0</switcher-client.version>
+		<jsonwebtoken.version>0.12.6</jsonwebtoken.version>
 		<joda-time.version>2.12.7</joda-time.version>
 		<gson.version>2.11.0</gson.version>
 		<springdoc.version>2.5.0</springdoc.version>
@@ -71,7 +71,7 @@
 
 		<!-- Managed -->
 		<snakeyaml.version>2.2</snakeyaml.version>
-		<tomcat-embed-core.version>10.1.24</tomcat-embed-core.version>
+		<tomcat-embed-core.version>10.1.25</tomcat-embed-core.version>
 		<logback-core.version>1.5.6</logback-core.version>
 		<jackson-core.version>2.17.1</jackson-core.version>
 		<json-path.version>2.9.0</json-path.version>

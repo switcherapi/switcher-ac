@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -91,7 +92,7 @@ public class JwtTokenService {
 		final var jwtParser = Jwts.parser().verifyWith(key).build();
 		final var refreshSubject = jwtParser.parseSignedClaims(refreshToken).getPayload().getSubject();
 
-		if (token != null && refreshSubject.equals(token.substring(token.length() - 8))) {
+		if (Objects.nonNull(token) && refreshSubject.equals(token.substring(token.length() - 8))) {
 			return generateToken(subject);
 		}
 
@@ -111,8 +112,7 @@ public class JwtTokenService {
 			final var jwtParser = Jwts.parser().verifyWith(key).build();
 			final var subject = jwtParser.parseSignedClaims(token).getPayload().getSubject();
 			
-			final var adminAccount = adminRepository.findByToken(token);
-			return adminAccount != null ? subject : null;
+			return Objects.nonNull(adminRepository.findByToken(token)) ? subject : null;
 		} catch (JwtException e) {
 			log.error("Failed to validate JWT - {}", e.getMessage());
 			return StringUtils.EMPTY;
