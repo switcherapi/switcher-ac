@@ -24,6 +24,16 @@ import static com.github.switcherapi.ac.model.domain.Feature.*;
 @AllArgsConstructor
 public class Plan {
 
+	public static final int DEFAULT_DOMAIN = 1;
+	public static final int DEFAULT_GROUP = 2;
+	public static final int DEFAULT_SWITCHER = 3;
+	public static final int DEFAULT_ENVIRONMENT = 2;
+	public static final int DEFAULT_COMPONENT = 2;
+	public static final int DEFAULT_TEAM = 1;
+	public static final int DEFAULT_RATE_LIMIT = 100;
+	public static final boolean DEFAULT_HISTORY = false;
+	public static final boolean DEFAULT_METRICS = false;
+
 	@Id
 	private String id;
 
@@ -56,15 +66,15 @@ public class Plan {
 		return Plan.builder()
 			.name(PlanType.DEFAULT.name())
 			.attributes(Arrays.asList(
-				PlanAttribute.builder().feature(DOMAIN.getValue()).value(1).build(),
-				PlanAttribute.builder().feature(GROUP.getValue()).value(2).build(),
-				PlanAttribute.builder().feature(SWITCHER.getValue()).value(3).build(),
-				PlanAttribute.builder().feature(ENVIRONMENT.getValue()).value(2).build(),
-				PlanAttribute.builder().feature(COMPONENT.getValue()).value(2).build(),
-				PlanAttribute.builder().feature(TEAM.getValue()).value(1).build(),
-				PlanAttribute.builder().feature(RATE_LIMIT.getValue()).value(100).build(),
-				PlanAttribute.builder().feature(HISTORY.getValue()).value(false).build(),
-				PlanAttribute.builder().feature(METRICS.getValue()).value(false).build()
+				PlanAttribute.builder().feature(DOMAIN.getValue()).value(DEFAULT_DOMAIN).build(),
+				PlanAttribute.builder().feature(GROUP.getValue()).value(DEFAULT_GROUP).build(),
+				PlanAttribute.builder().feature(SWITCHER.getValue()).value(DEFAULT_SWITCHER).build(),
+				PlanAttribute.builder().feature(ENVIRONMENT.getValue()).value(DEFAULT_ENVIRONMENT).build(),
+				PlanAttribute.builder().feature(COMPONENT.getValue()).value(DEFAULT_COMPONENT).build(),
+				PlanAttribute.builder().feature(TEAM.getValue()).value(DEFAULT_TEAM).build(),
+				PlanAttribute.builder().feature(RATE_LIMIT.getValue()).value(DEFAULT_RATE_LIMIT).build(),
+				PlanAttribute.builder().feature(HISTORY.getValue()).value(DEFAULT_HISTORY).build(),
+				PlanAttribute.builder().feature(METRICS.getValue()).value(DEFAULT_METRICS).build()
 			)).build();
 	}
 

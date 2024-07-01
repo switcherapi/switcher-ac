@@ -18,7 +18,7 @@ import static com.github.switcherapi.client.SwitcherContextBase.scheduleSnapshot
 @Configuration
 @ConfigurationProperties(prefix = "switcher")
 @Data
-public class SwitcherConfig {
+public class SwitcherConfig implements SnapshotCallback {
 
 	private String url;
 	private String apikey;
@@ -62,13 +62,12 @@ public class SwitcherConfig {
 		);
 
 		initializeClient();
+		scheduleSnapshotAutoUpdate(snapshot.getAutoUpdateInterval(), this);
+	}
 
-		scheduleSnapshotAutoUpdate(snapshot.getAutoUpdateInterval(), new SnapshotCallback() {
-			@Override
-			public void onSnapshotUpdate(long version) {
-				log.info("Snapshot updated: {}", version);
-			}
-		});
+	@Override
+	public void onSnapshotUpdate(long version) {
+		log.info("Snapshot updated: {}", version);
 	}
 
 }

@@ -91,6 +91,20 @@ class AdminGitHubAuthControllerTests {
 		assertThat(authDto.getToken()).isNotNull();
 		assertThat(authDto.getRefreshToken()).isNotNull();
 	}
+
+	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
+	void shouldNotLoginWithGitHub_accountNotAllowed() throws Exception {
+		//given
+		givenGitHubToken();
+		givenResponseSuccess();
+
+		//test
+		this.mockMvc.perform(post("/admin/v1/auth/github")
+						.contentType(MediaType.APPLICATION_JSON)
+						.queryParam("code", "123"))
+				.andDo(print())
+				.andExpect(status().isUnauthorized());
+	}
 	
 	@Test
 	void shouldNotLoginWithGitHub_invalidToken() throws Exception {

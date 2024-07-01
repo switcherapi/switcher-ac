@@ -74,8 +74,9 @@ public class GitHubFacade {
 			.header(HttpHeaders.AUTHORIZATION, String.format("token %s", token))
 			.get()) {
 		
-			if (response.getStatus() == 200)
+			if (response.getStatus() == 200) {
 				return response.readEntity(GitHubDetail.class);
+			}
 
 			log.error("Failed to get GitHub detail");
 			return null;

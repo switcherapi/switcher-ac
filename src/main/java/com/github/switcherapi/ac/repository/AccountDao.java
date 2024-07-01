@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class AccountDao {
@@ -35,7 +36,7 @@ public class AccountDao {
     public List<Account> findByPlanName(String planName) {
         final var planFound = planDao.findByName(planName);
 
-        if (planFound != null) {
+        if (Objects.nonNull(planFound)) {
             final var query = new Query();
             query.addCriteria(Criteria.where("plan").is(planFound));
 
