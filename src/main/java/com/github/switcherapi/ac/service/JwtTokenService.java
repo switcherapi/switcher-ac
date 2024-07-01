@@ -92,7 +92,7 @@ public class JwtTokenService {
 		final var jwtParser = Jwts.parser().verifyWith(key).build();
 		final var refreshSubject = jwtParser.parseSignedClaims(refreshToken).getPayload().getSubject();
 
-		if (Objects.nonNull(token) && refreshSubject.equals(token.substring(token.length() - 8))) {
+		if (refreshSubject.equals(token.substring(token.length() - 8))) {
 			return generateToken(subject);
 		}
 

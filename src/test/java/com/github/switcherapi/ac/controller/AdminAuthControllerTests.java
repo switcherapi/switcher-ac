@@ -66,6 +66,27 @@ class AdminAuthControllerTests {
 		assertThat(authDto.getRefreshToken()).isNotEqualTo(tokens.getRight());
 	}
 
+	@Test
+	void shouldNotRefreshToken_invalidToken() throws Exception {
+		this.mockMvc.perform(post("/admin/v1/auth/refresh")
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer INVALID_TOKEN")
+				.with(csrf())
+				.queryParam("refreshToken", tokens.getRight()))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void shouldNotRefreshToken_missingToken() throws Exception {
+		this.mockMvc.perform(post("/admin/v1/auth/refresh")
+						.contentType(MediaType.APPLICATION_JSON)
+						.with(csrf())
+						.queryParam("refreshToken", tokens.getRight()))
+				.andDo(print())
+				.andExpect(status().is4xxClientError());
+	}
+
 	@SwitcherTest(key = "SWITCHER_AC_ADM", result = false)
 	void shouldNotRefreshToken_accountUnauthorized() throws Exception {
 		var count = new CountDownLatch(1);
