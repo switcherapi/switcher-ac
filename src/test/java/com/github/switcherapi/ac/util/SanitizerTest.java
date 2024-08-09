@@ -1,0 +1,54 @@
+package com.github.switcherapi.ac.util;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static com.github.switcherapi.ac.util.Sanitizer.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class SanitizerTest {
+
+	@Test
+	void shouldSanitizeStringTrim() {
+		// Given
+		var value = "  test  ";
+
+		// When
+		var sanitized = sanitize(value, List.of(trim()));
+
+		// Then
+		assertEquals("test", sanitized);
+	}
+
+	@Test
+	void shouldSanitizeStringAlphaNumeric() {
+		// Given
+		var value = "test@123";
+
+		// When
+		var sanitized = sanitize(value, List.of(alphaNumeric()));
+
+		// Then
+		assertEquals("test123", sanitized);
+	}
+
+	@Test
+	void shouldSanitizeStringTrimAndAlphaNumeric() {
+		// Given
+		var value = "  test@123  ";
+
+		// When
+		var sanitized = sanitize(value, List.of(trim(), alphaNumeric()));
+
+		// Then
+		assertEquals("test123", sanitized);
+	}
+
+	@Test
+	void shouldSanitizeNull() {
+		var sanitized = sanitize(null, List.of(trim(), alphaNumeric()));
+		assertEquals(StringUtils.EMPTY, sanitized);
+	}
+}

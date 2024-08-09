@@ -1,6 +1,7 @@
 package com.github.switcherapi.ac.service.facades;
 
 import com.github.switcherapi.ac.model.GitHubDetail;
+import com.github.switcherapi.ac.util.Sanitizer;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
@@ -11,7 +12,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
+
+import static com.github.switcherapi.ac.util.Sanitizer.*;
 
 @Component
 @Slf4j
@@ -46,8 +50,10 @@ public class GitHubFacade {
 	}
 	
 	public String getToken(String code) {
+		var codeSanitized = sanitize(code, List.of(trim(), alphaNumeric()));
+
 		final WebTarget myResource = client.target(
-				String.format(gitUrlAccess, clientId, oauthSecret, code));
+				String.format(gitUrlAccess, clientId, oauthSecret, codeSanitized));
 
 		try (var response = myResource
 				.request(MediaType.APPLICATION_JSON)
@@ -56,8 +62,9 @@ public class GitHubFacade {
 
 			if (response.getStatus() == 200) {
 				final var responseEntity = response.readEntity(Map.class);
-				if (responseEntity.containsKey(ACCESS_TOKEN))
+				if (responseEntity.containsKey(ACCESS_TOKEN)) {
 					return responseEntity.get(ACCESS_TOKEN).toString();
+				}
 			}
 
 			log.error("Failed to get token from GitHub");
