@@ -71,7 +71,7 @@
 
 		<!-- Managed -->
 		<snakeyaml.version>2.2</snakeyaml.version>
-		<tomcat-embed-core.version>10.1.26</tomcat-embed-core.version>
+		<tomcat-embed-core.version>10.1.28</tomcat-embed-core.version>
 		<logback-core.version>1.5.6</logback-core.version>
 		<jackson-core.version>2.17.2</jackson-core.version>
 		<json-path.version>2.9.0</json-path.version>
