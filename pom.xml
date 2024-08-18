@@ -51,7 +51,6 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.2</version>
-		<relativePath>..</relativePath>
 	</parent>
 
 	<properties>
@@ -70,17 +69,18 @@
 		<flapdoodle.embed.mongo.version>4.16.1</flapdoodle.embed.mongo.version>
 
 		<!-- Managed -->
+		<spring-web.version>6.1.12</spring-web.version>
 		<snakeyaml.version>2.2</snakeyaml.version>
 		<tomcat-embed-core.version>10.1.28</tomcat-embed-core.version>
 		<logback-core.version>1.5.6</logback-core.version>
 		<jackson-core.version>2.17.2</jackson-core.version>
 		<json-path.version>2.9.0</json-path.version>
 		<json-smart.version>2.5.1</json-smart.version>
-		<commons-compress.version>1.26.2</commons-compress.version>
+		<commons-compress.version>1.27.0</commons-compress.version>
 
 		<!-- Plugins -->
 		<maven-compiler.version>3.13.0</maven-compiler.version>
-		<sonar.version>3.10.0.2594</sonar.version>
+		<sonar.version>4.0.0.4121</sonar.version>
 		<jacoco.version>0.8.12</jacoco.version>
 		
 		<!-- Sonar -->
@@ -151,7 +151,7 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.sonarsource.scanner.maven</groupId>
+						<groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
                         <version>${sonar.version}</version>
                         <executions>
@@ -315,6 +315,12 @@
 	
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring-web.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.yaml</groupId>
 				<artifactId>snakeyaml</artifactId>
