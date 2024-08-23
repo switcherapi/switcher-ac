@@ -27,7 +27,7 @@ public class OpenAPIConfiguration {
 	@Bean
 	public OpenAPI customOpenAPI() {
 		var openApi = new OpenAPI()
-				.addServersItem(new Server().url(configProperties.getUrl()))
+				.addServersItem(new Server().url(configProperties.url()))
 				.info(getInfo());
 
 		addSecurity(openApi);
@@ -36,23 +36,23 @@ public class OpenAPIConfiguration {
 
 	private Info getInfo() {
 		return new Info()
-				.title(configProperties.getTitle())
-				.description(configProperties.getDescription())
-				.version(configProperties.getVersion())
+				.title(configProperties.title())
+				.description(configProperties.description())
+				.version(configProperties.version())
 				.contact(getContact())
 				.license(getLicense());
 	}
 
 	private License getLicense() {
 		return new License()
-				.name(configProperties.getLicense().getType())
-				.url(configProperties.getLicense().getUrl());
+				.name(configProperties.license().type())
+				.url(configProperties.license().url());
 	}
 	
 	private Contact getContact() {
 		return new Contact()
-				.name(configProperties.getContact().getAuthor())
-				.email(configProperties.getContact().getEmail());
+				.name(configProperties.contact().author())
+				.email(configProperties.contact().email());
 	}
 
 	private void addSecurity(OpenAPI openApi) {

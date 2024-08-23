@@ -4,46 +4,37 @@ import com.github.switcherapi.ac.util.FileUtil;
 import com.github.switcherapi.client.ContextBuilder;
 import com.github.switcherapi.client.SnapshotCallback;
 import jakarta.annotation.PostConstruct;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import static com.github.switcherapi.ac.config.SwitcherFeatures.configure;
 import static com.github.switcherapi.ac.config.SwitcherFeatures.initializeClient;
-import static com.github.switcherapi.client.SwitcherContextBase.scheduleSnapshotAutoUpdate;
+import static com.github.switcherapi.ac.config.SwitcherFeatures.scheduleSnapshotAutoUpdate;
 
 @Slf4j
-@Configuration
 @ConfigurationProperties(prefix = "switcher")
-@Data
-public class SwitcherConfig implements SnapshotCallback {
+public record SwitcherConfig(
+		String url,
+		String apikey,
+		String domain,
+		String component,
+		String environment,
+		boolean local,
+		String silent,
+		SnapshotConfig snapshot,
+		String relayCode,
+		TruststoreConfig truststore) implements SnapshotCallback {
 
-	private String url;
-	private String apikey;
-	private String domain;
-	private String component;
-	private String environment;
-	private boolean local;
-	private String silent;
-	private SnapshotConfig snapshot;
-	private String relayCode;
-	private TruststoreConfig truststore;
-	
-	@Data
-	static class SnapshotConfig {
-		private String autoUpdateInterval;
-		private String location;
-		private boolean auto;
-	}
+	record SnapshotConfig(
+		String autoUpdateInterval,
+		String location,
+		boolean auto) { }
 
-	@Data
-	static class TruststoreConfig {
-		private String path;
-		private String password;
-	}
-	
+	record TruststoreConfig(
+		String path,
+		String password) { }
+
 	@PostConstruct
 	private void configureSwitcher() {
 		configure(ContextBuilder.builder()
@@ -55,14 +46,13 @@ public class SwitcherConfig implements SnapshotCallback {
 				.component(component)
 				.local(local)
 				.silentMode(silent)
-				.snapshotLocation(StringUtils.isNotBlank(snapshot.getLocation()) ? snapshot.getLocation() : null)
-				.snapshotAutoLoad(snapshot.isAuto())
-				.truststorePath(StringUtils.isNotBlank(truststore.getPath()) ? FileUtil.getFilePathFromResource(truststore.getPath()) : null)
-				.truststorePassword(StringUtils.isNotBlank(truststore.getPassword()) ? truststore.getPassword() : null)
-		);
+				.snapshotLocation(StringUtils.isNotBlank(snapshot.location()) ? snapshot.location() : null)
+				.snapshotAutoLoad(snapshot.auto())
+				.truststorePath(StringUtils.isNotBlank(truststore.path()) ? FileUtil.getFilePathFromResource(truststore.path()) : null)
+				.truststorePassword(StringUtils.isNotBlank(truststore.password()) ? truststore.password() : null));
 
 		initializeClient();
-		scheduleSnapshotAutoUpdate(snapshot.getAutoUpdateInterval(), this);
+		scheduleSnapshotAutoUpdate(snapshot.autoUpdateInterval(), this);
 	}
 
 	@Override

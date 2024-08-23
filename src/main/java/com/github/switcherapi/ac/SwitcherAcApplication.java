@@ -6,11 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 
 import static com.github.switcherapi.ac.config.SwitcherFeatures.checkSwitchers;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan
 @ComponentScan(basePackages = { "com.github.switcherapi.ac" })
 @Slf4j
 public class SwitcherAcApplication implements CommandLineRunner {
