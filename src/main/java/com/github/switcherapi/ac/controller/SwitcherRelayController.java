@@ -44,7 +44,7 @@ public class SwitcherRelayController {
 
 	@GetMapping(value = "/verify")
 	public ResponseEntity<Object> verify() {
-		return ResponseEntity.ok(Map.of("code", switcherConfig.getRelayCode()));
+		return ResponseEntity.ok(Map.of("code", switcherConfig.relayCode()));
 	}
 
 	@Operation(summary = "Load new account to Switcher AC")
