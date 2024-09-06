@@ -51,10 +51,10 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseRelayDTO> loadAccount(@RequestBody RequestRelayDTO request) {
 		try {
-			accountService.createAccount(request.getValue());
+			accountService.createAccount(request.value());
 			return ResponseEntity.ok(ResponseRelayDTO.create(true));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body(ResponseRelayDTO.create(false).withMessage(e.getMessage()));
+			return ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()));
 		}
 	}
 
@@ -62,10 +62,10 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/remove")
 	public ResponseEntity<ResponseRelayDTO> removeAccount(@RequestBody RequestRelayDTO request) {
 		try {
-			accountService.deleteAccount(request.getValue());
+			accountService.deleteAccount(request.value());
 			return ResponseEntity.ok(ResponseRelayDTO.create(true));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body(ResponseRelayDTO.create(false).withMessage(e.getMessage()));
+			return ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()));
 		}
 	}
 
@@ -80,7 +80,7 @@ public class SwitcherRelayController {
 
 			return ResponseEntity.ok(validatorFactory.runValidator(request));
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.create(false).withMessage(e.getMessage()));
+			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
 		}
 	}
 	
@@ -88,10 +88,10 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/validate")
 	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
-			var featureRequest = gson.fromJson(request.getPayload(), FeaturePayload.class);
+			var featureRequest = gson.fromJson(request.payload(), FeaturePayload.class);
 			return ResponseEntity.ok(validatorService.execute(featureRequest));
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.create(false).withMessage(e.getMessage()));
+			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
 		}
 	}
 

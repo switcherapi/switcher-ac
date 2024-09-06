@@ -6,11 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Data;
 
 @JsonInclude(Include.NON_NULL)
-@Data
-public class RequestRelayDTO {
-
-	private String value;
-	
-	private String payload;
-
+public record RequestRelayDTO(
+		String value,
+		String payload) {
 }

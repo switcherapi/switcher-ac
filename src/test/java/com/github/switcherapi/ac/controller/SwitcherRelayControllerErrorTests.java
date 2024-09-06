@@ -52,8 +52,7 @@ class SwitcherRelayControllerErrorTests {
         	.thenThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
         
         //given
-  		var request = new RequestRelayDTO();
-  		request.setValue("adminid");
+  		var request = new RequestRelayDTO("adminid", null);
   		var jsonRequest = new Gson().toJson(request);
         
 		//test

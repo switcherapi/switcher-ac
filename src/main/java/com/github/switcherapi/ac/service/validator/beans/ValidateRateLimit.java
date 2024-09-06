@@ -20,7 +20,7 @@ public class ValidateRateLimit extends AbstractActiveCheckValidator {
 		final var plan = account.getPlan();
 		final var max = Integer.parseInt(plan.getFeature(RATE_LIMIT).getValue().toString());
 
-		return ResponseRelayDTO.create(true).withMetadata(Metadata.builder().rateLimit(max).build());
+		return ResponseRelayDTO.success(Metadata.builder().rateLimit(max).build());
 	}
 
 }

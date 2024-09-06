@@ -40,8 +40,7 @@ public class ControllerTestUtils {
                 .total(value)
                 .build();
 
-        var request = new RequestRelayDTO();
-        request.setPayload(gson.toJson(feature));
+        var request = new RequestRelayDTO(null, gson.toJson(feature));
 
         //test
         this.mockMvc.perform(post("/switcher/v1/validate")
@@ -66,18 +65,8 @@ public class ControllerTestUtils {
                 .andExpect(content().string(containsString(gson.toJson(expectedResponse))));
     }
 
-    protected String givenTrueAsExpectedResponse() {
-        return givenExpectedResponse(true, null);
-    }
-
-    protected String givenExpectedResponse(boolean result, String message) {
-        var response = ResponseRelayDTO.create(result).withMessage(message);
-        return gson.toJson(response);
-    }
-
     protected String givenRequest(String adminId) {
-        var request = new RequestRelayDTO();
-        request.setValue(adminId);
+        var request = new RequestRelayDTO(adminId, null);
         return gson.toJson(request);
     }
 
@@ -92,7 +81,7 @@ public class ControllerTestUtils {
     protected void assertDtoResponse(Plan planObj, String response)
             throws JsonProcessingException {
         var planDto = new ObjectMapper().readValue(response, PlanDTO.class);
-        assertThat(planDto.getName()).isEqualTo(planObj.getName());
+        assertThat(planDto.name()).isEqualTo(planObj.getName());
     }
 
 }

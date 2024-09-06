@@ -61,9 +61,9 @@ class AdminAuthControllerTests {
 			.andReturn().getResponse().getContentAsString();
 		
 		var authDto = new ObjectMapper().readValue(json, GitHubAuthDTO.class);
-		assertThat(authDto.getAdmin().getGitHubId()).isEqualTo("123456");
-		assertThat(authDto.getToken()).isNotEqualTo(tokens.getLeft());
-		assertThat(authDto.getRefreshToken()).isNotEqualTo(tokens.getRight());
+		assertThat(authDto.admin().gitHubId()).isEqualTo("123456");
+		assertThat(authDto.token()).isNotEqualTo(tokens.getLeft());
+		assertThat(authDto.refreshToken()).isNotEqualTo(tokens.getRight());
 	}
 
 	@Test

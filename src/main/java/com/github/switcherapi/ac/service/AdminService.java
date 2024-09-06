@@ -43,12 +43,12 @@ public class AdminService {
 		final var gitHubToken = githubService.getToken(code);
 		final var gitHubDetail = githubService.getGitHubDetail(gitHubToken);
 
-		if (isNotAvailable(gitHubDetail.getId())) {
+		if (isNotAvailable(gitHubDetail.id())) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not allowed");
 		}
 
-		var admin = Optional.ofNullable(adminRepository.findByGitHubId(gitHubDetail.getId()))
-				.orElse(createAdminAccount(gitHubDetail.getId()));
+		var admin = Optional.ofNullable(adminRepository.findByGitHubId(gitHubDetail.id()))
+				.orElse(createAdminAccount(gitHubDetail.id()));
 
 		final var tokens = jwtService.generateToken(admin.getId());
 		updateAdminAccountToken(admin, tokens.getLeft());

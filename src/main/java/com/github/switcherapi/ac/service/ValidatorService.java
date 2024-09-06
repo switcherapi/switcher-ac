@@ -30,7 +30,7 @@ public class ValidatorService extends AbstractValidatorService {
 
         final var value = maxPlanValue.getValue();
         if (validate(value)) {
-            return ResponseRelayDTO.create(false).withMessage(MSG_FEATURE_LIMIT_REACHED.getValue());
+            return ResponseRelayDTO.fail(MSG_FEATURE_LIMIT_REACHED.getValue());
         }
 
         return ResponseRelayDTO.create(true);

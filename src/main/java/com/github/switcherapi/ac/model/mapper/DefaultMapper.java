@@ -1,7 +1,6 @@
 package com.github.switcherapi.ac.model.mapper;
 
 import com.github.switcherapi.client.exception.SwitcherException;
-import lombok.Generated;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -12,7 +11,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@Generated
 @UtilityClass
 public class DefaultMapper {
 	

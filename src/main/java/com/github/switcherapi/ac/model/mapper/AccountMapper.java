@@ -4,17 +4,14 @@ import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.dto.AccountDTO;
 import com.github.switcherapi.ac.model.dto.PlanDTO;
 import lombok.AccessLevel;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
-@Generated
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountMapper {
 	
 	public static AccountDTO createCopy(Account from) {
-		var to = DefaultMapper.createCopy(from, AccountDTO.class);
-		to.setPlan(DefaultMapper.createCopy(from.getPlan(), PlanDTO.class));
-		return to;
+		final var plan = new PlanDTO(from.getPlan().getId(), from.getPlan().getName(), from.getPlan().getAttributes());
+		return new AccountDTO(from.getId(), from.getAdminId(), plan);
 	}
 
 }

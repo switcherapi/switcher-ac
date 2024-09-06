@@ -85,8 +85,8 @@ class AdminAccountControllerTests {
 			.andReturn().getResponse().getContentAsString();
 		
 		var accountDto = new ObjectMapper().readValue(json, AccountDTO.class);
-		assertThat(accountDto.getAdminId()).isEqualTo(ADMIN_ID);
-		assertThat(accountDto.getPlan().getName()).isEqualTo("BASIC");
+		assertThat(accountDto.adminId()).isEqualTo(ADMIN_ID);
+		assertThat(accountDto.plan().name()).isEqualTo("BASIC");
 		
 		account = accountService.getAccountByAdminId(ADMIN_ID);
 		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
