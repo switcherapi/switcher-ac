@@ -8,6 +8,7 @@ import com.github.switcherapi.ac.model.mapper.PlanMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.github.switcherapi.ac.model.domain.Feature.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,9 +31,9 @@ class PlanUtilsTests {
 					PlanAttribute.builder().feature(HISTORY.getValue()).value(false).build(),
 					PlanAttribute.builder().feature(METRICS.getValue()).value(false).build()
 			)).build();
-		
-		final PlanDTO from = new PlanDTO();
-		from.addFeature(DOMAIN, 2);
+
+		final var attributes = List.of(new PlanAttribute(DOMAIN.getValue(), 2));
+		final PlanDTO from = new PlanDTO(to.getId(), to.getName(), attributes);
 		
 		//test
 		PlanMapper.copyProperties(from, to);

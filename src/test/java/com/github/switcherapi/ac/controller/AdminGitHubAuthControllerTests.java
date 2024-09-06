@@ -42,7 +42,7 @@ class AdminGitHubAuthControllerTests {
 	@Autowired ApplicationContext applicationContext;
 	
 	public static MockWebServer mockBackend;
-	private final ObjectMapper MAPPER = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	@BeforeAll
     static void setup() throws IOException {
@@ -87,9 +87,9 @@ class AdminGitHubAuthControllerTests {
 			.andReturn().getResponse().getContentAsString();
 		
 		var authDto = new ObjectMapper().readValue(json, GitHubAuthDTO.class);
-		assertThat(authDto.getAdmin()).isNotNull();
-		assertThat(authDto.getToken()).isNotNull();
-		assertThat(authDto.getRefreshToken()).isNotNull();
+		assertThat(authDto.admin()).isNotNull();
+		assertThat(authDto.token()).isNotNull();
+		assertThat(authDto.refreshToken()).isNotNull();
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
@@ -178,13 +178,10 @@ class AdminGitHubAuthControllerTests {
 	}
 
 	private void givenResponseSuccess() throws JsonProcessingException {
-		var githubAccountDetail = GitHubDetail.builder()
-				.id("123")
-				.login("login")
-				.name("UserName").build();
+		final var githubAccountDetail = new GitHubDetail("123", "UserName", "login", "http://avatar.com");
 
 		mockBackend.enqueue(new MockResponse()
-				.setBody(MAPPER.writeValueAsString(githubAccountDetail))
+				.setBody(mapper.writeValueAsString(githubAccountDetail))
 				.addHeader("Content-Type", MediaType.APPLICATION_JSON));
 	}
 

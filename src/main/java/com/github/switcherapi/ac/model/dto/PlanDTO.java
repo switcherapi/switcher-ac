@@ -2,11 +2,13 @@ package com.github.switcherapi.ac.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.github.switcherapi.ac.model.domain.Plan;
-import lombok.Generated;
+import com.github.switcherapi.ac.model.domain.PlanAttribute;
 
-@Generated
+import java.util.List;
+
 @JsonInclude(Include.NON_NULL)
-public class PlanDTO extends Plan {
-	
+public record PlanDTO(
+		String id,
+		String name,
+		List<PlanAttribute> attributes) {
 }

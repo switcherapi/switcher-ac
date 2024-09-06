@@ -6,8 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record Metadata(
-        @JsonProperty("rate_limit")
-        @SerializedName("rate_limit")
-        int rateLimit
-) {
+		@JsonProperty("rate_limit")
+		@SerializedName("rate_limit")
+		int rateLimit) {
 }

@@ -68,8 +68,8 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 	void shouldCreateAccount() throws Exception {
 		//given
 		var jsonRequest = givenRequest("adminid");
-		var jsonResponse = givenTrueAsExpectedResponse();
-		
+		var jsonResponse = gson.toJson(ResponseRelayDTO.create(true));
+
 		//test
 		this.mockMvc.perform(post("/switcher/v1/create")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +86,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		//given
 		givenAccount("adminid");
 		var jsonRequest = givenRequest("adminid");
-		var jsonResponse = givenTrueAsExpectedResponse();
+		var jsonResponse = gson.toJson(ResponseRelayDTO.create(true));
 		
 		//test
 		this.mockMvc.perform(post("/switcher/v1/remove")
@@ -103,8 +103,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 	void shouldNotRemoveAccount_accountNotFound() throws Exception {
 		//given
 		var jsonRequest = givenRequest("NOT_FOUND");
-		var jsonResponse = givenExpectedResponse(false,
-				"404 NOT_FOUND \"Unable to find account NOT_FOUND\"");
+		var jsonResponse = gson.toJson(ResponseRelayDTO.fail("404 NOT_FOUND \"Unable to find account NOT_FOUND\""));
 		
 		//test
 		this.mockMvc.perform(post("/switcher/v1/remove")
@@ -123,18 +122,14 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		givenAccount("adminid");
 
 		//test
-		var expectedResponse = ResponseRelayDTO
-				.create(true)
-				.withMetadata(Metadata.builder().rateLimit(100).build());
+		var expectedResponse = ResponseRelayDTO.success(Metadata.builder().rateLimit(100).build());
 
 		this.assertLimiter("adminid", expectedResponse, 200);
 	}
 
 	@Test
 	void shouldNotBeOkWhenValidate_limiter_accountNotFound() throws Exception {
-		var expectedResponse = ResponseRelayDTO
-				.create(false)
-				.withMessage("404 NOT_FOUND \"Account not found\"");
+		var expectedResponse = ResponseRelayDTO.fail("404 NOT_FOUND \"Account not found\"");
 
 		this.assertLimiter("NOT_FOUND", expectedResponse, 404);
 	}
@@ -174,8 +169,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		givenAccount("adminid_nok", "TEST");
 
 		//test
-		var expectedResponse = ResponseRelayDTO.create(false)
-				.withMessage("Feature limit has been reached");
+		var expectedResponse = ResponseRelayDTO.fail("Feature limit has been reached");
 
 		this.assertValidate("adminid_nok", DOMAIN.getValue(),
 				1, expectedResponse, 200);
@@ -183,8 +177,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 
 	@Test
 	void shouldNotBeOkWhenValidate_accountNotFound() throws Exception {
-		var expectedResponse = ResponseRelayDTO.create(false)
-				.withMessage("404 NOT_FOUND \"Account not found\"");
+		var expectedResponse = ResponseRelayDTO.fail("404 NOT_FOUND \"Account not found\"");
 
 		this.assertValidate("NOT_FOUND", DOMAIN.getValue(),
 				0, expectedResponse, 404);
@@ -196,8 +189,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		givenAccount("adminid");
 
 		//test
-		var expectedResponse = ResponseRelayDTO.create(false)
-				.withMessage("400 BAD_REQUEST \"Invalid feature: INVALID_FEATURE\"");
+		var expectedResponse = ResponseRelayDTO.fail("400 BAD_REQUEST \"Invalid feature: INVALID_FEATURE\"");
 
 		this.assertValidate("adminid", "INVALID_FEATURE",
 				0, expectedResponse, 400);

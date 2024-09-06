@@ -48,7 +48,7 @@ class ValidatorServiceTest {
 
         //test
         var responseRelayDTO = validatorService.execute(request);
-        assertTrue(responseRelayDTO.isResult());
+        assertTrue(responseRelayDTO.result());
     }
 
     static Stream<Arguments> validatorLimitInput() {
@@ -74,8 +74,8 @@ class ValidatorServiceTest {
 
         //test
         var responseRelayDTO = validatorService.execute(request);
-        assertFalse(responseRelayDTO.isResult());
-        assertEquals(MSG_FEATURE_LIMIT_REACHED.getValue(), responseRelayDTO.getMessage());
+        assertFalse(responseRelayDTO.result());
+        assertEquals(MSG_FEATURE_LIMIT_REACHED.getValue(), responseRelayDTO.message());
     }
 
     @Test
@@ -111,7 +111,7 @@ class ValidatorServiceTest {
 
         //test
         var responseRelayDTO = validatorService.execute(request);
-        assertTrue(responseRelayDTO.isResult());
+        assertTrue(responseRelayDTO.result());
     }
 
     @Test
