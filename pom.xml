@@ -61,7 +61,7 @@
         <jersey.version>4.0.0-M1</jersey.version>
         <switcher-client.version>2.1.0</switcher-client.version>
         <jsonwebtoken.version>0.12.6</jsonwebtoken.version>
-        <joda-time.version>2.12.7</joda-time.version>
+        <joda-time.version>2.13.0</joda-time.version>
         <gson.version>2.11.0</gson.version>
         <springdoc.version>2.6.0</springdoc.version>
 
@@ -69,7 +69,8 @@
         <flapdoodle.embed.mongo.version>4.16.1</flapdoodle.embed.mongo.version>
 
         <!-- Managed -->
-        <tomcat-embed-core.version>10.1.28</tomcat-embed-core.version>
+        <spring-webmvc.version>6.1.13</spring-webmvc.version>
+        <tomcat-embed-core.version>10.1.30</tomcat-embed-core.version>
         <commons-compress.version>1.27.1</commons-compress.version>
 
         <!-- Plugins -->
@@ -310,6 +311,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring-webmvc.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
