@@ -50,7 +50,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.3.5</version>
     </parent>
 
     <properties>
@@ -67,10 +67,6 @@
 
         <!-- Test-->
         <flapdoodle.embed.mongo.version>4.16.1</flapdoodle.embed.mongo.version>
-
-        <!-- Managed -->
-        <tomcat-embed-core.version>10.1.30</tomcat-embed-core.version>
-        <commons-compress.version>1.27.1</commons-compress.version>
 
         <!-- Plugins -->
         <native-image-plugin.version>0.10.3</native-image-plugin.version>
@@ -308,35 +304,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcat-embed-core.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-el</artifactId>
-                <version>${tomcat-embed-core.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-websocket</artifactId>
-                <version>${tomcat-embed-core.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-compress</artifactId>
-                <version>${commons-compress.version}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <pluginManagement>
