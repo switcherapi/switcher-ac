@@ -1,10 +1,10 @@
 package com.github.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.config.SwitcherConfig;
+import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
-import com.github.switcherapi.ac.service.ValidatorService;
-import com.github.switcherapi.ac.service.validator.ValidatorFactory;
+import com.github.switcherapi.ac.service.ValidatorBasicService;
+import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
 import com.google.gson.Gson;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SwitcherRelayControllerErrorTests {
 
 	@Mock private AccountService mockAccountService;
-	@Mock private ValidatorFactory mockValidatorFactory;
-	@Mock private ValidatorService mockValidatorService;
-	@Mock private SwitcherConfig mockSwitcherConfig;
+	@Mock private ValidatorBuilderService mockValidatorBuilderService;
+	@Mock private ValidatorBasicService mockValidatorBasicService;
+	@Mock private SwitcherFeatures mockSwitcherConfig;
 	
 	private MockMvc mockMvc;
 	
@@ -41,7 +41,7 @@ class SwitcherRelayControllerErrorTests {
     void setup() {
         MockitoAnnotations.openMocks(this);
 		final var switcherRelayController = new SwitcherRelayController(
-				mockAccountService, mockValidatorFactory, mockValidatorService, mockSwitcherConfig);
+				mockAccountService, mockValidatorBuilderService, mockValidatorBasicService, mockSwitcherConfig);
         mockMvc = MockMvcBuilders.standaloneSetup(switcherRelayController).build();
     }
 	

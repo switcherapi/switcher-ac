@@ -16,26 +16,27 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.github.switcherapi.ac.model.domain.Feature.*;
-import static com.github.switcherapi.ac.model.domain.Plan.*;
+import static com.github.switcherapi.ac.model.domain.PlanDefaults.*;
 import static com.github.switcherapi.ac.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ValidatorServiceTest {
+class ValidatorBasicServiceTest {
 
-    @Autowired ValidatorService validatorService;
+    @Autowired
+    ValidatorBasicService validatorBasicService;
     @Autowired AccountService accountService;
     @Autowired PlanService planService;
 
     static Stream<Arguments> validatorInput() {
         return Stream.of(
-                Arguments.of(DOMAIN, DEFAULT_DOMAIN - 1),
-                Arguments.of(GROUP, DEFAULT_GROUP - 1),
-                Arguments.of(SWITCHER, DEFAULT_SWITCHER - 1),
-                Arguments.of(ENVIRONMENT, DEFAULT_ENVIRONMENT - 1),
-                Arguments.of(COMPONENT, DEFAULT_COMPONENT - 1),
-                Arguments.of(TEAM, DEFAULT_TEAM - 1),
-                Arguments.of(RATE_LIMIT, DEFAULT_RATE_LIMIT - 1)
+                Arguments.of(DOMAIN, DEFAULT_DOMAIN.getIntValue() - 1),
+                Arguments.of(GROUP, DEFAULT_GROUP.getIntValue() - 1),
+                Arguments.of(SWITCHER, DEFAULT_SWITCHER.getIntValue() - 1),
+                Arguments.of(ENVIRONMENT, DEFAULT_ENVIRONMENT.getIntValue() - 1),
+                Arguments.of(COMPONENT, DEFAULT_COMPONENT.getIntValue() - 1),
+                Arguments.of(TEAM, DEFAULT_TEAM.getIntValue() - 1),
+                Arguments.of(RATE_LIMIT, DEFAULT_RATE_LIMIT.getIntValue() - 1)
         );
     }
 
@@ -47,21 +48,21 @@ class ValidatorServiceTest {
         var request = givenRequest(feature.getValue(), "adminid_validate", total);
 
         //test
-        var responseRelayDTO = validatorService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request);
         assertTrue(responseRelayDTO.result());
     }
 
     static Stream<Arguments> validatorLimitInput() {
         return Stream.of(
-                Arguments.of(DOMAIN, DEFAULT_DOMAIN),
-                Arguments.of(GROUP, DEFAULT_GROUP),
-                Arguments.of(SWITCHER, DEFAULT_SWITCHER),
-                Arguments.of(ENVIRONMENT, DEFAULT_ENVIRONMENT),
-                Arguments.of(COMPONENT, DEFAULT_COMPONENT),
-                Arguments.of(TEAM, DEFAULT_TEAM),
+                Arguments.of(DOMAIN, DEFAULT_DOMAIN.getIntValue()),
+                Arguments.of(GROUP, DEFAULT_GROUP.getIntValue()),
+                Arguments.of(SWITCHER, DEFAULT_SWITCHER.getIntValue()),
+                Arguments.of(ENVIRONMENT, DEFAULT_ENVIRONMENT.getIntValue()),
+                Arguments.of(COMPONENT, DEFAULT_COMPONENT.getIntValue()),
+                Arguments.of(TEAM, DEFAULT_TEAM.getIntValue()),
                 Arguments.of(HISTORY, null),
                 Arguments.of(METRICS, null),
-                Arguments.of(RATE_LIMIT, DEFAULT_RATE_LIMIT)
+                Arguments.of(RATE_LIMIT, DEFAULT_RATE_LIMIT.getIntValue())
         );
     }
 
@@ -73,7 +74,7 @@ class ValidatorServiceTest {
         var request = givenRequest(feature.getValue(), "adminid_not_validate", total);
 
         //test
-        var responseRelayDTO = validatorService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request);
         assertFalse(responseRelayDTO.result());
         assertEquals(MSG_FEATURE_LIMIT_REACHED.getValue(), responseRelayDTO.message());
     }
@@ -86,7 +87,7 @@ class ValidatorServiceTest {
 
         //test
         final var exception =
-                assertThrows(ResponseStatusException.class, () -> validatorService.execute(request));
+                assertThrows(ResponseStatusException.class, () -> validatorBasicService.execute(request));
         assertEquals(MSG_INVALID_FEATURE.getValue() + ": invalid_feature", exception.getReason());
     }
 
@@ -98,7 +99,7 @@ class ValidatorServiceTest {
 
         //test
         final var exception =
-                assertThrows(ResponseStatusException.class, () -> validatorService.execute(request));
+                assertThrows(ResponseStatusException.class, () -> validatorBasicService.execute(request));
         assertEquals(MSG_FEATURE_MISSING.getValue(), exception.getReason());
     }
 
@@ -110,7 +111,7 @@ class ValidatorServiceTest {
         var request = givenRequest(DOMAIN.getValue(), "adminid_undetermined", 999);
 
         //test
-        var responseRelayDTO = validatorService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request);
         assertTrue(responseRelayDTO.result());
     }
 
@@ -123,7 +124,7 @@ class ValidatorServiceTest {
 
         //test
         final var exception =
-                assertThrows(ResponseStatusException.class, () -> validatorService.execute(request));
+                assertThrows(ResponseStatusException.class, () -> validatorBasicService.execute(request));
         assertEquals(MSG_PLAN_INVALID_VALUE.getValue(), exception.getReason());
     }
 

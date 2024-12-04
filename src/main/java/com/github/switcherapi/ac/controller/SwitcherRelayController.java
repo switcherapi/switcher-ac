@@ -1,12 +1,12 @@
 package com.github.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.config.SwitcherConfig;
+import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.AccountService;
-import com.github.switcherapi.ac.service.ValidatorService;
-import com.github.switcherapi.ac.service.validator.ValidatorFactory;
+import com.github.switcherapi.ac.service.ValidatorBasicService;
+import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
 import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -25,26 +25,26 @@ public class SwitcherRelayController {
 
 	private final AccountService accountService;
 
-	private final ValidatorFactory validatorFactory;
+	private final ValidatorBuilderService validatorBuilderService;
 
-	private final ValidatorService validatorService;
+	private final ValidatorBasicService validatorBasicService;
 
-	private final SwitcherConfig switcherConfig;
+	private final SwitcherFeatures switcherConfig;
 	
 	public SwitcherRelayController(
-			AccountService accountService, 
-			ValidatorFactory validatorFactory,
-			ValidatorService validatorService,
-			SwitcherConfig switcherConfig) {
+			AccountService accountService,
+			ValidatorBuilderService validatorBuilderService,
+			ValidatorBasicService validatorBasicService,
+			SwitcherFeatures switcherConfig) {
 		this.accountService = accountService;
-		this.validatorFactory = validatorFactory;
-		this.validatorService = validatorService;
+		this.validatorBuilderService = validatorBuilderService;
+		this.validatorBasicService = validatorBasicService;
 		this.switcherConfig = switcherConfig;
 	}
 
 	@GetMapping(value = "/verify")
 	public ResponseEntity<Object> verify() {
-		return ResponseEntity.ok(Map.of("code", switcherConfig.relayCode()));
+		return ResponseEntity.ok(Map.of("code", switcherConfig.getRelayCode()));
 	}
 
 	@Operation(summary = "Load new account to Switcher AC")
@@ -78,7 +78,7 @@ public class SwitcherRelayController {
 					.owner(value)
 					.build();
 
-			return ResponseEntity.ok(validatorFactory.runValidator(request));
+			return ResponseEntity.ok(validatorBuilderService.runValidator(request));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
 		}
@@ -89,7 +89,7 @@ public class SwitcherRelayController {
 	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
 			var featureRequest = gson.fromJson(request.payload(), FeaturePayload.class);
-			return ResponseEntity.ok(validatorService.execute(featureRequest));
+			return ResponseEntity.ok(validatorBasicService.execute(featureRequest));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
 		}

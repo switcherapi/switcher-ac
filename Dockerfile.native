@@ -1,0 +1,27 @@
+FROM ghcr.io/graalvm/graalvm-community:22 AS build
+
+ARG MAVEN_VERSION=3.9.9
+ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
+
+RUN mkdir -p /usr/share/maven /usr/share/maven/ref
+ADD ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz /tmp/apache-maven.tar.gz
+RUN tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 \
+    && rm -f /tmp/apache-maven.tar.gz \
+    && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+WORKDIR /usr/src/app
+
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY . .
+
+RUN mvn -DskipTests -Pprod -Pnative native:compile
+
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+COPY --from=build /usr/src/app/target/switcher-ac /app/switcher-ac
+
+CMD ["/app/switcher-ac"]

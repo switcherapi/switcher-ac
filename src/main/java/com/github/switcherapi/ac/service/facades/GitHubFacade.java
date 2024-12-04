@@ -1,7 +1,6 @@
 package com.github.switcherapi.ac.service.facades;
 
 import com.github.switcherapi.ac.model.GitHubDetail;
-import com.github.switcherapi.ac.util.Sanitizer;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
