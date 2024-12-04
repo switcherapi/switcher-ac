@@ -16,9 +16,9 @@ import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParam
 import static com.github.switcherapi.ac.util.Constants.*;
 
 @Service
-public class ValidatorService extends AbstractValidatorService {
+public class ValidatorBasicService extends AbstractValidatorService {
 
-    protected ValidatorService(AccountDao accountDao) {
+    protected ValidatorBasicService(AccountDao accountDao) {
         super(accountDao);
     }
 

@@ -1,7 +1,7 @@
 package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.service.validator.ValidatorFactory;
+import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,16 +11,17 @@ import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-class ValidatorFactoryTest {
+@SpringBootTest(properties = {"service.validators.native=true"})
+class ValidatorNativeBuilderServiceTest {
 	
-	@Autowired ValidatorFactory validatorFactory;
+	@Autowired
+	ValidatorBuilderService validatorBuilderService;
 	@Autowired AccountService accountService;
 	
 	@Test
 	void shouldThrowError_requestIsEmpty() {
 		var request = FeaturePayload.builder().build();
-		assertThrows(ResponseStatusException.class, () -> validatorFactory.runValidator(request));
+		assertThrows(ResponseStatusException.class, () -> validatorBuilderService.runValidator(request));
 	}
 	
 	@Test
@@ -29,7 +30,7 @@ class ValidatorFactoryTest {
 				.feature(RATE_LIMIT.getValue())
 				.build();
 		
-		assertThrows(ResponseStatusException.class, () -> validatorFactory.runValidator(request));
+		assertThrows(ResponseStatusException.class, () -> validatorBuilderService.runValidator(request));
 	}
 
 	@Test
@@ -41,7 +42,7 @@ class ValidatorFactoryTest {
 				.owner("adminid")
 				.build();
 		
-		assertDoesNotThrow(() -> validatorFactory.runValidator(request));
+		assertDoesNotThrow(() -> validatorBuilderService.runValidator(request));
 	}
 
 }

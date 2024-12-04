@@ -1,0 +1,14 @@
+[
+  {
+    "name": "com.github.switcherapi.ac.model.domain.FeaturePayload",
+    "allPublicConstructors": true,
+    "allDeclaredFields": true,
+    "allPublicMethods": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  }
+]
