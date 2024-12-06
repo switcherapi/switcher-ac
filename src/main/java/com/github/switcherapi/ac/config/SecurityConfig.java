@@ -1,6 +1,5 @@
 package com.github.switcherapi.ac.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,9 +17,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	private final String healthChecker;
-
 	private final JwtRequestFilter jwtRequestFilter;
+
+	private final ServiceConfig serviceConfig;
 	
     private static final String[] SWAGGER_MATCHERS = {
             "/v3/api-docs/**",
@@ -29,10 +28,10 @@ public class SecurityConfig {
     };
 
 	public SecurityConfig(
-			@Value("${service.endpoint.healthchecker}") String healthChecker,
-			JwtRequestFilter jwtRequestFilter) {
-		this.healthChecker = healthChecker;
+			JwtRequestFilter jwtRequestFilter,
+			ServiceConfig serviceConfig) {
 		this.jwtRequestFilter = jwtRequestFilter;
+		this.serviceConfig = serviceConfig;
 	}
 
 	public enum Roles {
@@ -43,7 +42,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth ->
-				auth.requestMatchers(healthChecker).permitAll()
+				auth.requestMatchers(this.serviceConfig.endpoint().health()).permitAll()
 					.requestMatchers("/error").permitAll()
 					.requestMatchers("/admin/v1/auth/**").permitAll()
 					.requestMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
