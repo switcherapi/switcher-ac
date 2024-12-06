@@ -11,7 +11,7 @@
       "description": "Access Token created to be used with Switcher Relay"
     },
     {
-      "name": "service.endpoint.healthchecker",
+      "name": "service.endpoint.health",
       "type": "java.lang.String",
       "description": "Allowed endpoint to check this service availability"
     },

@@ -25,7 +25,6 @@ import java.util.*;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     public static final String SWITCHER_AC = "SWITCHER_AC";
-
     public static final String BEARER = "Bearer ";
 
     private Map<Roles, SimpleGrantedAuthority> grantedAuthorities;

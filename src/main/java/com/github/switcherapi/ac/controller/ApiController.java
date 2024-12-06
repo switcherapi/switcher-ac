@@ -1,6 +1,6 @@
 package com.github.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.config.ConfigProperties;
+import com.github.switcherapi.ac.config.ServiceConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +14,10 @@ import java.util.Map;
 @RequestMapping("api")
 public class ApiController {
 
-	private final ConfigProperties configProperties;
+	private final ServiceConfig.Docs docs;
 
-	public ApiController(ConfigProperties configProperties) {
-		this.configProperties = configProperties;
+	public ApiController(ServiceConfig serviceConfig) {
+		this.docs = serviceConfig.docs();
 	}
 
 	@SecurityRequirements
@@ -26,8 +26,8 @@ public class ApiController {
 	public ResponseEntity<Map<String, Object>> check() {
 		return ResponseEntity.ok(Map.of(
 				"status", "All good",
-				"version", configProperties.version(),
-				"release_time", configProperties.releaseTime()
+				"version", docs.version(),
+				"release_time", docs.releaseTime()
 		));
 	}
 
