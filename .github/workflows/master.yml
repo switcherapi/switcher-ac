@@ -57,6 +57,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
+          file: ./Dockerfile.native
           platforms: linux/amd64,linux/arm64
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/switcher-ac:latest
 

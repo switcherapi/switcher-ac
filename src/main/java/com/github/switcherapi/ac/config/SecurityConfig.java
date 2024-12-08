@@ -1,5 +1,6 @@
 package com.github.switcherapi.ac.config;
 
+import com.github.switcherapi.ac.util.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -32,11 +33,6 @@ public class SecurityConfig {
 			ServiceConfig serviceConfig) {
 		this.jwtRequestFilter = jwtRequestFilter;
 		this.serviceConfig = serviceConfig;
-	}
-
-	public enum Roles {
-		ADMIN, ROLE_ADMIN,
-		SWITCHER, ROLE_SWITCHER
 	}
 
 	@Bean

@@ -1,7 +1,7 @@
 package com.github.switcherapi.ac.config;
 
-import com.github.switcherapi.ac.config.SecurityConfig.Roles;
 import com.github.switcherapi.ac.service.JwtTokenService;
+import com.github.switcherapi.ac.util.Roles;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

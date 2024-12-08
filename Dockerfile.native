@@ -14,14 +14,18 @@ WORKDIR /usr/src/app
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-COPY . .
+COPY src src
 
 RUN mvn -DskipTests -Pprod -Pnative native:compile
 
 FROM debian:bookworm-slim
 
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
 WORKDIR /app
 
 COPY --from=build /usr/src/app/target/switcher-ac /app/switcher-ac
+
+USER appuser
 
 CMD ["/app/switcher-ac"]
