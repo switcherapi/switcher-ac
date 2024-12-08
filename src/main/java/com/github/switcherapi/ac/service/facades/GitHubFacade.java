@@ -1,16 +1,19 @@
 package com.github.switcherapi.ac.service.facades;
 
 import com.github.switcherapi.ac.model.GitHubDetail;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
+import com.github.switcherapi.client.exception.SwitcherRemoteException;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +26,8 @@ public class GitHubFacade {
 	public static final String INVALID_ACCOUNT = "Invalid GitHub account";
 	
 	private static final String ACCESS_TOKEN = "access_token";
-	
-	private static final String HEADER_ACCEPT = "accept";
+
+	private final Gson gson = new Gson();
 
 	private final String clientId;
 
@@ -34,7 +37,7 @@ public class GitHubFacade {
 
 	private final String gitUrlDetail;
 	
-	private final Client client;
+	private final HttpClient httpClient;
 
 	public GitHubFacade(
 			@Value("${service.github.clientid}") String clientId,
@@ -45,48 +48,60 @@ public class GitHubFacade {
 		this.oauthSecret = oauthSecret;
 		this.gitUrlAccess = gitUrlAccess;
 		this.gitUrlDetail = gitUrlDetail;
-		this.client = ClientBuilder.newClient();
+		this.httpClient = HttpClient.newHttpClient();
 	}
 	
 	public String getToken(String code) {
 		var codeSanitized = sanitize(code, List.of(trim(), alphaNumeric()));
 
-		final WebTarget myResource = client.target(
-				String.format(gitUrlAccess, clientId, oauthSecret, codeSanitized));
+		try {
+			final URI uri = new URI(String.format(gitUrlAccess, clientId, oauthSecret, codeSanitized));
 
-		try (var response = myResource
-				.request(MediaType.APPLICATION_JSON)
-				.header(HEADER_ACCEPT, MediaType.APPLICATION_JSON)
-				.post(null)) {
+			final HttpResponse<String> response = httpClient.send(HttpRequest.newBuilder()
+					.uri(uri)
+					.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString())
+					.POST(HttpRequest.BodyPublishers.noBody())
+					.build(), HttpResponse.BodyHandlers.ofString());
 
-			if (response.getStatus() == 200) {
-				final var responseEntity = response.readEntity(Map.class);
-				if (responseEntity.containsKey(ACCESS_TOKEN)) {
-					return responseEntity.get(ACCESS_TOKEN).toString();
-				}
+			if (response.statusCode() != 200 || !response.body().contains(ACCESS_TOKEN)) {
+				log.error("Failed to get token from GitHub");
+				return StringUtils.EMPTY;
 			}
 
-			log.error("Failed to get token from GitHub");
-			return StringUtils.EMPTY;
+			final var responseEntity = gson.fromJson(response.body(), Map.class);
+			return responseEntity.get(ACCESS_TOKEN).toString();
+		} catch (Exception e) {
+			return exceptionHandler(e, gitUrlAccess);
 		}
 	}
 	
 	public GitHubDetail getGitHubDetail(String token) {
-		final WebTarget myResource = client.target(gitUrlDetail);
+		try {
+			final URI uri = new URI(gitUrlDetail);
 
-		try (var response = myResource
-			.request(MediaType.APPLICATION_JSON)
-			.header(HEADER_ACCEPT, MediaType.APPLICATION_JSON)
-			.header(HttpHeaders.AUTHORIZATION, String.format("token %s", token))
-			.get()) {
-		
-			if (response.getStatus() == 200) {
-				return response.readEntity(GitHubDetail.class);
+			final HttpResponse<String> response = httpClient.send(HttpRequest.newBuilder()
+					.uri(uri)
+					.headers(
+							HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString(),
+							HttpHeaders.AUTHORIZATION, String.format("token %s", token))
+					.GET().build(), HttpResponse.BodyHandlers.ofString());
+
+			if (response.statusCode() != 200) {
+				log.error("Failed to get GitHub detail");
+				return null;
 			}
 
-			log.error("Failed to get GitHub detail");
-			return null;
+			return gson.fromJson(response.body(), GitHubDetail.class);
+		} catch (Exception e) {
+			return exceptionHandler(e, gitUrlDetail);
 		}
+	}
+
+	private <T> T exceptionHandler(Exception e, String url) {
+		if (e instanceof InterruptedException) {
+			Thread.currentThread().interrupt();
+		}
+		throw new SwitcherRemoteException(url, e);
 	}
 
 }

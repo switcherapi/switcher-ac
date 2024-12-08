@@ -7,7 +7,6 @@ import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.ac.service.PlanService;
-import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.server.ResponseStatusException;
 

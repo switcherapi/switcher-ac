@@ -3,7 +3,6 @@ package com.github.switcherapi.ac.config;
 import com.github.switcherapi.ac.util.FileUtil;
 import com.github.switcherapi.client.SnapshotCallback;
 import com.github.switcherapi.client.SwitcherContextBase;
-import com.github.switcherapi.client.SwitcherKey;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "switcher")
 public class SwitcherFeatures extends SwitcherContextBase implements SnapshotCallback {
 
-	@SwitcherKey
 	public static final String SWITCHER_AC_ADM = "SWITCHER_AC_ADM";
 
 	private String relayCode;
@@ -25,6 +23,7 @@ public class SwitcherFeatures extends SwitcherContextBase implements SnapshotCal
 	@Override
 	protected void configureClient() {
 		super.truststore.setPath(FileUtil.getFilePathFromResource(truststore.getPath()));
+		super.registerSwitcherKeys(SWITCHER_AC_ADM);
 		super.configureClient();
 
 		scheduleSnapshotAutoUpdate(snapshot.getUpdateInterval(), this);
