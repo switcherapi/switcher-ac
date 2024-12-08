@@ -7,7 +7,6 @@ import com.github.switcherapi.ac.model.GitHubDetail;
 import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
 import com.github.switcherapi.client.test.SwitcherTest;
-import jakarta.ws.rs.core.MediaType;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -20,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataM
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
@@ -157,7 +157,7 @@ class AdminGitHubAuthControllerTests {
 
 	private void givenGitHubToken() {
 		mockBackend.enqueue(new MockResponse()
-				.setBody("{ \"access_token\": \"123\" }")
+				.setBody("{\"access_token\":\"123\",\"token_type\":\"bearer\",\"scope\":\"\"}")
 				.addHeader("Content-Type", MediaType.APPLICATION_JSON));
 	}
 
