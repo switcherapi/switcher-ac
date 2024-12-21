@@ -28,6 +28,10 @@ public class Sanitizer {
 	}
 
 	public static UnaryOperator<String> alphaNumeric() {
-		return value -> value.replaceAll("[^a-zA-Z0-9]", StringUtils.EMPTY);
+		return alphaNumeric(StringUtils.EMPTY);
+	}
+
+	public static UnaryOperator<String> alphaNumeric(String... exceptions) {
+		return value -> value.replaceAll("[^a-zA-Z0-9" + String.join(StringUtils.EMPTY, exceptions) + "]", StringUtils.EMPTY);
 	}
 }

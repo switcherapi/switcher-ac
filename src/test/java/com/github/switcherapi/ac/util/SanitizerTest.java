@@ -47,6 +47,18 @@ class SanitizerTest {
 	}
 
 	@Test
+	void shouldSanitizerGitHubTokenPattern() {
+		// Given
+		var value = "gho_tH1s1s4T0k3n";
+
+		// When
+		var sanitized = sanitize(value, List.of(trim(), alphaNumeric("_")));
+
+		// Then
+		assertEquals("gho_tH1s1s4T0k3n", sanitized);
+	}
+
+	@Test
 	void shouldSanitizeNull() {
 		var sanitized = sanitize(null, List.of(trim(), alphaNumeric()));
 		assertEquals(StringUtils.EMPTY, sanitized);
