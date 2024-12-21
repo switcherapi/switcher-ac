@@ -50,7 +50,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
     </parent>
 
     <properties>
@@ -65,7 +65,7 @@
         <springdoc.version>2.7.0</springdoc.version>
 
         <!-- Test-->
-        <flapdoodle.embed.mongo.version>4.16.1</flapdoodle.embed.mongo.version>
+        <flapdoodle.embed.mongo.version>4.18.0</flapdoodle.embed.mongo.version>
         <okhttp.version>4.12.0</okhttp.version>
 
         <!-- Plugins -->

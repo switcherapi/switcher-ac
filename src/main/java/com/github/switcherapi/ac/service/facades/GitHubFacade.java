@@ -55,9 +55,8 @@ public class GitHubFacade {
 		var codeSanitized = sanitize(code, List.of(trim(), alphaNumeric()));
 
 		try {
-			final URI uri = new URI(String.format(gitUrlAccess, clientId, oauthSecret, codeSanitized));
-
-			final HttpResponse<String> response = httpClient.send(HttpRequest.newBuilder()
+			var uri = new URI(String.format(gitUrlAccess, clientId, oauthSecret, codeSanitized));
+			var response = httpClient.send(HttpRequest.newBuilder()
 					.uri(uri)
 					.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString())
 					.POST(HttpRequest.BodyPublishers.noBody())
@@ -68,7 +67,7 @@ public class GitHubFacade {
 				return StringUtils.EMPTY;
 			}
 
-			final var responseEntity = gson.fromJson(response.body(), Map.class);
+			var responseEntity = gson.fromJson(response.body(), Map.class);
 			return responseEntity.get(ACCESS_TOKEN).toString();
 		} catch (Exception e) {
 			return exceptionHandler(e, gitUrlAccess);
@@ -76,14 +75,15 @@ public class GitHubFacade {
 	}
 	
 	public GitHubDetail getGitHubDetail(String token) {
-		try {
-			final URI uri = new URI(gitUrlDetail);
+		var tokenSanitized = sanitize(token, List.of(trim(), alphaNumeric("_")));
 
-			final HttpResponse<String> response = httpClient.send(HttpRequest.newBuilder()
+		try {
+			var uri = new URI(gitUrlDetail);
+			var response = httpClient.send(HttpRequest.newBuilder()
 					.uri(uri)
 					.headers(
 							HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString(),
-							HttpHeaders.AUTHORIZATION, String.format("token %s", token))
+							HttpHeaders.AUTHORIZATION, String.format("token %s", tokenSanitized))
 					.GET().build(), HttpResponse.BodyHandlers.ofString());
 
 			if (response.statusCode() != 200) {

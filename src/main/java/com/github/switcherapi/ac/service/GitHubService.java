@@ -19,7 +19,8 @@ public class GitHubService {
 	}
 
 	public String getToken(String code) {
-		final String token = githubFacade.getToken(code);
+		var token = githubFacade.getToken(code);
+
 		if (!token.isEmpty()) {
 			return token;
 		}
@@ -28,7 +29,8 @@ public class GitHubService {
 	}
 	
 	public GitHubDetail getGitHubDetail(String token) {
-		final GitHubDetail response = githubFacade.getGitHubDetail(token);
+		var response = githubFacade.getGitHubDetail(token);
+
 		if (Objects.nonNull(response)) {
 			return response;
 		}
