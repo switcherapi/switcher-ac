@@ -9,7 +9,7 @@ Account Managing Service for the cloud-base API
 
 [![Master CI](https://github.com/switcherapi/switcher-ac/actions/workflows/master.yml/badge.svg)](https://github.com/switcherapi/switcher-ac/actions/workflows/master.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=switcherapi_switcher-ac&metric=alert_status)](https://sonarcloud.io/dashboard?id=switcherapi_switcher-ac)
-[![Known Vulnerabilities](https://snyk.io/test/github/switcherapi/switcher-ac/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/switcherapi/switcher-ac?targetFile=pom.xml)
+[![Known Vulnerabilities](https://snyk.io/test/github/switcherapi/switcher-ac/badge.svg)](https://snyk.io/test/github/switcherapi/switcher-ac)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker Hub](https://img.shields.io/docker/pulls/trackerforce/switcher-ac.svg)](https://hub.docker.com/r/trackerforce/switcher-ac)
 [![Slack: Switcher-HQ](https://img.shields.io/badge/slack-@switcher/hq-blue.svg?logo=slack)](https://switcher-hq.slack.com/)
