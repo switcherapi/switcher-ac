@@ -1,4 +1,4 @@
-FROM ghcr.io/graalvm/graalvm-community:22 AS build
+FROM ghcr.io/graalvm/graalvm-community:23.0.2 AS build
 
 ARG MAVEN_VERSION=3.9.9
 ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
