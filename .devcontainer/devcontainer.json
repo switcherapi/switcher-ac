@@ -1,0 +1,24 @@
+{
+	"name": "Switcher AC Dev Container",
+	"dockerComposeFile": [
+		"docker-compose.yml"
+	],
+	"service": "switcherac",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack"
+			],
+			"settings": {
+				"terminal.integrated.shell.linux": "/bin/bash"
+			}
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/java:1": {
+			"version": "21",
+			"installMaven": "true"
+		}
+	}
+}
