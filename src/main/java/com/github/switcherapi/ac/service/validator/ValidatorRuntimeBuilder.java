@@ -1,6 +1,7 @@
 package com.github.switcherapi.ac.service.validator;
 
 import com.github.switcherapi.ac.repository.AccountDao;
+import com.github.switcherapi.ac.repository.PlanDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,8 +21,8 @@ public class ValidatorRuntimeBuilder extends ValidatorBuilderService {
 
 	private final AutowireCapableBeanFactory autowireCapableBeanFactory;
 
-	public ValidatorRuntimeBuilder(AutowireCapableBeanFactory autowireCapableBeanFactory, AccountDao accountDao) {
-		super(accountDao);
+	public ValidatorRuntimeBuilder(AutowireCapableBeanFactory autowireCapableBeanFactory, AccountDao accountDao, PlanDao planDao) {
+		super(accountDao, planDao);
 		this.autowireCapableBeanFactory = autowireCapableBeanFactory;
 		this.initializeValidators();
 	}
@@ -45,7 +46,9 @@ public class ValidatorRuntimeBuilder extends ValidatorBuilderService {
 
             if (Objects.nonNull(validatorAnnotation)) {
             	var sValidator = validatorClass.getAnnotation(SwitcherValidator.class);
-            	var validatorService = (AbstractValidatorService) validatorClass.getConstructor(AccountDao.class).newInstance(this.accountDao);
+            	var validatorService = (AbstractValidatorService) validatorClass
+						.getConstructor(AccountDao.class, PlanDao.class)
+						.newInstance(this.accountDao, this.planDao);
 
     			autowireCapableBeanFactory.autowireBean(validatorService);
     			validatorHandlers.put(sValidator.value(), validatorService);

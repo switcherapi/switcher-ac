@@ -75,7 +75,7 @@ public class ControllerTestUtils {
     }
 
     protected void givenAccount(String adminId, String plan) {
-        accountService.createAccount(adminId, plan);
+        accountService.createAccount(adminId, plan).block();
     }
 
     protected void assertDtoResponse(Plan planObj, String response)

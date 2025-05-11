@@ -35,7 +35,7 @@ class ValidatorNativeBuilderServiceTest {
 
 	@Test
 	void shouldNotThrowError() {
-		accountService.createAccount("adminid");
+		accountService.createAccount("adminid").block();
 		
 		var request = FeaturePayload.builder()
 				.feature(RATE_LIMIT.getValue())

@@ -52,7 +52,7 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseRelayDTO> loadAccount(@RequestBody RequestRelayDTO request) {
 		try {
-			accountService.createAccount(request.value());
+			accountService.createAccount(request.value()).block();
 			return ResponseEntity.ok(ResponseRelayDTO.create(true));
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()));
@@ -63,7 +63,7 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/remove")
 	public ResponseEntity<ResponseRelayDTO> removeAccount(@RequestBody RequestRelayDTO request) {
 		try {
-			accountService.deleteAccount(request.value());
+			accountService.deleteAccount(request.value()).block();
 			return ResponseEntity.ok(ResponseRelayDTO.create(true));
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()));
