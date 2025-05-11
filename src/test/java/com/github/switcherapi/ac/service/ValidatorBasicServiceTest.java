@@ -141,10 +141,11 @@ class ValidatorBasicServiceTest {
     }
 
     private void givenAccount(String adminId, String planName) {
-        if (planName != null)
-            accountService.createAccount(adminId, planName);
-        else
-            accountService.createAccount(adminId);
+        if (planName != null) {
+            accountService.createAccount(adminId, planName).block();
+        } else {
+            accountService.createAccount(adminId).block();
+        }
     }
 
     private void givenPlan(String planName, String featureName, Object value) {
@@ -154,6 +155,7 @@ class ValidatorBasicServiceTest {
                     .feature(featureName)
                     .value(value)
                     .build()))
-            .build());
+            .build())
+            .block();
     }
 }

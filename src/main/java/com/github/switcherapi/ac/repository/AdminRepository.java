@@ -1,13 +1,13 @@
 package com.github.switcherapi.ac.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-
 import com.github.switcherapi.ac.model.domain.Admin;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Mono;
 
-public interface AdminRepository extends MongoRepository<Admin, String> {
+public interface AdminRepository extends ReactiveMongoRepository<Admin, String> {
 	
-	Admin findByGitHubId(String gitHubId);
+	Mono<Admin> findByGitHubId(String gitHubId);
 	
-	Admin findByToken(String token);
+	Mono<Admin> findByToken(String token);
 
 }

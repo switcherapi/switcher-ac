@@ -1,11 +1,9 @@
 package com.github.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.domain.Account;
-import com.github.switcherapi.ac.model.domain.Feature;
-import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.domain.PlanAttribute;
+import com.github.switcherapi.ac.model.domain.*;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
+import com.github.switcherapi.ac.repository.PlanDao;
 import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,13 +16,14 @@ import static com.github.switcherapi.ac.util.Constants.*;
 @Service
 public class ValidatorBasicService extends AbstractValidatorService {
 
-    protected ValidatorBasicService(AccountDao accountDao) {
-        super(accountDao);
+    protected ValidatorBasicService(AccountDao accountDao, PlanDao planDao) {
+        super(accountDao, planDao);
     }
 
     @Override
     protected ResponseRelayDTO executeValidator(final Account account) {
-        final var maxPlanValue = account.getPlan().getAttributes().stream()
+        final var plan = planDao.getPlanRepository().findById(account.getPlan()).blockOptional().orElse(Plan.loadDefault());
+        final var maxPlanValue = plan.getAttributes().stream()
                 .filter(attrib -> attrib.getFeature().equals(getParam(FEATURE)))
                 .findFirst().orElseGet(() -> PlanAttribute.builder().build());
 
@@ -54,7 +53,7 @@ public class ValidatorBasicService extends AbstractValidatorService {
     private boolean validate(Object value) {
         if (value instanceof Boolean) {
             final var boolValue = Boolean.parseBoolean(value.toString());
-            return Boolean.FALSE.equals(boolValue);
+            return !boolValue;
         }
 
         if (value instanceof Integer) {

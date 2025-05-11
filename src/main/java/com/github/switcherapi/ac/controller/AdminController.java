@@ -2,7 +2,6 @@ package com.github.switcherapi.ac.controller;
 
 import com.github.switcherapi.ac.model.dto.AccountDTO;
 import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
-import com.github.switcherapi.ac.model.mapper.AccountMapper;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +19,7 @@ public class AdminController {
 	private final AdminService adminService;
 
 	public AdminController(
-			AccountService accountService, 
+			AccountService accountService,
 			AdminService adminService) {
 		this.accountService = accountService;
 		this.adminService = adminService;
@@ -30,7 +29,7 @@ public class AdminController {
 	@Operation(summary = "Authenticate using GitHub credentials")
 	@PostMapping(value = "/auth/github")
 	public ResponseEntity<GitHubAuthDTO> gitHubAuth(@RequestParam String code) {
-		return ResponseEntity.ok(adminService.gitHubAuth(code));
+		return ResponseEntity.ok(adminService.gitHubAuth(code).block());
 	}
 	
 	@SecurityRequirements
@@ -38,21 +37,21 @@ public class AdminController {
 	@PostMapping(value = "/auth/refresh")
 	public ResponseEntity<GitHubAuthDTO> gitHubRefreshAuth(
 			@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam String refreshToken) {
-		return ResponseEntity.ok(adminService.refreshToken(token, refreshToken));
+		return ResponseEntity.ok(adminService.refreshToken(token, refreshToken).block());
 	}
 	
 	@PostMapping(value = "/logout")
 	public ResponseEntity<Object> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-		adminService.logout(token);
+		adminService.logout(token).block();
 		return ResponseEntity.ok().build();
 	}
 	
 	@Operation(summary = "Update account plan with another plan")
 	@PatchMapping(value = "/account/change/{adminId}")
-	public ResponseEntity<AccountDTO> changeAccountPlan(@PathVariable(value="adminId") 
-		String adminId, @RequestParam String plan) {
-		final var account = accountService.createAccount(adminId, plan);
-		return ResponseEntity.ok(AccountMapper.createCopy(account));
+	public ResponseEntity<AccountDTO> changeAccountPlan(
+			@PathVariable(value = "adminId") String adminId,
+			@RequestParam String plan) {
+		return ResponseEntity.ok(accountService.createAccount(adminId, plan).block());
 	}
 
 }

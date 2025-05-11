@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -47,18 +48,18 @@ class AdminAccountControllerTests {
 	static void setup(
 			@Autowired AccountService accountService,
 			@Autowired AdminService adminService) {
-		accountService.createAccount(ADMIN_ID);
-		adminAccount = adminService.createAdminAccount("123456");
+		accountService.createAccount(ADMIN_ID).block();
+		adminAccount = adminService.createAdminAccount("123456").block();
 	}
 	
 	@BeforeEach
 	void setup() {
 		final var plan2 = Plan.loadDefault();
 		plan2.setName("BASIC");
-		planService.createPlan(plan2);
+		planService.createPlan(plan2).block();
 		
 		final var token = jwtService.generateToken(adminAccount.getId()).getLeft();
-		adminService.updateAdminAccountToken(adminAccount, token);
+		adminService.updateAdminAccountToken(adminAccount, token).block();
 		bearer = String.format("Bearer %s", token);
 	}
 
@@ -71,8 +72,11 @@ class AdminAccountControllerTests {
 	@Test
 	void shouldChangeAccountPlan() throws Exception {
 		//validate before
-		var account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
+		var account = accountService.getAccountByAdminId(ADMIN_ID).block();
+		var planDefault = planService.getPlanByName(PlanType.DEFAULT.name()).block();
+		assertNotNull(account);
+		assertNotNull(planDefault);
+		assertThat(account.getPlan()).isEqualTo(planDefault.getId());
 		
 		//test
 		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
@@ -83,23 +87,29 @@ class AdminAccountControllerTests {
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andReturn().getResponse().getContentAsString();
-		
+
 		var accountDto = new ObjectMapper().readValue(json, AccountDTO.class);
 		assertThat(accountDto.adminId()).isEqualTo(ADMIN_ID);
 		assertThat(accountDto.plan().name()).isEqualTo("BASIC");
 		
-		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
+		account = accountService.getAccountByAdminId(ADMIN_ID).block();
+		var planBasic = planService.getPlanByName("BASIC").block();
+		assertNotNull(account);
+		assertNotNull(planBasic);
+		assertThat(account.getPlan()).isEqualTo(planBasic.getId());
 	}
 	
 	@Test
 	void shouldChangeAccountPlan_afterDeletingPlan() throws Exception {
 		//given
-		var account = accountService.createAccount(ADMIN_ID, "BASIC");
-		
+		var accountDto = accountService.createAccount(ADMIN_ID, "BASIC").block();
+
 		//validate before
-		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
-		
+		var planBasic = planService.getPlanByName("BASIC").block();
+		assertNotNull(accountDto);
+		assertNotNull(planBasic);
+		assertThat(accountDto.plan().id()).isEqualTo(planBasic.getId());
+
 		//test
 		this.mockMvc.perform(delete("/plan/v2/delete")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -108,11 +118,14 @@ class AdminAccountControllerTests {
 				.queryParam("plan", "BASIC"))
 			.andExpect(status().isOk())
 			.andExpect(content().string("Plan deleted"));
-		
-		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
+
+		var account = accountService.getAccountByAdminId(ADMIN_ID).block();
+		var planDefault = planService.getPlanByName(PlanType.DEFAULT.name()).block();
+		assertNotNull(account);
+		assertNotNull(planDefault);
+		assertThat(account.getPlan()).isEqualTo(planDefault.getId());
 	}
-	
+
 	@Test
 	void shouldNotChangeAccountPlan_invalidAuthorizationKey() throws Exception {
 		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
@@ -123,7 +136,7 @@ class AdminAccountControllerTests {
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
 	}
-	
+
 	@Test
 	void shouldNotChangeAccountPlan_planNotFound() throws Exception {
 		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
