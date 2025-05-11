@@ -2,8 +2,8 @@ package com.github.switcherapi.ac.controller;
 
 import com.github.switcherapi.ac.controller.fixture.ControllerTestUtils;
 import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.domain.Plan;
+import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.ac.service.PlanService;
@@ -19,10 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.server.ResponseStatusException;
 
 import static com.github.switcherapi.ac.model.domain.Feature.HISTORY;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,20 +41,20 @@ class PlanControllerTests extends ControllerTestUtils {
 	
 	@BeforeAll
 	static void setup(@Autowired AdminService adminService) {
-		admin = adminService.createAdminAccount("123456");
+		admin = adminService.createAdminAccount("123456").block();
 	}
 	
 	@BeforeEach
 	void setup() {
 		final var token = jwtService.generateToken(admin.getId()).getLeft();
 		
-		adminService.updateAdminAccountToken(admin, token);
+		adminService.updateAdminAccountToken(admin, token).block();
 		bearer = String.format("Bearer %s", token);
 	}
 
 	@Test
 	void testPlanService() {
-		assertThat(planService).isNotNull();
+		assertNotNull(planService);
 	}
 	
 	@Test
@@ -97,7 +95,8 @@ class PlanControllerTests extends ControllerTestUtils {
 		var json = gson.toJson(planObj);
 		
 		//test
-		final var old = planService.getPlanByName(PlanType.DEFAULT.name());
+		final var old = planService.getPlanByName(PlanType.DEFAULT.name()).block();
+		assertNotNull(old);
 		assertEquals(false, old.getFeature(HISTORY).getValue());
 		
 		var response = this.mockMvc.perform(patch("/plan/v2/update")
@@ -111,7 +110,8 @@ class PlanControllerTests extends ControllerTestUtils {
 			.andReturn().getResponse().getContentAsString();
 		
 		assertDtoResponse(planObj, response);
-		final var planUpdated = planService.getPlanByName(PlanType.DEFAULT.name());
+		final var planUpdated = planService.getPlanByName(PlanType.DEFAULT.name()).block();
+		assertNotNull(planUpdated);
 		assertEquals(true, planUpdated.getFeature(HISTORY).getValue());
 	}
 	
@@ -147,8 +147,8 @@ class PlanControllerTests extends ControllerTestUtils {
 				.andExpect(status().isOk());
 		
 		//test
-		final var planBeforeDelete = planService.getPlanByName("DELETE_ME");
-		assertThat(planBeforeDelete).isNotNull();
+		final var planBeforeDelete = planService.getPlanByName("DELETE_ME").block();
+		assertNotNull(planBeforeDelete);
 		
 		this.mockMvc.perform(delete("/plan/v2/delete")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -158,9 +158,9 @@ class PlanControllerTests extends ControllerTestUtils {
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(content().string(containsString("Plan deleted")));
-		
-		assertThrows(ResponseStatusException.class, () ->
-				planService.getPlanByName("DELETE_ME"), "Unable to find plan DELETE_ME");
+
+		var planNotFound = planService.getPlanByName("DELETE_ME");
+		assertThrows(ResponseStatusException.class, planNotFound::block, "Unable to find plan DELETE_ME");
 	}
 	
 	@Test
@@ -190,7 +190,7 @@ class PlanControllerTests extends ControllerTestUtils {
 	void shouldListPlans() throws Exception {
 		//given
 		final var plans = planService.listAll();
-		assertThat(plans).isNotNull();
+		assertNotNull(plans);
 		
 		//test
 		this.mockMvc.perform(get("/plan/v2/list")
@@ -205,8 +205,8 @@ class PlanControllerTests extends ControllerTestUtils {
 	@Test
 	void shouldGetPlanByName() throws Exception {
 		//given
-		final var plan = planService.getPlanByName(PlanType.DEFAULT.name());
-		assertThat(plan).isNotNull();
+		final var plan = planService.getPlanByName(PlanType.DEFAULT.name()).block();
+		assertNotNull(plan);
 		
 		//test
 		var response = this.mockMvc.perform(get("/plan/v2/get")

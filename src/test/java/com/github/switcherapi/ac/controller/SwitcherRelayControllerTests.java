@@ -41,7 +41,7 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 			.name("TEST")
 			.attributes(List.of(
 				PlanAttribute.builder().feature(DOMAIN.getValue()).value(1).build()
-			)).build());
+			)).build()).block();
 	}
 
 	@Test
@@ -143,8 +143,8 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		plan.getFeature(SWITCHER).setValue(-1);
 		plan.setName("UNLIMITED");
 
-		planService.createPlan(plan);
-		accountService.updateAccountPlan("masteradminid", "UNLIMITED");
+		planService.createPlan(plan).block();
+		accountService.updateAccountPlan("masteradminid", "UNLIMITED").block();
 		
 		//test
 		var expectedResponse = ResponseRelayDTO.create(true);

@@ -2,15 +2,15 @@ package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.dto.AccountDTO;
+import com.github.switcherapi.ac.model.mapper.AccountMapper;
 import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static com.github.switcherapi.ac.util.Constants.ACCOUNT_NAME_NOT_FOUND;
 import static com.github.switcherapi.ac.util.Constants.PLAN_NAME_NOT_FOUND;
@@ -26,48 +26,46 @@ public class AccountService {
 		this.accountDao = accountDao;
 	}
 
-	public Account createAccount(String adminId) {
+	public Mono<AccountDTO> createAccount(String adminId) {
 		return createAccount(adminId, PlanType.DEFAULT.name());
 	}
 
-	public Account createAccount(String adminId, String planName) {
-		final var plan = Optional.ofNullable(planDao.findByName(planName))
-				.orElseThrow(() -> new ResponseStatusException(
-						HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName)));
-
-		var account = Optional.ofNullable(accountDao.findByAdminId(adminId))
-				.orElse(new Account(adminId));
-
-		account.setPlan(plan);
-		accountDao.getAccountRepository().save(account);
-
-		return account;
+	public Mono<AccountDTO> createAccount(String adminId, String planName) {
+		return planDao.findByName(planName)
+				.switchIfEmpty(Mono.error(new ResponseStatusException(
+						HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName))))
+				.flatMap(plan -> accountDao.findByAdminId(adminId)
+						.defaultIfEmpty(new Account(adminId))
+						.flatMap(account -> {
+							account.setPlan(plan.getId());
+							return accountDao.getAccountRepository().save(account)
+									.map(savedAccount -> AccountMapper.map(savedAccount, plan));
+						}));
 	}
 
-	public void updateAccountPlan(String adminId, String planName) {
-		final var plan = Optional.ofNullable(planDao.findByName(planName))
-				.orElseThrow(() -> new ResponseStatusException(
-						HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName)));
-
-		final var account = getAccountByAdminId(adminId);
-		account.setPlan(plan);
-		accountDao.getAccountRepository().save(account);
+	public Mono<Account> updateAccountPlan(String adminId, String planName) {
+		return planDao.findByName(planName)
+				.switchIfEmpty(Mono.error(new ResponseStatusException(
+						HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName))))
+				.flatMap(plan -> getAccountByAdminId(adminId)
+						.flatMap(account -> {
+							account.setPlan(plan.getId());
+							return accountDao.getAccountRepository().save(account);
+						}));
 	}
 
-	public void deleteAccount(String adminId) {
-		final var account = getAccountByAdminId(adminId);
-		if (Objects.nonNull(account)) {
-			accountDao.getAccountRepository().delete(account);
-		}
+	public Mono<Void> deleteAccount(String adminId) {
+		return getAccountByAdminId(adminId)
+				.flatMap(account -> accountDao.getAccountRepository().delete(account));
 	}
 
-	public Account getAccountByAdminId(String adminId) {
-		return Optional.ofNullable(accountDao.findByAdminId(adminId))
-				.orElseThrow(() -> new ResponseStatusException(
-						HttpStatus.NOT_FOUND, String.format(ACCOUNT_NAME_NOT_FOUND.getValue(), adminId)));
+	public Mono<Account> getAccountByAdminId(String adminId) {
+		return accountDao.findByAdminId(adminId)
+				.switchIfEmpty(Mono.error(new ResponseStatusException(
+						HttpStatus.NOT_FOUND, String.format(ACCOUNT_NAME_NOT_FOUND.getValue(), adminId))));
 	}
 
-	public List<Account> getAccountsByPlanName(String planName) {
+	public Flux<Account> getAccountsByPlanName(String planName) {
 		return accountDao.findByPlanName(planName);
 	}
 

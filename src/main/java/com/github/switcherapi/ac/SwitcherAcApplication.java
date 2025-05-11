@@ -28,7 +28,7 @@ public class SwitcherAcApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		log.info("Loading default Plan...");
-		planService.createPlan(Plan.loadDefault());
+		planService.createPlan(Plan.loadDefault()).block();
 		log.info("Plan loaded");
 	}
 

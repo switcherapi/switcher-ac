@@ -33,13 +33,13 @@ class ApiResourcesTests {
 	@BeforeAll
 	static void setup(
 			@Autowired AdminService adminService) {
-		adminAccount = adminService.createAdminAccount("123456");
+		adminAccount = adminService.createAdminAccount("123456").block();
 	}
 	
 	@BeforeEach
 	void setup() {
 		final var token = jwtService.generateToken(adminAccount.getId()).getLeft();
-		adminService.updateAdminAccountToken(adminAccount, token);
+		adminService.updateAdminAccountToken(adminAccount, token).block();
 		bearer = String.format("Bearer %s", token);
 	}
 	

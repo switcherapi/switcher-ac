@@ -3,6 +3,7 @@ package com.github.switcherapi.ac.service.validator;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
+import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,8 +16,11 @@ public abstract class ValidatorBuilderService {
 
 	protected final AccountDao accountDao;
 
-	protected ValidatorBuilderService(AccountDao accountDao) {
+	protected final PlanDao planDao;
+
+	protected ValidatorBuilderService(AccountDao accountDao, PlanDao planDao) {
 		this.accountDao = accountDao;
+		this.planDao = planDao;
 	}
     
     public ResponseRelayDTO runValidator(FeaturePayload request) {	

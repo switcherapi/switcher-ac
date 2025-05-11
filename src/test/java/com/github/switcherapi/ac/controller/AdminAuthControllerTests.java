@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,9 +42,11 @@ class AdminAuthControllerTests {
 	
 	@BeforeEach
 	void setup() {
-		final var admin = adminService.createAdminAccount("123456");
+		var admin = adminService.createAdminAccount("123456").block();
+		assertNotNull(admin);
+
 		tokens = jwtService.generateToken(admin.getId());
-		adminService.updateAdminAccountToken(admin, tokens.getLeft());
+		adminService.updateAdminAccountToken(admin, tokens.getLeft()).block();
 	}
 	
 	@Test
@@ -121,7 +124,8 @@ class AdminAuthControllerTests {
 			.andDo(print())
 			.andExpect(status().isOk());
 		
-		var admin = adminRepository.findByGitHubId("123456");
+		var admin = adminRepository.findByGitHubId("123456").block();
+		assertNotNull(admin);
 		assertThat(admin.getToken()).isNull();
 	}
 	
