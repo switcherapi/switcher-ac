@@ -1,21 +1,21 @@
 package com.github.switcherapi.ac.service.facades;
 
 import com.github.switcherapi.ac.model.GitHubDetail;
-import com.github.switcherapi.client.exception.SwitcherRemoteException;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.github.switcherapi.ac.util.Sanitizer.*;
 
@@ -36,8 +36,8 @@ public class GitHubFacade {
 	private final String gitUrlAccess;
 
 	private final String gitUrlDetail;
-	
-	private final HttpClient httpClient;
+
+	private final WebClient webClient;
 
 	public GitHubFacade(
 			@Value("${service.github.clientid}") String clientId,
@@ -48,60 +48,45 @@ public class GitHubFacade {
 		this.oauthSecret = oauthSecret;
 		this.gitUrlAccess = gitUrlAccess;
 		this.gitUrlDetail = gitUrlDetail;
-		this.httpClient = HttpClient.newHttpClient();
+		this.webClient = WebClient.create();
 	}
-	
-	public String getToken(String code) {
+
+	public Mono<String> getToken(String code) {
 		var codeSanitized = sanitize(code, List.of(trim(), alphaNumeric()));
 
-		try {
-			var uri = new URI(String.format(gitUrlAccess, clientId, oauthSecret, codeSanitized));
-			var response = httpClient.send(HttpRequest.newBuilder()
-					.uri(uri)
-					.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString())
-					.POST(HttpRequest.BodyPublishers.noBody())
-					.build(), HttpResponse.BodyHandlers.ofString());
-
-			if (response.statusCode() != 200 || !response.body().contains(ACCESS_TOKEN)) {
-				log.error("Failed to get token from GitHub");
-				return StringUtils.EMPTY;
-			}
-
-			var responseEntity = gson.fromJson(response.body(), Map.class);
-			return responseEntity.get(ACCESS_TOKEN).toString();
-		} catch (Exception e) {
-			return exceptionHandler(e, gitUrlAccess);
-		}
+		return webClient.post()
+				.uri(String.format(gitUrlAccess, clientId, oauthSecret, codeSanitized))
+				.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+				.retrieve()
+				.bodyToMono(String.class)
+				.map(response -> {
+					if (!response.contains(ACCESS_TOKEN)) {
+						log.error("Failed to get token from GitHub");
+						return StringUtils.EMPTY;
+					}
+					var responseEntity = gson.fromJson(response, Map.class);
+					return responseEntity.get(ACCESS_TOKEN).toString();
+				})
+				.onErrorMap(getThrowableThrowableFunction());
 	}
-	
-	public GitHubDetail getGitHubDetail(String token) {
+
+	public Mono<GitHubDetail> getGitHubDetail(String token) {
 		var tokenSanitized = sanitize(token, List.of(trim(), alphaNumeric("_")));
 
-		try {
-			var uri = new URI(gitUrlDetail);
-			var response = httpClient.send(HttpRequest.newBuilder()
-					.uri(uri)
-					.headers(
-							HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString(),
-							HttpHeaders.AUTHORIZATION, String.format("token %s", tokenSanitized))
-					.GET().build(), HttpResponse.BodyHandlers.ofString());
-
-			if (response.statusCode() != 200) {
-				log.error("Failed to get GitHub detail");
-				return null;
-			}
-
-			return gson.fromJson(response.body(), GitHubDetail.class);
-		} catch (Exception e) {
-			return exceptionHandler(e, gitUrlDetail);
-		}
+		return webClient.get()
+				.uri(gitUrlDetail)
+				.headers(headers -> {
+					headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+					headers.set(HttpHeaders.AUTHORIZATION, String.format("token %s", tokenSanitized));
+				})
+				.retrieve()
+				.bodyToMono(String.class)
+				.map(response -> gson.fromJson(response, GitHubDetail.class))
+				.onErrorMap(getThrowableThrowableFunction());
 	}
 
-	private <T> T exceptionHandler(Exception e, String url) {
-		if (e instanceof InterruptedException) {
-			Thread.currentThread().interrupt();
-		}
-		throw new SwitcherRemoteException(url, e);
+	private Function<? super Throwable, ? extends Throwable> getThrowableThrowableFunction() {
+		return e -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, INVALID_ACCOUNT, e);
 	}
 
 }
