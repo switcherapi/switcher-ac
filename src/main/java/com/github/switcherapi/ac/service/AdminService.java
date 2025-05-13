@@ -40,24 +40,27 @@ public class AdminService {
 	}
 
 	public Mono<GitHubAuthDTO> gitHubAuth(String code) {
-		final var gitHubToken = githubService.getToken(code);
-		final var gitHubDetail = githubService.getGitHubDetail(gitHubToken);
+		var gitHubDetailId = getGitHubDetailId(code).block();
 
-		if (isNotAvailable(gitHubDetail.id())) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not allowed");
-		}
-
-		return adminRepository.findByGitHubId(gitHubDetail.id())
+		return adminRepository.findByGitHubId(gitHubDetailId)
 				.switchIfEmpty(Mono.defer(() -> {
 					var admin = new Admin();
-					admin.setGitHubId(gitHubDetail.id());
+					admin.setGitHubId(gitHubDetailId);
 					return adminRepository.save(admin);
 				}))
 				.flatMap(admin -> {
 					final var tokens = jwtService.generateToken(admin.getId());
-					updateAdminAccountToken(admin, tokens.getLeft());
-					return Mono.just(GitHubAuthMapper.createCopy(admin, tokens));
+					return updateAdminAccountToken(admin, tokens.getLeft())
+							.flatMap(updatedAdmin -> Mono.just(GitHubAuthMapper.createCopy(updatedAdmin, tokens)));
 				});
+	}
+
+	private Mono<String> getGitHubDetailId(String code) {
+		return githubService.getToken(code)
+				.flatMap(githubService::getGitHubDetail)
+				.filter(gitHubDetail1 -> !isNotAvailable(gitHubDetail1.id()))
+				.switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not allowed")))
+				.flatMap(gitHubDetail -> Mono.just(gitHubDetail.id()));
 	}
 
 	public Mono<Admin> logout(String token) {

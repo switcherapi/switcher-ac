@@ -43,7 +43,6 @@ public class JwtTokenService {
 		return relayToken.equals(token);
 	}
 
-
 	/**
 	 * Generates a refresh token for a given token.
 	 *
@@ -110,8 +109,9 @@ public class JwtTokenService {
 			final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
 			final var jwtParser = Jwts.parser().verifyWith(key).build();
 			final var subject = jwtParser.parseSignedClaims(token).getPayload().getSubject();
-			
-			return Objects.nonNull(adminRepository.findByToken(token)) ? subject : null;
+
+			final var admin = adminRepository.findByToken(token).block();
+			return Objects.nonNull(admin) ? subject : null;
 		} catch (JwtException e) {
 			log.error("Failed to validate JWT - {}", e.getMessage());
 			return StringUtils.EMPTY;
