@@ -8,6 +8,7 @@ import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
 import com.github.switcherapi.ac.service.validator.SwitcherValidator;
+import reactor.core.publisher.Mono;
 
 @SwitcherValidator(ValidateRateLimit.RATE_LIMIT_VALIDATOR)
 public class ValidateRateLimit extends AbstractActiveCheckValidator {
@@ -19,12 +20,13 @@ public class ValidateRateLimit extends AbstractActiveCheckValidator {
 	}
 
 	@Override
-	protected ResponseRelayDTO executeValidator(final Account account) {
-		final var planId = account.getPlan();
-		final var plan = planDao.getPlanRepository().findById(planId).blockOptional().orElse(Plan.loadDefault());
-		final var max = Integer.parseInt(plan.getFeature(Feature.RATE_LIMIT).getValue().toString());
-
-		return ResponseRelayDTO.success(Metadata.builder().rateLimit(max).build());
+	protected Mono<ResponseRelayDTO> executeValidator(final Account account) {
+		return planDao.getPlanRepository().findById(account.getPlan())
+				.switchIfEmpty(Mono.just(Plan.loadDefault()))
+				.flatMap(plan -> {
+					final var max = Integer.parseInt(plan.getFeature(Feature.RATE_LIMIT).getValue().toString());
+					return Mono.just(ResponseRelayDTO.success(Metadata.builder().rateLimit(max).build()));
+				});
 	}
 
 }

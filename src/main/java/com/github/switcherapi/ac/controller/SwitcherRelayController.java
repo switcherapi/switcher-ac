@@ -78,7 +78,7 @@ public class SwitcherRelayController {
 					.owner(value)
 					.build();
 
-			return ResponseEntity.ok(validatorBuilderService.runValidator(request));
+			return ResponseEntity.ok(validatorBuilderService.runValidator(request).block());
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
 		}
@@ -89,7 +89,7 @@ public class SwitcherRelayController {
 	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
 			var featureRequest = gson.fromJson(request.payload(), FeaturePayload.class);
-			return ResponseEntity.ok(validatorBasicService.execute(featureRequest));
+			return ResponseEntity.ok(validatorBasicService.execute(featureRequest).block());
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
 		}

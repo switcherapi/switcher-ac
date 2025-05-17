@@ -48,7 +48,8 @@ class ValidatorBasicServiceTest {
         var request = givenRequest(feature.getValue(), "adminid_validate", total);
 
         //test
-        var responseRelayDTO = validatorBasicService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request).block();
+        assertNotNull(responseRelayDTO);
         assertTrue(responseRelayDTO.result());
     }
 
@@ -74,7 +75,8 @@ class ValidatorBasicServiceTest {
         var request = givenRequest(feature.getValue(), "adminid_not_validate", total);
 
         //test
-        var responseRelayDTO = validatorBasicService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request).block();
+        assertNotNull(responseRelayDTO);
         assertFalse(responseRelayDTO.result());
         assertEquals(MSG_FEATURE_LIMIT_REACHED.getValue(), responseRelayDTO.message());
     }
@@ -111,7 +113,8 @@ class ValidatorBasicServiceTest {
         var request = givenRequest(DOMAIN.getValue(), "adminid_undetermined", 999);
 
         //test
-        var responseRelayDTO = validatorBasicService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request).block();
+        assertNotNull(responseRelayDTO);
         assertTrue(responseRelayDTO.result());
     }
 
@@ -123,8 +126,8 @@ class ValidatorBasicServiceTest {
         var request = givenRequest(DOMAIN.getValue(), "adminid", null);
 
         //test
-        final var exception =
-                assertThrows(ResponseStatusException.class, () -> validatorBasicService.execute(request));
+        var validatorExecution = validatorBasicService.execute(request);
+        var exception = assertThrows(ResponseStatusException.class, validatorExecution::block);
         assertEquals(MSG_PLAN_INVALID_VALUE.getValue(), exception.getReason());
     }
 
