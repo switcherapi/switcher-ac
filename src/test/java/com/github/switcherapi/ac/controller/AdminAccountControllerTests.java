@@ -65,8 +65,8 @@ class AdminAccountControllerTests {
 
 	@Test
 	void testServices() {
-		assertThat(accountService).isNotNull();
-		assertThat(planService).isNotNull();
+		assertNotNull(accountService);
+		assertNotNull(planService);
 	}
 	
 	@Test

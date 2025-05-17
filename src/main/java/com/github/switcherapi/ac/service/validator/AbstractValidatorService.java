@@ -7,6 +7,7 @@ import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ public abstract class AbstractValidatorService {
 	/**
 	 * Executes validator by validating the request and then calling the validator service
 	 */
-	public ResponseRelayDTO execute(FeaturePayload request) {
+	public Mono<ResponseRelayDTO> execute(FeaturePayload request) {
 		params = new EnumMap<>(SwitcherValidatorParams.class);
 		validateRequest(request);
 		return executeValidator();
@@ -57,17 +58,16 @@ public abstract class AbstractValidatorService {
 	/**
 	 * Default validator handler
 	 */
-	protected ResponseRelayDTO executeValidator() {
+	protected Mono<ResponseRelayDTO> executeValidator() {
 		return accountDao.findByAdminId(getParam(ADMINID, String.class))
-				.blockOptional()
-				.map(this::executeValidator)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND.getValue()));
+				.switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND.getValue())))
+				.flatMap(this::executeValidator);
 	}
 
 	/**
 	 * Executes validator bean
 	 */
-	protected abstract ResponseRelayDTO executeValidator(final Account account);
+	protected abstract Mono<ResponseRelayDTO> executeValidator(final Account account);
 
 	/**
 	 * Default request validation.

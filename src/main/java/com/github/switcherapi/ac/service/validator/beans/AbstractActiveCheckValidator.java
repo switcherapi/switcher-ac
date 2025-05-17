@@ -12,6 +12,7 @@ import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
+import reactor.core.publisher.Mono;
 
 public abstract class AbstractActiveCheckValidator extends AbstractValidatorService {
 
@@ -29,6 +30,6 @@ public abstract class AbstractActiveCheckValidator extends AbstractValidatorServ
 		}
 	}
 	
-	protected abstract ResponseRelayDTO executeValidator(final Account account);
+	protected abstract Mono<ResponseRelayDTO> executeValidator(final Account account);
 
 }

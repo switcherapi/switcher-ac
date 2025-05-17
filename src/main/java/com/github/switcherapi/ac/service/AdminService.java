@@ -40,19 +40,18 @@ public class AdminService {
 	}
 
 	public Mono<GitHubAuthDTO> gitHubAuth(String code) {
-		var gitHubDetailId = getGitHubDetailId(code).block();
-
-		return adminRepository.findByGitHubId(gitHubDetailId)
-				.switchIfEmpty(Mono.defer(() -> {
-					var admin = new Admin();
-					admin.setGitHubId(gitHubDetailId);
-					return adminRepository.save(admin);
-				}))
-				.flatMap(admin -> {
-					final var tokens = jwtService.generateToken(admin.getId());
-					return updateAdminAccountToken(admin, tokens.getLeft())
-							.flatMap(updatedAdmin -> Mono.just(GitHubAuthMapper.createCopy(updatedAdmin, tokens)));
-				});
+		return getGitHubDetailId(code)
+				.flatMap(gitHubDetailId -> adminRepository.findByGitHubId(gitHubDetailId)
+						.switchIfEmpty(Mono.defer(() -> {
+							var admin = new Admin();
+							admin.setGitHubId(gitHubDetailId);
+							return adminRepository.save(admin);
+						}))
+						.flatMap(admin -> {
+							final var tokens = jwtService.generateToken(admin.getId());
+							return updateAdminAccountToken(admin, tokens.getLeft())
+									.flatMap(updatedAdmin -> Mono.just(GitHubAuthMapper.createCopy(updatedAdmin, tokens)));
+						}));
 	}
 
 	private Mono<String> getGitHubDetailId(String code) {
