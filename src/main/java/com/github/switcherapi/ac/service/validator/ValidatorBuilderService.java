@@ -6,6 +6,7 @@ import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public abstract class ValidatorBuilderService {
 		this.planDao = planDao;
 	}
     
-    public ResponseRelayDTO runValidator(FeaturePayload request) {	
+    public Mono<ResponseRelayDTO> runValidator(FeaturePayload request) {
 		if (!validatorHandlers.containsKey(request.feature())) {
 			throw new ResponseStatusException(
 					HttpStatus.BAD_REQUEST, String.format("Invalid validator: %s", request.feature()));

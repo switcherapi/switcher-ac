@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.*;
 import static com.github.switcherapi.ac.util.Constants.*;
@@ -21,18 +22,20 @@ public class ValidatorBasicService extends AbstractValidatorService {
     }
 
     @Override
-    protected ResponseRelayDTO executeValidator(final Account account) {
-        final var plan = planDao.getPlanRepository().findById(account.getPlan()).blockOptional().orElse(Plan.loadDefault());
-        final var maxPlanValue = plan.getAttributes().stream()
-                .filter(attrib -> attrib.getFeature().equals(getParam(FEATURE)))
-                .findFirst().orElseGet(() -> PlanAttribute.builder().build());
+    protected Mono<ResponseRelayDTO> executeValidator(final Account account) {
+        return planDao.getPlanRepository().findById(account.getPlan())
+                .flatMap(plan -> {
+                    final var maxPlanValue = plan.getAttributes().stream()
+                            .filter(attrib -> attrib.getFeature().equals(getParam(FEATURE)))
+                            .findFirst().orElseGet(() -> PlanAttribute.builder().build());
 
-        final var value = maxPlanValue.getValue();
-        if (validate(value)) {
-            return ResponseRelayDTO.fail(MSG_FEATURE_LIMIT_REACHED.getValue());
-        }
+                    final var value = maxPlanValue.getValue();
+                    if (validate(value)) {
+                        return Mono.just(ResponseRelayDTO.fail(MSG_FEATURE_LIMIT_REACHED.getValue()));
+                    }
 
-        return ResponseRelayDTO.create(true);
+                    return Mono.just(ResponseRelayDTO.create(true));
+                });
     }
 
     @Override
