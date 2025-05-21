@@ -53,7 +53,6 @@ public class JwtTokenService {
 	private String generateRefreshToken(String token) {
 		final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
 		final var claims = Jwts.claims()
-				.expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
 				.subject(token.substring(token.length() - 8)).build();
 
 		return Jwts.builder().claims(claims).signWith(key).compact();

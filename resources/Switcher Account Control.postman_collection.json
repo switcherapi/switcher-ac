@@ -177,7 +177,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{authToken}}",
 									"type": "string"
 								}
 							]
@@ -194,7 +194,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/admin/v1/account/change/ACCOUNT_ID?plan=UNLIMITED",
+							"raw": "{{url}}/admin/v1/account/change/ADMIN_ID?plan=UNLIMITED",
 							"host": [
 								"{{url}}"
 							],
@@ -203,7 +203,7 @@
 								"v1",
 								"account",
 								"change",
-								"ACCOUNT_ID"
+								"ADMIN_ID"
 							],
 							"query": [
 								{
