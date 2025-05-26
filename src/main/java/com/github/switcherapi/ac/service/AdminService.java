@@ -1,20 +1,26 @@
 package com.github.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.config.JwtRequestFilter;
 import com.github.switcherapi.ac.model.domain.Admin;
 import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.model.mapper.GitHubAuthMapper;
 import com.github.switcherapi.ac.repository.AdminRepository;
+import com.github.switcherapi.ac.service.security.JwtTokenService;
+import com.github.switcherapi.ac.util.Roles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
 import static com.github.switcherapi.ac.config.SwitcherFeatures.getSwitcher;
+import static com.github.switcherapi.ac.util.Constants.BEARER;
 
 @Service
 @Slf4j
@@ -24,13 +30,18 @@ public class AdminService {
 
 	private final JwtTokenService jwtService;
 
+	private final ReactiveAuthenticationManager authenticationManager;
+
 	private final GitHubService githubService;
 
 	public AdminService(AdminRepository adminRepository,
-						GitHubService githubService, JwtTokenService jwtService) {
+						GitHubService githubService,
+						JwtTokenService jwtService,
+						ReactiveAuthenticationManager authenticationManager) {
 		this.adminRepository = adminRepository;
 		this.githubService = githubService;
 		this.jwtService = jwtService;
+		this.authenticationManager = authenticationManager;
 	}
 
 	private boolean isNotAvailable(String githubId) {
@@ -47,11 +58,15 @@ public class AdminService {
 							admin.setGitHubId(gitHubDetailId);
 							return adminRepository.save(admin);
 						}))
-						.flatMap(admin -> {
-							final var tokens = jwtService.generateToken(admin.getId());
-							return updateAdminAccountToken(admin, tokens.getLeft())
-									.flatMap(updatedAdmin -> Mono.just(GitHubAuthMapper.createCopy(updatedAdmin, tokens)));
-						}));
+						.flatMap(admin -> authenticationManager.authenticate(
+								new UsernamePasswordAuthenticationToken(
+										admin.getId(), admin.getGitHubId(),
+										List.of(new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name()))))
+								.flatMap(authentication -> {
+										final var tokens = jwtService.generateToken(authentication);
+										return updateAdminAccountToken(admin, tokens.getLeft())
+												.flatMap(updatedAdmin -> Mono.just(GitHubAuthMapper.createCopy(updatedAdmin, tokens)));
+								})));
 	}
 
 	private Mono<String> getGitHubDetailId(String code) {
@@ -63,7 +78,7 @@ public class AdminService {
 	}
 
 	public Mono<Admin> logout(String token) {
-		if (Objects.nonNull(token) && token.startsWith(JwtRequestFilter.BEARER)) {
+		if (Objects.nonNull(token) && token.startsWith(BEARER.getValue())) {
 			token = token.substring(7);
 		}
 
@@ -86,14 +101,10 @@ public class AdminService {
 	}
 
 	public Mono<GitHubAuthDTO> refreshToken(String token, String refreshToken) {
-		if (Objects.isNull(token) || !token.startsWith(JwtRequestFilter.BEARER)) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh tokens");
-		}
-
 		final var finalToken = token.substring(7);
 
 		return adminRepository.findByToken(finalToken)
-				.switchIfEmpty(Mono.just(new Admin()))
+				.switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh tokens")))
 				.flatMap(admin -> updateRefreshToken(refreshToken, admin, finalToken));
 	}
 
@@ -103,17 +114,25 @@ public class AdminService {
 				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not allowed");
 			}
 
-			var tokens = jwtService.refreshToken(admin.getId(), finalToken, refreshToken);
-			if (Objects.nonNull(tokens)) {
-				return updateAdminAccountToken(admin, tokens.getLeft())
-						.map(updatedAdmin -> GitHubAuthMapper.createCopy(updatedAdmin, tokens));
-			}
+			return authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(
+							admin.getId(),
+							admin.getGitHubId(),
+							List.of(new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name()))))
+					.flatMap(authentication -> {
+						var tokens = jwtService.refreshToken(authentication, finalToken, refreshToken);
+						return updateAdminAccountToken(admin, tokens.getLeft())
+								.map(updatedAdmin -> GitHubAuthMapper.createCopy(updatedAdmin, tokens));
+					})
+					.onErrorResume(e -> {
+						log.debug("Refresh token could not be processed for {}", admin.getGitHubId());
+						return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh tokens"));
+					});
 		} catch (Exception e) {
 			log.warn("Attempting to refresh token with Invalid refresh tokens");
 		}
 
 		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh tokens");
 	}
-
 
 }

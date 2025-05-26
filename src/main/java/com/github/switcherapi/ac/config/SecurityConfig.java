@@ -1,67 +1,77 @@
 package com.github.switcherapi.ac.config;
 
+import com.github.switcherapi.ac.repository.AdminRepository;
+import com.github.switcherapi.ac.service.security.JwtTokenAuthenticationFilter;
+import com.github.switcherapi.ac.service.security.JwtTokenService;
 import com.github.switcherapi.ac.util.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
+
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
+@EnableWebFluxSecurity
 public class SecurityConfig {
 
-	private final JwtRequestFilter jwtRequestFilter;
-
-	private final ServiceConfig serviceConfig;
-	
-    private static final String[] SWAGGER_MATCHERS = {
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-    };
-
-	public SecurityConfig(
-			JwtRequestFilter jwtRequestFilter,
-			ServiceConfig serviceConfig) {
-		this.jwtRequestFilter = jwtRequestFilter;
-		this.serviceConfig = serviceConfig;
+	@Bean
+	Map<Roles, SimpleGrantedAuthority> grantedAuthorities() {
+		final var roles = new EnumMap<Roles, SimpleGrantedAuthority>(Roles.class);
+		roles.put(Roles.ROLE_ADMIN, new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name()));
+		roles.put(Roles.ROLE_SWITCHER, new SimpleGrantedAuthority(Roles.ROLE_SWITCHER.name()));
+		return Collections.unmodifiableMap(roles);
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(auth ->
-				auth.requestMatchers(this.serviceConfig.endpoint().health()).permitAll()
-					.requestMatchers("/error").permitAll()
-					.requestMatchers("/admin/v1/auth/**").permitAll()
-					.requestMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
-					.requestMatchers("/admin/**").hasRole(Roles.ADMIN.name())
-					.requestMatchers("/plan/**").hasRole(Roles.ADMIN.name())
-					.requestMatchers("/switcher/**").hasRole(Roles.SWITCHER.name())
-					.requestMatchers(SWAGGER_MATCHERS).authenticated());
-
-		http.httpBasic(auth -> auth.authenticationEntryPoint(authenticationEntryPoint()));
-		http.exceptionHandling(auth -> auth.authenticationEntryPoint(authenticationEntryPoint()));
-		http.sessionManagement(auth -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		http.csrf(AbstractHttpConfigurer::disable);
-
-		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
-		return http.build();
+	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
+												JwtTokenService tokenProvider,
+												ReactiveAuthenticationManager reactiveAuthenticationManager) {
+		return http
+				.csrf(ServerHttpSecurity.CsrfSpec::disable)
+				.httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+				.authenticationManager(reactiveAuthenticationManager)
+				.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+				.authorizeExchange(it -> it
+						.pathMatchers("/error").permitAll()
+						.pathMatchers("/admin/v1/auth/**").permitAll()
+						.pathMatchers("/switcher/**").hasRole(Roles.SWITCHER.name())
+						.pathMatchers("/actuator/**").hasRole(Roles.ADMIN.name())
+						.pathMatchers("/admin/**").hasRole(Roles.ADMIN.name())
+						.pathMatchers("/plan/**").hasRole(Roles.ADMIN.name())
+						.anyExchange().permitAll()
+				)
+				.addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider, grantedAuthorities()), SecurityWebFiltersOrder.HTTP_BASIC)
+				.build();
 	}
-	
-	@Bean
-    public AuthenticationEntryPoint authenticationEntryPoint(){
-        final var entryPoint = new BasicAuthenticationEntryPoint();
-        entryPoint.setRealmName("admin realm");
-        return entryPoint;
-    }
 
+	@Bean
+	public ReactiveAuthenticationManager reactiveAuthenticationManager(ReactiveUserDetailsService userDetailsService,
+																	   PasswordEncoder passwordEncoder) {
+		var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+		authenticationManager.setPasswordEncoder(passwordEncoder);
+		return authenticationManager;
+	}
+
+	@Bean
+	public ReactiveUserDetailsService userDetailsService(AdminRepository adminRepository,
+														 PasswordEncoder passwordEncoder) {
+		return id -> adminRepository.findById(id)
+				.map(admin -> User
+						.withUsername(admin.getId()).password(passwordEncoder.encode(admin.getGitHubId()))
+						.authorities(grantedAuthorities().get(Roles.ROLE_ADMIN))
+						.build()
+				);
+	}
 }

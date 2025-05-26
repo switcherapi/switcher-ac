@@ -4,6 +4,8 @@ import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.domain.Plan;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +17,7 @@ import static com.github.switcherapi.ac.util.Constants.PLAN_NAME_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Execution(ExecutionMode.CONCURRENT)
 class AccountServiceTest {
 
     @Autowired AccountService accountService;

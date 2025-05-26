@@ -13,7 +13,9 @@ public enum Constants {
 
     ACCOUNT_NOT_FOUND ("Account not found"),
     PLAN_NAME_NOT_FOUND("Unable to find plan named %s"),
-    ACCOUNT_NAME_NOT_FOUND("Unable to find account %s");
+    ACCOUNT_NAME_NOT_FOUND("Unable to find account %s"),
+
+    BEARER("Bearer ");
 
     private final String value;
 

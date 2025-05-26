@@ -56,7 +56,7 @@ public class AccountService {
 
 	public Mono<Void> deleteAccount(String adminId) {
 		return getAccountByAdminId(adminId)
-				.flatMap(account -> accountDao.getAccountRepository().delete(account));
+				.flatMap(account -> accountDao.getAccountRepository().deleteByAdminId(adminId));
 	}
 
 	public Mono<Account> getAccountByAdminId(String adminId) {

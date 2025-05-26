@@ -13,32 +13,28 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureDataMongo
-@AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
 class AdminGitHubAuthControllerTests {
 
-	@Autowired MockMvc mockMvc;
+	@Autowired WebTestClient webTestClient;
 	@Autowired ApplicationContext applicationContext;
 	
 	public static MockWebServer mockBackend;
@@ -71,88 +67,101 @@ class AdminGitHubAuthControllerTests {
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM)
+	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldLoginWithGitHub() throws Exception {
-		//given
+		// given
 		givenGitHubToken();
 		givenResponseSuccess();
-		
-		//test
-		var json = this.mockMvc.perform(post("/admin/v1/auth/github")
+
+		// test
+		webTestClient.post()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/auth/github")
+						.queryParam("code", "123")
+						.build())
 				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andExpect(content().string(containsString("admin")))
-			.andExpect(content().string(containsString("token")))
-			.andReturn().getResponse().getContentAsString();
-		
-		var authDto = new ObjectMapper().readValue(json, GitHubAuthDTO.class);
-		assertThat(authDto.admin()).isNotNull();
-		assertThat(authDto.token()).isNotNull();
-		assertThat(authDto.refreshToken()).isNotNull();
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody(GitHubAuthDTO.class)
+				.value(authDto -> {
+					assertThat(authDto.admin()).isNotNull();
+					assertThat(authDto.token()).isNotNull();
+					assertThat(authDto.refreshToken()).isNotNull();
+				});
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
+	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotLoginWithGitHub_accountNotAllowed() throws Exception {
 		//given
 		givenGitHubToken();
 		givenResponseSuccess();
 
 		//test
-		this.mockMvc.perform(post("/admin/v1/auth/github")
-						.contentType(MediaType.APPLICATION_JSON)
-						.queryParam("code", "123"))
-				.andDo(print())
-				.andExpect(status().isUnauthorized());
+		webTestClient.post()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/auth/github")
+						.queryParam("code", "123")
+						.build())
+				.contentType(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isUnauthorized();
 	}
 	
 	@Test
-	void shouldNotLoginWithGitHub_invalidToken() throws Exception {
+	void shouldNotLoginWithGitHub_invalidToken() {
 		//given
 		givenGitHubToken();
 		givenResponse401();
 
 		//test
-		this.mockMvc.perform(post("/admin/v1/auth/github")
+		webTestClient.post()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/auth/github")
+						.queryParam("code", "123")
+						.build())
 				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-			.andDo(print())
-			.andExpect(status().isUnauthorized());
+				.exchange()
+				.expectStatus().isUnauthorized();
 	}
 
 	@Test
-	void shouldNotGetGitHubToken_serviceUnavailable() throws Exception {
+	void shouldNotGetGitHubToken_serviceUnavailable() {
 		//given
 		givenResponse503();
 
 		//test
-		this.mockMvc.perform(post("/admin/v1/auth/github")
+		webTestClient.post()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/auth/github")
+						.queryParam("code", "123")
+						.build())
 				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-			.andDo(print())
-			.andExpect(status().isUnauthorized());
+				.exchange()
+				.expectStatus().isUnauthorized();
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
-	void shouldNotLoginWithGitHub_invalidCode() throws Exception {
+	@Execution(ExecutionMode.SAME_THREAD)
+	void shouldNotLoginWithGitHub_invalidCode() {
 		//given
 		givenResponseInvalidCode();
 
 		//test
-		this.mockMvc.perform(post("/admin/v1/auth/github")
+		webTestClient.post()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/auth/github")
+						.queryParam("code", "123")
+						.build())
 				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-			.andDo(print())
-			.andExpect(status().isUnauthorized());
+				.exchange()
+				.expectStatus().isUnauthorized();
 	}
 	
 	@Test
-	void shouldNotLoginWithGitHub_invalidUrl() throws Exception {
-		this.mockMvc.perform(post("/admin/auth/github")
+	void shouldNotLoginWithGitHub_invalidUrl() {
+		webTestClient.post()
+				.uri(uriBuilder -> uriBuilder.path("/admin/auth/github")
+						.queryParam("code", "123")
+						.build())
 				.contentType(MediaType.APPLICATION_JSON)
-				.queryParam("code", "123"))
-			.andDo(print())
-			.andExpect(status().isUnauthorized());
+				.exchange()
+				.expectStatus().isUnauthorized();
 	}
 
 	private void givenGitHubToken() {

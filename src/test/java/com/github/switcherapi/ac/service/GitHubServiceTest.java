@@ -11,6 +11,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.http.MediaType;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,6 +21,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
+@Execution(ExecutionMode.CONCURRENT)
 public class GitHubServiceTest {
 
 	private final ObjectMapper mapper = new ObjectMapper();

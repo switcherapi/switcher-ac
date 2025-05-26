@@ -5,6 +5,8 @@ import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,6 +23,7 @@ import static com.github.switcherapi.ac.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Execution(ExecutionMode.CONCURRENT)
 class ValidatorBasicServiceTest {
 
     @Autowired

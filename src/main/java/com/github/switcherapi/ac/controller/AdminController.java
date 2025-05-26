@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("admin/v1")
@@ -28,30 +29,29 @@ public class AdminController {
 	@SecurityRequirements
 	@Operation(summary = "Authenticate using GitHub credentials")
 	@PostMapping(value = "/auth/github")
-	public ResponseEntity<GitHubAuthDTO> gitHubAuth(@RequestParam String code) {
-		return ResponseEntity.ok(adminService.gitHubAuth(code).block());
+	public Mono<ResponseEntity<GitHubAuthDTO>> gitHubAuth(@RequestParam String code) {
+		return adminService.gitHubAuth(code).map(ResponseEntity::ok);
 	}
 	
 	@SecurityRequirements
 	@Operation(summary = "Update JWT using your refresh token")
 	@PostMapping(value = "/auth/refresh")
-	public ResponseEntity<GitHubAuthDTO> gitHubRefreshAuth(
+	public Mono<ResponseEntity<GitHubAuthDTO>> gitHubRefreshAuth(
 			@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam String refreshToken) {
-		return ResponseEntity.ok(adminService.refreshToken(token, refreshToken).block());
+		return adminService.refreshToken(token, refreshToken).map(ResponseEntity::ok);
 	}
 	
 	@PostMapping(value = "/logout")
-	public ResponseEntity<Object> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-		adminService.logout(token).block();
-		return ResponseEntity.ok().build();
+	public Mono<ResponseEntity<Object>> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+		return adminService.logout(token).map(ResponseEntity::ok);
 	}
 	
 	@Operation(summary = "Update account plan with another plan")
 	@PatchMapping(value = "/account/change/{adminId}")
-	public ResponseEntity<AccountDTO> changeAccountPlan(
+	public Mono<ResponseEntity<AccountDTO>> changeAccountPlan(
 			@PathVariable(value = "adminId") String adminId,
 			@RequestParam String plan) {
-		return ResponseEntity.ok(accountService.createAccount(adminId, plan).block());
+		return accountService.createAccount(adminId, plan).map(ResponseEntity::ok);
 	}
 
 }
