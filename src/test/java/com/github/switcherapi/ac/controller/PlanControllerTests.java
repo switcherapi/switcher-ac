@@ -15,6 +15,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,8 +32,9 @@ import java.util.Objects;
 import static com.github.switcherapi.ac.model.domain.Feature.HISTORY;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @AutoConfigureDataMongo
+@AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
 class PlanControllerTests extends ControllerTestUtils {
 

@@ -8,11 +8,14 @@ import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.PlanService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -20,7 +23,8 @@ import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 
 @SpringBootTest
 @AutoConfigureDataMongo
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
+@Execution(ExecutionMode.CONCURRENT)
 @TestPropertySource(properties = {
 		"service.cache.enabled=true",
 		"service.cache.duration=1"
@@ -35,7 +39,7 @@ class SwitcherRelayCacheLimiterControllerTests extends ControllerTestUtils {
 	}
 
 	@Test
-	void shouldReturnUnchangedRateLimit() throws Exception {
+	void shouldReturnUnchangedRateLimit() {
 		//given
 		givenAccount("adminid", "TEST");
 
@@ -50,22 +54,29 @@ class SwitcherRelayCacheLimiterControllerTests extends ControllerTestUtils {
 		this.assertLimiter("adminid", expectedResponse, 200);
 	}
 
-	private void createPlan() {
-		planService.createPlan(Plan.builder()
-				.name("TEST")
-				.attributes(List.of(
-						PlanAttribute.builder().feature(RATE_LIMIT.getValue()).value(100).build()
-				)).build());
-	}
-
 	private void updatePlanRateLimit() {
-		planService.updatePlan("TEST", Plan.builder()
+		StepVerifier.create(planService.updatePlan("TEST", Plan.builder()
 				.attributes(List.of(
 						PlanAttribute.builder()
 								.feature(RATE_LIMIT.getValue())
 								.value(200)
-								.build()
-				)).build());
+								.build()))
+				.build()))
+				.expectNextCount(1)
+				.verifyComplete();
+	}
+
+	private void createPlan() {
+		StepVerifier.create(planService.createPlan(Plan.builder()
+				.name("TEST")
+				.attributes(List.of(
+						PlanAttribute.builder()
+								.feature(RATE_LIMIT.getValue())
+								.value(100)
+								.build()))
+				.build()))
+				.expectNextCount(1)
+				.verifyComplete();
 	}
 
 }

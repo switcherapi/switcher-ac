@@ -131,6 +131,18 @@ Execute the validation based on the name of the feature and account externalId.
 }
 ```
 
+or 
+
+```json
+{
+    "payload": {
+        "feature": "FEATURE_NAME",
+        "owner": "EXTERNAL_ID",
+        "total": NUM_VALUE
+    }
+}
+```
+
 - **Rate Limiter** - /switcher/v1/limiter?value=externalId [GET]
 
 Return rate limit allowed for an account externalId.

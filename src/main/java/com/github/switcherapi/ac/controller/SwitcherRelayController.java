@@ -9,6 +9,7 @@ import com.github.switcherapi.ac.service.ValidatorBasicService;
 import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
 import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,8 +45,8 @@ public class SwitcherRelayController {
 	}
 
 	@GetMapping(value = "/verify")
-	public Mono<ResponseEntity<Object>> verify() {
-		return Mono.just(ResponseEntity.ok(Map.of("code", switcherConfig.getRelayCode())));
+	public ResponseEntity<Object> verify() {
+		return ResponseEntity.ok(Map.of("code", switcherConfig.getRelayCode()));
 	}
 
 	@Operation(summary = "Load new account to Switcher AC")
@@ -66,6 +67,7 @@ public class SwitcherRelayController {
 
 	@Operation(summary = "Returns rate limit for API usage")
 	@GetMapping(value = "/limiter")
+	@Cacheable(value = "limiterCache", key = "#value")
 	public Mono<ResponseEntity<ResponseRelayDTO>> limiter(@RequestParam String value) {
 		final var request = FeaturePayload.builder()
 				.feature(RATE_LIMIT.getValue())
@@ -84,7 +86,7 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/validate")
 	public Mono<ResponseEntity<ResponseRelayDTO>> validate(@RequestBody RequestRelayDTO request) {
 		try {
-			var featureRequest = gson.fromJson(request.payload(), FeaturePayload.class);
+			var featureRequest = gson.fromJson(request.payload().toString(), FeaturePayload.class);
 			return validatorBasicService.execute(featureRequest)
 					.map(ResponseEntity::ok)
 					.onErrorResume(ResponseStatusException.class, e ->
@@ -93,6 +95,8 @@ public class SwitcherRelayController {
 					);
 		} catch (ResponseStatusException e) {
 			return Mono.just(ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage())));
+		} catch (Exception e) {
+			return Mono.just(ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage())));
 		}
 	}
 

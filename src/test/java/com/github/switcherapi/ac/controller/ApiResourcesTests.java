@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -22,7 +23,8 @@ import reactor.test.StepVerifier;
 import java.util.List;
 import java.util.Objects;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
+@AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
 class ApiResourcesTests {
 

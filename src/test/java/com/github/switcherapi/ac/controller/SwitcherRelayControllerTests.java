@@ -13,6 +13,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,8 +25,9 @@ import static com.github.switcherapi.ac.model.domain.Feature.SWITCHER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @AutoConfigureDataMongo
+@AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
 class SwitcherRelayControllerTests extends ControllerTestUtils {
 	
