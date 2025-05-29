@@ -36,7 +36,7 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
-												JwtTokenService tokenProvider,
+												JwtTokenService jwtTokenService,
 												ReactiveAuthenticationManager reactiveAuthenticationManager) {
 		return http
 				.csrf(ServerHttpSecurity.CsrfSpec::disable)
@@ -52,7 +52,7 @@ public class SecurityConfig {
 						.pathMatchers("/plan/**").hasRole(Roles.ADMIN.name())
 						.anyExchange().permitAll()
 				)
-				.addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider, grantedAuthorities()), SecurityWebFiltersOrder.HTTP_BASIC)
+				.addFilterAt(new JwtTokenAuthenticationFilter(jwtTokenService, grantedAuthorities()), SecurityWebFiltersOrder.HTTP_BASIC)
 				.build();
 	}
 

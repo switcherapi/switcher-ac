@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Execution(ExecutionMode.CONCURRENT)
 class AdminAccountControllerTests {
 
-	@Autowired JwtTokenService jwtService;
+	@Autowired JwtTokenService jwtTokenService;
 	@Autowired PlanService planService;
 	@Autowired AccountService accountService;
 	@Autowired WebTestClient webTestClient;
@@ -69,7 +69,7 @@ class AdminAccountControllerTests {
 		plan2.setName("BASIC");
 		planService.createPlan(plan2).block();
 
-		var token = jwtService.generateToken(authentication).getLeft();
+		var token = jwtTokenService.generateToken(authentication).getLeft();
 		bearer = String.format("Bearer %s", token);
 
 		StepVerifier.create(adminService.updateAdminAccountToken(adminAccount, token))

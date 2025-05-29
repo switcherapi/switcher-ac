@@ -28,7 +28,7 @@ public class AdminService {
 
 	private final AdminRepository adminRepository;
 
-	private final JwtTokenService jwtService;
+	private final JwtTokenService jwtTokenService;
 
 	private final ReactiveAuthenticationManager authenticationManager;
 
@@ -36,11 +36,11 @@ public class AdminService {
 
 	public AdminService(AdminRepository adminRepository,
 						GitHubService githubService,
-						JwtTokenService jwtService,
+						JwtTokenService jwtTokenService,
 						ReactiveAuthenticationManager authenticationManager) {
 		this.adminRepository = adminRepository;
 		this.githubService = githubService;
-		this.jwtService = jwtService;
+		this.jwtTokenService = jwtTokenService;
 		this.authenticationManager = authenticationManager;
 	}
 
@@ -63,7 +63,7 @@ public class AdminService {
 										admin.getId(), admin.getGitHubId(),
 										List.of(new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name()))))
 								.flatMap(authentication -> {
-										final var tokens = jwtService.generateToken(authentication);
+										final var tokens = jwtTokenService.generateToken(authentication);
 										return updateAdminAccountToken(admin, tokens.getLeft())
 												.flatMap(updatedAdmin -> Mono.just(GitHubAuthMapper.createCopy(updatedAdmin, tokens)));
 								})));
@@ -120,7 +120,7 @@ public class AdminService {
 							admin.getGitHubId(),
 							List.of(new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name()))))
 					.flatMap(authentication -> {
-						var tokens = jwtService.refreshToken(authentication, finalToken, refreshToken);
+						var tokens = jwtTokenService.refreshToken(authentication, finalToken, refreshToken);
 						return updateAdminAccountToken(admin, tokens.getLeft())
 								.map(updatedAdmin -> GitHubAuthMapper.createCopy(updatedAdmin, tokens));
 					})

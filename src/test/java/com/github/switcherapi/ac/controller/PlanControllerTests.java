@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Execution(ExecutionMode.CONCURRENT)
 class PlanControllerTests extends ControllerTestUtils {
 
-	@Autowired JwtTokenService jwtService;
+	@Autowired JwtTokenService jwtTokenService;
 	@Autowired PlanService planService;
 
 	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
@@ -57,7 +57,7 @@ class PlanControllerTests extends ControllerTestUtils {
 
 	@BeforeEach
 	void setup(@Autowired AdminService adminService) {
-		var token = jwtService.generateToken(authentication).getLeft();
+		var token = jwtTokenService.generateToken(authentication).getLeft();
 		bearer = String.format("Bearer %s", token);
 
 		StepVerifier.create(adminService.updateAdminAccountToken(adminAccount, token))

@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class AdminAuthControllerTests {
 
 	@Autowired AdminRepository adminRepository;
-	@Autowired JwtTokenService jwtService;
+	@Autowired JwtTokenService jwtTokenService;
 	@Autowired WebTestClient webTestClient;
 
 	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
@@ -58,7 +58,7 @@ class AdminAuthControllerTests {
 
 	@BeforeEach
 	void setup(@Autowired AdminService adminService) {
-		tokens = jwtService.generateToken(authentication);
+		tokens = jwtTokenService.generateToken(authentication);
 		StepVerifier.create(adminService.updateAdminAccountToken(adminAccount, tokens.getLeft()))
 				.expectNextCount(1)
 				.verifyComplete();
