@@ -9,6 +9,7 @@ import com.github.switcherapi.ac.service.ValidatorBasicService;
 import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
 import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -71,6 +72,7 @@ public class SwitcherRelayController {
 
 	@Operation(summary = "Returns rate limit for API usage")
 	@GetMapping(value = "/limiter")
+	@Cacheable(value = "limiterCache", key = "#value")
 	public ResponseEntity<ResponseRelayDTO> limiter(@RequestParam String value) {
 		try {
 			final var request = FeaturePayload.builder()
@@ -88,10 +90,12 @@ public class SwitcherRelayController {
 	@PostMapping(value = "/validate")
 	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
 		try {
-			var featureRequest = gson.fromJson(request.payload(), FeaturePayload.class);
+			var featureRequest = gson.fromJson(String.valueOf(request.payload()), FeaturePayload.class);
 			return ResponseEntity.ok(validatorBasicService.execute(featureRequest));
 		} catch (ResponseStatusException e) {
 			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()));
 		}
 	}
 
