@@ -27,8 +27,8 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 	private final JwtTokenService jwtTokenService;
 	private final Map<Roles, SimpleGrantedAuthority> grantedAuthorityMap;
 
-	public JwtTokenAuthenticationFilter(final JwtTokenService jwtTokenService,
-									   final Map<Roles, SimpleGrantedAuthority> grantedAuthorityMap) {
+	public JwtTokenAuthenticationFilter(JwtTokenService jwtTokenService,
+									   Map<Roles, SimpleGrantedAuthority> grantedAuthorityMap) {
 		this.jwtTokenService = jwtTokenService;
 		this.grantedAuthorityMap = grantedAuthorityMap;
 	}
@@ -36,7 +36,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 	@Override
 	@NonNull
 	public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
-		var token = resolveToken(exchange.getRequest());
+		final var token = resolveToken(exchange.getRequest());
 
 		if (StringUtils.isBlank(token) || isRefreshTokenRequest(exchange.getRequest())) {
 			return chain.filter(exchange);
@@ -74,7 +74,7 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
 	}
 
 	private String resolveToken(ServerHttpRequest request) {
-		var bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+		final var bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
 		if (StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
 			return bearerToken.substring(7);
