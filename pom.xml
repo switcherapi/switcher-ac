@@ -73,7 +73,7 @@
         <native-image-plugin.version>0.10.6</native-image-plugin.version>
         <maven-compiler.version>3.14.0</maven-compiler.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
-        <sonar.version>5.1.0.4751</sonar.version>
+        <sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
         <jacoco.version>0.8.13</jacoco.version>
 
         <!-- Sonar -->
@@ -153,7 +153,7 @@
                     <plugin>
                         <groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
-                        <version>${sonar.version}</version>
+                        <version>${sonar-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>

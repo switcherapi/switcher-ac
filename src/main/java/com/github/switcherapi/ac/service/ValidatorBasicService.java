@@ -5,6 +5,7 @@ import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
 import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.*;
 import static com.github.switcherapi.ac.util.Constants.*;
 
+@Slf4j
 @Service
 public class ValidatorBasicService extends AbstractValidatorService {
 
@@ -29,8 +31,7 @@ public class ValidatorBasicService extends AbstractValidatorService {
                             .filter(attrib -> attrib.getFeature().equals(getParam(FEATURE)))
                             .findFirst().orElseGet(() -> PlanAttribute.builder().build());
 
-                    final var value = maxPlanValue.getValue();
-                    if (validate(value)) {
+                    if (validate(maxPlanValue.getValue())) {
                         return Mono.just(ResponseRelayDTO.fail(MSG_FEATURE_LIMIT_REACHED.getValue()));
                     }
 
@@ -49,6 +50,7 @@ public class ValidatorBasicService extends AbstractValidatorService {
             params.put(TOTAL, request.total());
             params.put(FEATURE, request.feature());
         } catch (IllegalArgumentException e) {
+            log.error("Validation error: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -64,6 +66,7 @@ public class ValidatorBasicService extends AbstractValidatorService {
             return validate(intValue, getParam(TOTAL, Integer.class));
         }
 
+        log.error("Invalid plan value type: {}", value.getClass().getSimpleName());
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MSG_PLAN_INVALID_VALUE.getValue());
     }
 

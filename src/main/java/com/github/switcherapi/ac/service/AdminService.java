@@ -22,8 +22,8 @@ import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
 import static com.github.switcherapi.ac.config.SwitcherFeatures.getSwitcher;
 import static com.github.switcherapi.ac.util.Constants.BEARER;
 
-@Service
 @Slf4j
+@Service
 public class AdminService {
 
 	private final AdminRepository adminRepository;

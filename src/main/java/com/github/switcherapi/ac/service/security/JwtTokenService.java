@@ -13,16 +13,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
+@Service
 public class JwtTokenService {
 
 	private static final String AUTHORITIES_KEY = "roles";
@@ -134,13 +134,12 @@ public class JwtTokenService {
 		final var claims = jwtParser.parseSignedClaims(token).getPayload();
 
 		var authoritiesClaim = claims.get(AUTHORITIES_KEY);
-		var authorities = authoritiesClaim == null
-				? AuthorityUtils.NO_AUTHORITIES
-				: AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
+		var authorities = Optional.ofNullable(authoritiesClaim)
+				.map(Object::toString)
+				.map(AuthorityUtils::commaSeparatedStringToAuthorityList)
+				.orElse(AuthorityUtils.NO_AUTHORITIES);
 
-		var principal = new User(claims.getSubject(), "", authorities);
-
-		return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+		return new UsernamePasswordAuthenticationToken(claims.getSubject(), token, authorities);
 	}
 	
 }

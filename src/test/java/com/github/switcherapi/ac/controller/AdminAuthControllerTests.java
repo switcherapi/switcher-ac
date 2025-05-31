@@ -144,6 +144,21 @@ class AdminAuthControllerTests {
 	}
 
 	@Test
+	void shouldNotRefreshToken_invalidRefreshTokenPayload() {
+		var previousToken = tokens.getLeft();
+		tokens = jwtTokenService.generateToken(authentication);
+
+		webTestClient.post()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/auth/refresh")
+						.queryParam("refreshToken", tokens.getRight())
+						.build())
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + previousToken)
+				.contentType(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isUnauthorized();
+	}
+
+	@Test
 	void shouldLogout() {
 		webTestClient.post()
 				.uri("/admin/v1/logout")
