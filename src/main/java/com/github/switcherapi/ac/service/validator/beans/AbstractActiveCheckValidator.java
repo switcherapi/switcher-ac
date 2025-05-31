@@ -3,6 +3,7 @@ package com.github.switcherapi.ac.service.validator.beans;
 import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
 
 import com.github.switcherapi.ac.repository.AccountDao;
+import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,11 +12,12 @@ import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
+import reactor.core.publisher.Mono;
 
 public abstract class AbstractActiveCheckValidator extends AbstractValidatorService {
 
-	protected AbstractActiveCheckValidator(AccountDao accountDao) {
-		super(accountDao);
+	protected AbstractActiveCheckValidator(AccountDao accountDao, PlanDao planDao) {
+		super(accountDao, planDao);
 	}
 
 	@Override
@@ -28,6 +30,6 @@ public abstract class AbstractActiveCheckValidator extends AbstractValidatorServ
 		}
 	}
 	
-	protected abstract ResponseRelayDTO executeValidator(final Account account);
+	protected abstract Mono<ResponseRelayDTO> executeValidator(final Account account);
 
 }

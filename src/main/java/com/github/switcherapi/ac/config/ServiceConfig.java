@@ -4,12 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "service")
 public record ServiceConfig(
-		Endpoint endpoint,
 		Docs docs
 ) {
-
-	public record Endpoint(
-		String health) { }
 
 	public record Docs(
 		String title,

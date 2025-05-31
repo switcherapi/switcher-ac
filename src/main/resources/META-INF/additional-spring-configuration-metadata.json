@@ -11,11 +11,6 @@
       "description": "Access Token created to be used with Switcher Relay"
     },
     {
-      "name": "service.endpoint.health",
-      "type": "java.lang.String",
-      "description": "Allowed endpoint to check this service availability"
-    },
-    {
       "name": "service.github.clientid",
       "type": "java.lang.String",
       "description": "GitHub Client ID"

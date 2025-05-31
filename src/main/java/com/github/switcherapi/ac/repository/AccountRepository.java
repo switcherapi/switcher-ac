@@ -1,9 +1,11 @@
 package com.github.switcherapi.ac.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-
 import com.github.switcherapi.ac.model.domain.Account;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Mono;
 
-public interface AccountRepository extends MongoRepository<Account, String> {
-	
+public interface AccountRepository extends ReactiveMongoRepository<Account, String> {
+
+	Mono<Void> deleteByAdminId(String adminId);
+
 }

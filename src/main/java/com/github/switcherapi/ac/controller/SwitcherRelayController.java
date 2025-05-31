@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
@@ -50,52 +51,52 @@ public class SwitcherRelayController {
 
 	@Operation(summary = "Load new account to Switcher AC")
 	@PostMapping(value = "/create")
-	public ResponseEntity<ResponseRelayDTO> loadAccount(@RequestBody RequestRelayDTO request) {
-		try {
-			accountService.createAccount(request.value());
-			return ResponseEntity.ok(ResponseRelayDTO.create(true));
-		} catch (Exception e) {
-			return ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()));
-		}
+	public Mono<ResponseEntity<ResponseRelayDTO>> loadAccount(@RequestBody RequestRelayDTO request) {
+		return accountService.createAccount(request.value())
+				.map(account -> ResponseEntity.ok(ResponseRelayDTO.create(true)))
+				.onErrorResume(e -> Mono.just(ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()))));
 	}
 
 	@Operation(summary = "Remove existing account from Switcher AC")
 	@PostMapping(value = "/remove")
-	public ResponseEntity<ResponseRelayDTO> removeAccount(@RequestBody RequestRelayDTO request) {
-		try {
-			accountService.deleteAccount(request.value());
-			return ResponseEntity.ok(ResponseRelayDTO.create(true));
-		} catch (Exception e) {
-			return ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()));
-		}
+	public Mono<ResponseEntity<ResponseRelayDTO>> removeAccount(@RequestBody RequestRelayDTO request) {
+		return accountService.deleteAccount(request.value())
+				.then(Mono.just(ResponseEntity.ok(ResponseRelayDTO.create(true))))
+				.onErrorResume(e -> Mono.just(ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()))));
 	}
 
 	@Operation(summary = "Returns rate limit for API usage")
 	@GetMapping(value = "/limiter")
 	@Cacheable(value = "limiterCache", key = "#value")
-	public ResponseEntity<ResponseRelayDTO> limiter(@RequestParam String value) {
-		try {
-			final var request = FeaturePayload.builder()
-					.feature(RATE_LIMIT.getValue())
-					.owner(value)
-					.build();
+	public Mono<ResponseEntity<ResponseRelayDTO>> limiter(@RequestParam String value) {
+		final var request = FeaturePayload.builder()
+				.feature(RATE_LIMIT.getValue())
+				.owner(value)
+				.build();
 
-			return ResponseEntity.ok(validatorBuilderService.runValidator(request));
-		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
-		}
+		return validatorBuilderService.runValidator(request)
+				.map(ResponseEntity::ok)
+				.onErrorResume(ResponseStatusException.class, e ->
+						Mono.just(ResponseEntity.status(e.getStatusCode())
+								.body(ResponseRelayDTO.fail(e.getMessage())))
+				);
 	}
 	
 	@Operation(summary = "Perform account validation given input value")
 	@PostMapping(value = "/validate")
-	public ResponseEntity<Object> validate(@RequestBody RequestRelayDTO request) {
+	public Mono<ResponseEntity<ResponseRelayDTO>> validate(@RequestBody RequestRelayDTO request) {
 		try {
-			var featureRequest = gson.fromJson(String.valueOf(request.payload()), FeaturePayload.class);
-			return ResponseEntity.ok(validatorBasicService.execute(featureRequest));
+			var featureRequest = gson.fromJson(request.payload().toString(), FeaturePayload.class);
+			return validatorBasicService.execute(featureRequest)
+					.map(ResponseEntity::ok)
+					.onErrorResume(ResponseStatusException.class, e ->
+							Mono.just(ResponseEntity.status(e.getStatusCode())
+									.body(ResponseRelayDTO.fail(e.getMessage())))
+					);
 		} catch (ResponseStatusException e) {
-			return ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage()));
+			return Mono.just(ResponseEntity.status(e.getStatusCode()).body(ResponseRelayDTO.fail(e.getMessage())));
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage()));
+			return Mono.just(ResponseEntity.status(500).body(ResponseRelayDTO.fail(e.getMessage())));
 		}
 	}
 

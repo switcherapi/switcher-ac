@@ -5,6 +5,8 @@ import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -21,6 +23,7 @@ import static com.github.switcherapi.ac.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Execution(ExecutionMode.CONCURRENT)
 class ValidatorBasicServiceTest {
 
     @Autowired
@@ -48,7 +51,8 @@ class ValidatorBasicServiceTest {
         var request = givenRequest(feature.getValue(), "adminid_validate", total);
 
         //test
-        var responseRelayDTO = validatorBasicService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request).block();
+        assertNotNull(responseRelayDTO);
         assertTrue(responseRelayDTO.result());
     }
 
@@ -74,7 +78,8 @@ class ValidatorBasicServiceTest {
         var request = givenRequest(feature.getValue(), "adminid_not_validate", total);
 
         //test
-        var responseRelayDTO = validatorBasicService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request).block();
+        assertNotNull(responseRelayDTO);
         assertFalse(responseRelayDTO.result());
         assertEquals(MSG_FEATURE_LIMIT_REACHED.getValue(), responseRelayDTO.message());
     }
@@ -111,7 +116,8 @@ class ValidatorBasicServiceTest {
         var request = givenRequest(DOMAIN.getValue(), "adminid_undetermined", 999);
 
         //test
-        var responseRelayDTO = validatorBasicService.execute(request);
+        var responseRelayDTO = validatorBasicService.execute(request).block();
+        assertNotNull(responseRelayDTO);
         assertTrue(responseRelayDTO.result());
     }
 
@@ -123,8 +129,8 @@ class ValidatorBasicServiceTest {
         var request = givenRequest(DOMAIN.getValue(), "adminid", null);
 
         //test
-        final var exception =
-                assertThrows(ResponseStatusException.class, () -> validatorBasicService.execute(request));
+        var validatorExecution = validatorBasicService.execute(request);
+        var exception = assertThrows(ResponseStatusException.class, validatorExecution::block);
         assertEquals(MSG_PLAN_INVALID_VALUE.getValue(), exception.getReason());
     }
 
@@ -141,10 +147,11 @@ class ValidatorBasicServiceTest {
     }
 
     private void givenAccount(String adminId, String planName) {
-        if (planName != null)
-            accountService.createAccount(adminId, planName);
-        else
-            accountService.createAccount(adminId);
+        if (planName != null) {
+            accountService.createAccount(adminId, planName).block();
+        } else {
+            accountService.createAccount(adminId).block();
+        }
     }
 
     private void givenPlan(String planName, String featureName, Object value) {
@@ -154,6 +161,7 @@ class ValidatorBasicServiceTest {
                     .feature(featureName)
                     .value(value)
                     .build()))
-            .build());
+            .build())
+            .block();
     }
 }

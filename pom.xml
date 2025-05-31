@@ -7,7 +7,7 @@
 
     <groupId>com.github.switcherac</groupId>
     <artifactId>switcher-ac</artifactId>
-    <version>1.0.10</version>
+    <version>2.0.0-SNAPSHOT</version>
 
     <name>Switcher Account Control</name>
     <description>Account Control Service for Switcher API</description>
@@ -67,11 +67,13 @@
         <!-- Test-->
         <flapdoodle.embed.mongo.version>4.20.0</flapdoodle.embed.mongo.version>
         <okhttp.version>4.12.0</okhttp.version>
+        <reactor-test.version>3.7.6</reactor-test.version>
 
         <!-- Plugins -->
         <native-image-plugin.version>0.10.6</native-image-plugin.version>
         <maven-compiler.version>3.14.0</maven-compiler.version>
-        <sonar.version>5.1.0.4751</sonar.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
         <jacoco.version>0.8.13</jacoco.version>
 
         <!-- Sonar -->
@@ -151,7 +153,7 @@
                     <plugin>
                         <groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
-                        <version>${sonar.version}</version>
+                        <version>${sonar-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
@@ -170,7 +172,7 @@
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <dependency>
@@ -180,7 +182,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
         </dependency>
 
         <dependency>
@@ -246,7 +248,7 @@
         <!-- Swagger 3 - SpringDoc OpenAPI -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
 
@@ -264,6 +266,13 @@
         </dependency>
 
         <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <version>${reactor-test.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
@@ -274,12 +283,6 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>mockwebserver</artifactId>
             <version>${okhttp.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -316,6 +319,15 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <parallel>suites</parallel>
+                </configuration>
             </plugin>
         </plugins>
     </build>

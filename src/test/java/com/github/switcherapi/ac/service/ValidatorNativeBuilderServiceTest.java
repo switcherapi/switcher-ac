@@ -3,6 +3,8 @@ package com.github.switcherapi.ac.service;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(properties = {"service.validators.native=true"})
+@Execution(ExecutionMode.CONCURRENT)
 class ValidatorNativeBuilderServiceTest {
 	
 	@Autowired
@@ -35,7 +38,7 @@ class ValidatorNativeBuilderServiceTest {
 
 	@Test
 	void shouldNotThrowError() {
-		accountService.createAccount("adminid");
+		accountService.createAccount("adminid").block();
 		
 		var request = FeaturePayload.builder()
 				.feature(RATE_LIMIT.getValue())

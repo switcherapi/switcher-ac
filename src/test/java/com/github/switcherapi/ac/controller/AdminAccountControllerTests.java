@@ -1,138 +1,172 @@
 package com.github.switcherapi.ac.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.switcherapi.ac.model.domain.Admin;
 import com.github.switcherapi.ac.model.domain.Plan;
 import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.dto.AccountDTO;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
-import com.github.switcherapi.ac.service.JwtTokenService;
 import com.github.switcherapi.ac.service.PlanService;
+import com.github.switcherapi.ac.service.security.JwtTokenService;
+import com.github.switcherapi.ac.util.Roles;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.test.StepVerifier;
+
+import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @AutoConfigureDataMongo
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
+@Execution(ExecutionMode.CONCURRENT)
 class AdminAccountControllerTests {
-	
-	@Autowired AdminService adminService;
-	@Autowired JwtTokenService jwtService;
+
+	@Autowired JwtTokenService jwtTokenService;
 	@Autowired PlanService planService;
 	@Autowired AccountService accountService;
-	@Autowired MockMvc mockMvc;
+	@Autowired WebTestClient webTestClient;
 
+	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
 	private static final String ADMIN_ID = "mock_account1";
 	private static Admin adminAccount;
+	private static Authentication authentication;
 	private String bearer;
 
 	@BeforeAll
 	static void setup(
 			@Autowired AccountService accountService,
-			@Autowired AdminService adminService) {
-		accountService.createAccount(ADMIN_ID);
-		adminAccount = adminService.createAdminAccount("123456");
+			@Autowired AdminService adminService,
+			@Autowired ReactiveAuthenticationManager authenticationManage) {
+		accountService.createAccount(ADMIN_ID).block();
+		adminAccount = adminService.createAdminAccount(GITHUB_ID).block();
+		authentication = authenticationManage.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						Objects.requireNonNull(adminAccount).getId(), GITHUB_ID,
+						List.of(new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name())))).block();
 	}
 	
 	@BeforeEach
-	void setup() {
-		final var plan2 = Plan.loadDefault();
+	void setup(@Autowired AdminService adminService) {
+		var plan2 = Plan.loadDefault();
 		plan2.setName("BASIC");
-		planService.createPlan(plan2);
-		
-		final var token = jwtService.generateToken(adminAccount.getId()).getLeft();
-		adminService.updateAdminAccountToken(adminAccount, token);
+		planService.createPlan(plan2).block();
+
+		var token = jwtTokenService.generateToken(authentication).getLeft();
 		bearer = String.format("Bearer %s", token);
+
+		StepVerifier.create(adminService.updateAdminAccountToken(adminAccount, token))
+				.expectNextCount(1)
+				.verifyComplete();
 	}
 
 	@Test
 	void testServices() {
-		assertThat(accountService).isNotNull();
-		assertThat(planService).isNotNull();
+		assertNotNull(accountService);
+		assertNotNull(planService);
 	}
-	
+
 	@Test
-	void shouldChangeAccountPlan() throws Exception {
-		//validate before
-		var account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
-		
-		//test
-		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
-				.contentType(MediaType.APPLICATION_JSON)
+	void shouldChangeAccountPlan() {
+		// validate before
+		var account = accountService.getAccountByAdminId(ADMIN_ID).block();
+		var planDefault = planService.getPlanByName(PlanType.DEFAULT.name()).block();
+		assertNotNull(account);
+		assertNotNull(planDefault);
+		assertThat(account.getPlan()).isEqualTo(planDefault.getId());
+
+		// test
+		var accountDto = webTestClient.patch()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/account/change/{adminId}")
+						.queryParam("plan", "BASIC")
+						.build(ADMIN_ID))
 				.header(HttpHeaders.AUTHORIZATION, bearer)
-				.with(csrf())
-				.queryParam("plan", "BASIC"))
-			.andDo(print())
-			.andExpect(status().isOk())
-			.andReturn().getResponse().getContentAsString();
-		
-		var accountDto = new ObjectMapper().readValue(json, AccountDTO.class);
+				.contentType(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody(AccountDTO.class)
+				.returnResult()
+				.getResponseBody();
+
+		assertNotNull(accountDto);
 		assertThat(accountDto.adminId()).isEqualTo(ADMIN_ID);
 		assertThat(accountDto.plan().name()).isEqualTo("BASIC");
-		
-		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
+
+		account = accountService.getAccountByAdminId(ADMIN_ID).block();
+		var planBasic = planService.getPlanByName("BASIC").block();
+		assertNotNull(account);
+		assertNotNull(planBasic);
+		assertThat(account.getPlan()).isEqualTo(planBasic.getId());
 	}
-	
+
 	@Test
-	void shouldChangeAccountPlan_afterDeletingPlan() throws Exception {
-		//given
-		var account = accountService.createAccount(ADMIN_ID, "BASIC");
-		
-		//validate before
-		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
-		
-		//test
-		this.mockMvc.perform(delete("/plan/v2/delete")
-				.contentType(MediaType.APPLICATION_JSON)
+	void shouldChangeAccountPlan_afterDeletingPlan() {
+		// given
+		var accountDto = accountService.createAccount(ADMIN_ID, "BASIC").block();
+
+		// validate before
+		var planBasic = planService.getPlanByName("BASIC").block();
+		assertNotNull(accountDto);
+		assertNotNull(planBasic);
+		assertThat(accountDto.plan().id()).isEqualTo(planBasic.getId());
+
+		// test
+		webTestClient.delete()
+				.uri(uriBuilder -> uriBuilder.path("/plan/v2/delete")
+						.queryParam("plan", "BASIC")
+						.build())
 				.header(HttpHeaders.AUTHORIZATION, bearer)
-				.with(csrf())
-				.queryParam("plan", "BASIC"))
-			.andExpect(status().isOk())
-			.andExpect(content().string("Plan deleted"));
-		
-		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
+				.exchange()
+				.expectStatus().isOk()
+				.expectBody(String.class)
+				.isEqualTo("Plan deleted");
+
+		var account = accountService.getAccountByAdminId(ADMIN_ID).block();
+		var planDefault = planService.getPlanByName(PlanType.DEFAULT.name()).block();
+		assertNotNull(account);
+		assertNotNull(planDefault);
+		assertThat(account.getPlan()).isEqualTo(planDefault.getId());
 	}
-	
+
 	@Test
-	void shouldNotChangeAccountPlan_invalidAuthorizationKey() throws Exception {
-		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
-				.contentType(MediaType.APPLICATION_JSON)
+	void shouldNotChangeAccountPlan_invalidAuthorizationKey() {
+		this.webTestClient.patch()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/account/change/{adminId}")
+						.queryParam("plan", "BASIC")
+						.build(ADMIN_ID))
 				.header(HttpHeaders.AUTHORIZATION, "Bearer INVALID_KEY")
-				.with(csrf())
-				.queryParam("plan", "BASIC"))
-			.andDo(print())
-			.andExpect(status().isUnauthorized());
-	}
-	
-	@Test
-	void shouldNotChangeAccountPlan_planNotFound() throws Exception {
-		this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
 				.contentType(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isUnauthorized();
+	}
+
+	@Test
+	void shouldNotChangeAccountPlan_planNotFound() {
+		this.webTestClient.patch()
+				.uri(uriBuilder -> uriBuilder.path("/admin/v1/account/change/{adminId}")
+						.queryParam("plan", "NOT_FOUND")
+						.build(ADMIN_ID))
 				.header(HttpHeaders.AUTHORIZATION, bearer)
-				.with(csrf())
-				.queryParam("plan", "NOT_FOUND"))
-			.andDo(print())
-			.andExpect(status().isNotFound());
+				.contentType(MediaType.APPLICATION_JSON)
+				.exchange()
+				.expectStatus().isNotFound();
 	}
 
 }

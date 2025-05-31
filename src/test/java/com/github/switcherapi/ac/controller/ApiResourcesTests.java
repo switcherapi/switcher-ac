@@ -2,103 +2,91 @@ package com.github.switcherapi.ac.controller;
 
 import com.github.switcherapi.ac.model.domain.Admin;
 import com.github.switcherapi.ac.service.AdminService;
-import com.github.switcherapi.ac.service.JwtTokenService;
+import com.github.switcherapi.ac.service.security.JwtTokenService;
+import com.github.switcherapi.ac.util.Roles;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.test.StepVerifier;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.List;
+import java.util.Objects;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
+@Execution(ExecutionMode.CONCURRENT)
 class ApiResourcesTests {
-	
-	@Autowired AdminService adminService;
+
 	@Autowired JwtTokenService jwtService;
-	@Autowired MockMvc mockMvc;
-	
+	@Autowired WebTestClient webTestClient;
+
+	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
 	private static Admin adminAccount;
+	private static Authentication authentication;
 	private String bearer;
 	
 	@BeforeAll
-	static void setup(
-			@Autowired AdminService adminService) {
-		adminAccount = adminService.createAdminAccount("123456");
+	static void setup(@Autowired AdminService adminService, @Autowired ReactiveAuthenticationManager authenticationManage) {
+		adminAccount = adminService.createAdminAccount(GITHUB_ID).block();
+		authentication = authenticationManage.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						Objects.requireNonNull(adminAccount).getId(), GITHUB_ID,
+						List.of(new SimpleGrantedAuthority(Roles.ROLE_ADMIN.name())))).block();
 	}
 	
 	@BeforeEach
-	void setup() {
-		final var token = jwtService.generateToken(adminAccount.getId()).getLeft();
-		adminService.updateAdminAccountToken(adminAccount, token);
+	void setup(@Autowired AdminService adminService) {
+		var token = jwtService.generateToken(authentication).getLeft();
 		bearer = String.format("Bearer %s", token);
+
+		StepVerifier.create(adminService.updateAdminAccountToken(adminAccount, token))
+				.expectNextCount(1)
+				.verifyComplete();
 	}
 	
 	@Test
-	void shouldNotAccessActuator() throws Exception {
-		this.mockMvc.perform(get("/actuator")
-				.contentType(MediaType.APPLICATION_JSON)
+	void shouldNotAccessActuator() {
+		webTestClient.get()
+				.uri("/actuator")
 				.header(HttpHeaders.AUTHORIZATION, "Bearer INVALID_KEY")
-				.with(csrf()))
-			.andDo(print())
-			.andExpect(status().isUnauthorized());
+				.exchange()
+				.expectStatus().isUnauthorized();
 	}
 	
 	@Test
-	void shouldAccessActuator() throws Exception {
-		this.mockMvc.perform(get("/actuator")
-				.contentType(MediaType.APPLICATION_JSON)
+	void shouldAccessActuator() {
+		this.webTestClient.get()
+				.uri("/actuator")
 				.header(HttpHeaders.AUTHORIZATION, bearer)
-				.with(csrf()))
-			.andDo(print())
-			.andExpect(status().isOk());
+				.exchange()
+				.expectStatus().isOk();
 	}
-	
+
 	@Test
-	void shouldAccessSwagger() throws Exception {
-		this.mockMvc.perform(get("/v3/api-docs")
-				.contentType(MediaType.APPLICATION_JSON)
-				.with(httpBasic("admin", "admin"))
-				.with(csrf()))
-			.andDo(print())
-			.andExpect(status().isOk());
+	void shouldAccessSwagger() {
+		webTestClient.get()
+				.uri("/v3/api-docs")
+				.exchange()
+				.expectStatus().isOk();
 	}
-	
+
 	@Test
-	void shouldNotAccessSwagger() throws Exception {
-		this.mockMvc.perform(get("/v3/api-docs")
-				.contentType(MediaType.APPLICATION_JSON)
-				.with(csrf()))
-			.andDo(print())
-			.andExpect(status().isUnauthorized());
-	}
-	
-	@Test
-	void shouldAccessSwaggerUI() throws Exception {
-		this.mockMvc.perform(get("/swagger-ui/index.html")
-				.contentType(MediaType.APPLICATION_JSON)
-				.with(httpBasic("admin", "admin"))
-				.with(csrf()))
-			.andDo(print())
-			.andExpect(status().isOk());
-	}
-	
-	@Test
-	void shouldNotAccessSwaggerUI() throws Exception {
-		this.mockMvc.perform(get("/swagger-ui/index.html")
-				.contentType(MediaType.APPLICATION_JSON)
-				.with(csrf()))
-			.andDo(print())
-			.andExpect(status().isUnauthorized());
+	void shouldAccessSwaggerUI() {
+		webTestClient.get()
+				.uri("/swagger-ui/index.html")
+				.exchange()
+				.expectStatus().isOk();
 	}
 
 }
