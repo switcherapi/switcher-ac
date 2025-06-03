@@ -180,6 +180,19 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 	}
 
 	@Test
+	void shouldNotBeOkWhenValidate_payloadMalformed() {
+		//given
+		givenAccount("masteradminid");
+
+		var plan = Plan.loadDefault();
+		planService.createPlan(plan).block();
+
+		//test
+		var expectedResponse = ResponseRelayDTO.fail("com.google.gson.stream.MalformedJsonException");
+		this.assertValidate500(SWITCHER.getValue(), expectedResponse);
+	}
+
+	@Test
 	void shouldReturnTrue() {
 		//given
 		givenAccount("adminid_ok", "TEST");

@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ControllerTestUtils {
 
@@ -36,16 +38,21 @@ public class ControllerTestUtils {
         var request = new RequestRelayDTO(null, gson.toJson(feature));
 
         //test
-        webTestClient.post()
-                .uri("/switcher/v1/validate")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
-                .bodyValue(gson.toJson(request))
-                .exchange()
-                .expectStatus().isEqualTo(expectedStatus)
-                .expectBody(String.class)
-                .consumeWith(response ->
-                        assertThat(response.getResponseBody()).contains(gson.toJson(expectedResponse)));
+        performValidatePost(expectedResponse, expectedStatus, request);
+    }
+
+    protected void assertValidate500(String featureName, ResponseRelayDTO expectedResponse) {
+        //given
+        var feature = FeaturePayload.builder()
+                .feature(featureName)
+                .owner("masteradminid")
+                .total(10000)
+                .build();
+
+        var request = new RequestRelayDTO(null, gson.toJson(feature) + "}");
+
+        //test
+        performValidatePost(expectedResponse, 500, request);
     }
 
     protected void assertLimiter(String value, ResponseRelayDTO expectedResponse,
@@ -80,6 +87,25 @@ public class ControllerTestUtils {
             throws JsonProcessingException {
         var planDto = new ObjectMapper().readValue(response, PlanDTO.class);
         assertThat(planDto.name()).isEqualTo(planObj.getName());
+    }
+
+    private void performValidatePost(ResponseRelayDTO expectedResponse, int expectedStatus, RequestRelayDTO request) {
+        webTestClient.post()
+                .uri("/switcher/v1/validate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer relay_token")
+                .bodyValue(gson.toJson(request))
+                .exchange()
+                .expectStatus().isEqualTo(expectedStatus)
+                .expectBody(String.class)
+                .consumeWith(response -> {
+                    var responseObject = gson.fromJson(response.getResponseBody(), ResponseRelayDTO.class);
+
+					assertNotNull(responseObject);
+					assertEquals(expectedResponse.result(), responseObject.result());
+                    assertThat(String.valueOf(responseObject.message())).contains(String.valueOf(expectedResponse.message()));
+                });
+
     }
 
 }
