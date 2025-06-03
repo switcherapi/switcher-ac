@@ -2,6 +2,8 @@ package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.PlanType;
+import com.github.switcherapi.ac.model.dto.AccountDTO;
+import com.github.switcherapi.ac.model.mapper.AccountMapper;
 import com.github.switcherapi.ac.repository.AccountDao;
 import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
@@ -26,11 +28,11 @@ public class AccountService {
 		this.accountDao = accountDao;
 	}
 
-	public Account createAccount(String adminId) {
+	public AccountDTO createAccount(String adminId) {
 		return createAccount(adminId, PlanType.DEFAULT.name());
 	}
 
-	public Account createAccount(String adminId, String planName) {
+	public AccountDTO createAccount(String adminId, String planName) {
 		final var plan = Optional.ofNullable(planDao.findByName(planName))
 				.orElseThrow(() -> new ResponseStatusException(
 						HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName)));
@@ -38,10 +40,10 @@ public class AccountService {
 		var account = Optional.ofNullable(accountDao.findByAdminId(adminId))
 				.orElse(new Account(adminId));
 
-		account.setPlan(plan);
+		account.setPlan(plan.getId());
 		accountDao.getAccountRepository().save(account);
 
-		return account;
+		return AccountMapper.map(account, plan);
 	}
 
 	public void updateAccountPlan(String adminId, String planName) {
@@ -50,7 +52,7 @@ public class AccountService {
 						HttpStatus.NOT_FOUND, String.format(PLAN_NAME_NOT_FOUND.getValue(), planName)));
 
 		final var account = getAccountByAdminId(adminId);
-		account.setPlan(plan);
+		account.setPlan(plan.getId());
 		accountDao.getAccountRepository().save(account);
 	}
 

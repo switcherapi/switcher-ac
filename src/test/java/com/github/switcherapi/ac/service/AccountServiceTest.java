@@ -4,6 +4,8 @@ import com.github.switcherapi.ac.model.domain.PlanAttribute;
 import com.github.switcherapi.ac.model.domain.PlanType;
 import com.github.switcherapi.ac.model.domain.Plan;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@Execution(ExecutionMode.CONCURRENT)
 class AccountServiceTest {
 
     @Autowired AccountService accountService;
@@ -28,12 +31,14 @@ class AccountServiceTest {
         givenPlan();
 
         var account = accountService.getAccountByAdminId("adminid");
-        assertEquals(PlanType.DEFAULT.toString(), account.getPlan().getName());
+        var planDefault = planService.getPlanByName(PlanType.DEFAULT.toString());
+        assertEquals(account.getPlan(), planDefault.getId());
 
         //test
         accountService.updateAccountPlan("adminid", "PLAN_2");
+        var planTwo = planService.getPlanByName("PLAN_2");
         account = accountService.getAccountByAdminId("adminid");
-        assertEquals("PLAN_2", account.getPlan().getName());
+        assertEquals(account.getPlan(), planTwo.getId());
     }
 
     @Test

@@ -9,6 +9,8 @@ import com.github.switcherapi.client.test.SwitcherTest;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,18 +32,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
 class AdminAuthControllerTests {
 	
 	@Autowired AdminRepository adminRepository;
 	@Autowired AdminService adminService;
 	@Autowired JwtTokenService jwtService;
 	@Autowired MockMvc mockMvc;
-	
+
+	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
 	private Pair<String, String> tokens;
 	
 	@BeforeEach
 	void setup() {
-		final var admin = adminService.createAdminAccount("123456");
+		final var admin = adminService.createAdminAccount(GITHUB_ID);
 		tokens = jwtService.generateToken(admin.getId());
 		adminService.updateAdminAccountToken(admin, tokens.getLeft());
 	}
@@ -61,7 +65,7 @@ class AdminAuthControllerTests {
 			.andReturn().getResponse().getContentAsString();
 		
 		var authDto = new ObjectMapper().readValue(json, GitHubAuthDTO.class);
-		assertThat(authDto.admin().gitHubId()).isEqualTo("123456");
+		assertThat(authDto.admin().gitHubId()).isEqualTo(GITHUB_ID);
 		assertThat(authDto.token()).isNotEqualTo(tokens.getLeft());
 		assertThat(authDto.refreshToken()).isNotEqualTo(tokens.getRight());
 	}
@@ -88,6 +92,7 @@ class AdminAuthControllerTests {
 	}
 
 	@SwitcherTest(key = "SWITCHER_AC_ADM", result = false)
+	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotRefreshToken_accountUnauthorized() throws Exception {
 		var count = new CountDownLatch(1);
 		assertFalse(count.await(1, TimeUnit.SECONDS));
@@ -121,7 +126,7 @@ class AdminAuthControllerTests {
 			.andDo(print())
 			.andExpect(status().isOk());
 		
-		var admin = adminRepository.findByGitHubId("123456");
+		var admin = adminRepository.findByGitHubId(GITHUB_ID);
 		assertThat(admin.getToken()).isNull();
 	}
 	

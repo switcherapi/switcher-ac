@@ -9,6 +9,8 @@ import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.PlanService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,9 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
 class SwitcherRelayControllerTests extends ControllerTestUtils {
 	
 	@Autowired AccountService accountService;
@@ -150,6 +153,19 @@ class SwitcherRelayControllerTests extends ControllerTestUtils {
 		var expectedResponse = ResponseRelayDTO.create(true);
 		this.assertValidate("masteradminid", SWITCHER.getValue(),
 				10000, expectedResponse, 200);
+	}
+
+	@Test
+	void shouldNotBeOkWhenValidate_payloadMalformed() throws Exception {
+		//given
+		givenAccount("masteradminid");
+
+		var plan = Plan.loadDefault();
+		planService.createPlan(plan);
+
+		//test
+		var expectedResponse = ResponseRelayDTO.fail("com.google.gson.stream.MalformedJsonException");
+		this.assertValidate500(SWITCHER.getValue(), expectedResponse);
 	}
 
 	@Test

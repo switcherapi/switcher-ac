@@ -1,6 +1,7 @@
 package com.github.switcherapi.ac.service.validator;
 
 import com.github.switcherapi.ac.repository.AccountDao;
+import com.github.switcherapi.ac.repository.PlanDao;
 import com.github.switcherapi.ac.service.validator.beans.ValidateRateLimit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,14 +14,14 @@ import static com.github.switcherapi.ac.service.validator.beans.ValidateRateLimi
 @ConditionalOnProperty(value = "service.validators.native", havingValue = "true")
 public class ValidatorNativeBuilder extends ValidatorBuilderService {
 
-	public ValidatorNativeBuilder(AccountDao accountDao) {
-		super(accountDao);
+	public ValidatorNativeBuilder(AccountDao accountDao, PlanDao planDao) {
+		super(accountDao, planDao);
 		this.initializeValidators();
 	}
 
 	@Override
 	protected void initializeValidators() {
-		validatorHandlers.put(RATE_LIMIT_VALIDATOR, new ValidateRateLimit(accountDao));
+		validatorHandlers.put(RATE_LIMIT_VALIDATOR, new ValidateRateLimit(accountDao, planDao));
 	}
 
 }
