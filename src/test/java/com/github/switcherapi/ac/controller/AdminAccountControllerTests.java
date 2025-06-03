@@ -12,6 +12,8 @@ import com.github.switcherapi.ac.service.PlanService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,9 +30,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
 class AdminAccountControllerTests {
 	
 	@Autowired AdminService adminService;
@@ -72,7 +75,8 @@ class AdminAccountControllerTests {
 	void shouldChangeAccountPlan() throws Exception {
 		//validate before
 		var account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
+		var planDefault = planService.getPlanByName(PlanType.DEFAULT.name());
+		assertThat(account.getPlan()).isEqualTo(planDefault.getId());
 		
 		//test
 		var json = this.mockMvc.perform(patch("/admin/v1/account/change/{adminId}", ADMIN_ID)
@@ -87,18 +91,20 @@ class AdminAccountControllerTests {
 		var accountDto = new ObjectMapper().readValue(json, AccountDTO.class);
 		assertThat(accountDto.adminId()).isEqualTo(ADMIN_ID);
 		assertThat(accountDto.plan().name()).isEqualTo("BASIC");
-		
+
 		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
+		var planBasic = planService.getPlanByName("BASIC");
+		assertThat(account.getPlan()).isEqualTo(planBasic.getId());
 	}
 	
 	@Test
 	void shouldChangeAccountPlan_afterDeletingPlan() throws Exception {
 		//given
-		var account = accountService.createAccount(ADMIN_ID, "BASIC");
+		var accountDto = accountService.createAccount(ADMIN_ID, "BASIC");
 		
 		//validate before
-		assertThat(account.getPlan().getName()).isEqualTo("BASIC");
+		var planBasic = planService.getPlanByName("BASIC");
+		assertThat(accountDto.plan().id()).isEqualTo(planBasic.getId());
 		
 		//test
 		this.mockMvc.perform(delete("/plan/v2/delete")
@@ -109,8 +115,9 @@ class AdminAccountControllerTests {
 			.andExpect(status().isOk())
 			.andExpect(content().string("Plan deleted"));
 		
-		account = accountService.getAccountByAdminId(ADMIN_ID);
-		assertThat(account.getPlan().getName()).isEqualTo(PlanType.DEFAULT.name());
+		var account = accountService.getAccountByAdminId(ADMIN_ID);
+		var planDefault = planService.getPlanByName(PlanType.DEFAULT.name());
+		assertThat(account.getPlan()).isEqualTo(planDefault.getId());
 	}
 	
 	@Test

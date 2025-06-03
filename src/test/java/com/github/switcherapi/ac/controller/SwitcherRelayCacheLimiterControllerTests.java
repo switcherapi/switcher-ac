@@ -8,6 +8,8 @@ import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.service.PlanService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +23,7 @@ import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 @SpringBootTest
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
 @TestPropertySource(properties = {
 		"service.cache.enabled=true",
 		"service.cache.duration=1"

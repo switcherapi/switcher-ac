@@ -38,7 +38,7 @@ public class AccountDao {
 
         if (Objects.nonNull(planFound)) {
             final var query = new Query();
-            query.addCriteria(Criteria.where("plan").is(planFound));
+            query.addCriteria(Criteria.where("plan").is(planFound.getId()));
 
             return mongoTemplate.find(query, Account.class);
         }

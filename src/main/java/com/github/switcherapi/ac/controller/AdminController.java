@@ -2,7 +2,6 @@ package com.github.switcherapi.ac.controller;
 
 import com.github.switcherapi.ac.model.dto.AccountDTO;
 import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
-import com.github.switcherapi.ac.model.mapper.AccountMapper;
 import com.github.switcherapi.ac.service.AccountService;
 import com.github.switcherapi.ac.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,8 +50,7 @@ public class AdminController {
 	@PatchMapping(value = "/account/change/{adminId}")
 	public ResponseEntity<AccountDTO> changeAccountPlan(@PathVariable(value="adminId") 
 		String adminId, @RequestParam String plan) {
-		final var account = accountService.createAccount(adminId, plan);
-		return ResponseEntity.ok(AccountMapper.createCopy(account));
+		return ResponseEntity.ok(accountService.createAccount(adminId, plan));
 	}
 
 }

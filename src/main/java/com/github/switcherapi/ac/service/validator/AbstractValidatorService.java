@@ -4,6 +4,7 @@ import com.github.switcherapi.ac.model.domain.Account;
 import com.github.switcherapi.ac.model.domain.FeaturePayload;
 import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.github.switcherapi.ac.repository.AccountDao;
+import com.github.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,10 +19,13 @@ public abstract class AbstractValidatorService {
 
 	protected final AccountDao accountDao;
 
+	protected final PlanDao planDao;
+
 	protected Map<SwitcherValidatorParams, Object> params;
 
-	protected AbstractValidatorService(AccountDao accountDao) {
+	protected AbstractValidatorService(AccountDao accountDao, PlanDao planDao) {
 		this.accountDao = accountDao;
+		this.planDao = planDao;
 	}
 
 	/**

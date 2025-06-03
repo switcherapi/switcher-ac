@@ -13,6 +13,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
@@ -33,9 +35,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
 class AdminGitHubAuthControllerTests {
 
 	@Autowired MockMvc mockMvc;
@@ -71,6 +74,7 @@ class AdminGitHubAuthControllerTests {
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM)
+	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldLoginWithGitHub() throws Exception {
 		//given
 		givenGitHubToken();
@@ -93,6 +97,7 @@ class AdminGitHubAuthControllerTests {
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
+	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotLoginWithGitHub_accountNotAllowed() throws Exception {
 		//given
 		givenGitHubToken();
@@ -134,6 +139,7 @@ class AdminGitHubAuthControllerTests {
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
+	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotLoginWithGitHub_invalidCode() throws Exception {
 		//given
 		givenResponseInvalidCode();
