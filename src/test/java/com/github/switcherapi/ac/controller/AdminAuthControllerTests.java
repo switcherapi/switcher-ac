@@ -94,9 +94,6 @@ class AdminAuthControllerTests {
 	@SwitcherTest(key = "SWITCHER_AC_ADM", result = false)
 	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotRefreshToken_accountUnauthorized() throws Exception {
-		var count = new CountDownLatch(1);
-		assertFalse(count.await(1, TimeUnit.SECONDS));
-
 		this.mockMvc.perform(post("/admin/v1/auth/refresh")
 						.contentType(MediaType.APPLICATION_JSON)
 						.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.getLeft())
