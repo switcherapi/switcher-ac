@@ -19,6 +19,7 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
+import static com.github.switcherapi.ac.model.domain.Feature.DOMAIN;
 import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 
 @SpringBootTest
@@ -31,7 +32,10 @@ import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 })
 class SwitcherRelayCacheLimiterControllerTests extends ControllerTestUtils {
 
-	@Autowired PlanService planService;
+	private static final String TEST_PLAN = "TEST";
+
+	@Autowired
+	PlanService planService;
 
 	@BeforeEach
 	void setupPlan() {
@@ -41,40 +45,56 @@ class SwitcherRelayCacheLimiterControllerTests extends ControllerTestUtils {
 	@Test
 	void shouldReturnUnchangedRateLimit() {
 		//given
-		givenAccount("adminid", "TEST");
+		givenAccount("adminid", TEST_PLAN);
 
 		//test
 		var expectedResponse = ResponseRelayDTO.success(Metadata.builder().rateLimit(100).build());
 		this.assertLimiter("adminid", expectedResponse, 200);
 
 		//update plan rate limit to 200
-		updatePlanRateLimit();
+		updatePlanFeature(RATE_LIMIT.getValue(), 200);
 
 		//test again
 		this.assertLimiter("adminid", expectedResponse, 200);
 	}
 
-	private void updatePlanRateLimit() {
-		StepVerifier.create(planService.updatePlan("TEST", Plan.builder()
-				.attributes(List.of(
-						PlanAttribute.builder()
-								.feature(RATE_LIMIT.getValue())
-								.value(200)
-								.build()))
-				.build()))
-				.expectNextCount(1)
-				.verifyComplete();
+	@Test
+	void shouldReturnUnchangedValidationResponse() {
+		//given
+		givenAccount("adminid", TEST_PLAN);
+
+		//test
+		var expectedResponse = ResponseRelayDTO.fail("Feature limit has been reached");
+		this.assertValidate("adminid", DOMAIN.getValue(),
+				1, expectedResponse, 200);
+
+		//update Domain feature limit to 2
+		updatePlanFeature(DOMAIN.getValue(), 2);
+
+		//test again
+		this.assertValidate("adminid", DOMAIN.getValue(),
+				1, expectedResponse, 200);
 	}
 
 	private void createPlan() {
 		StepVerifier.create(planService.createPlan(Plan.builder()
-				.name("TEST")
-				.attributes(List.of(
-						PlanAttribute.builder()
-								.feature(RATE_LIMIT.getValue())
-								.value(100)
-								.build()))
-				.build()))
+						.name(TEST_PLAN)
+						.attributes(List.of(
+								PlanAttribute.builder().feature(DOMAIN.getValue()).value(1).build(),
+								PlanAttribute.builder().feature(RATE_LIMIT.getValue()).value(100).build()))
+						.build()))
+				.expectNextCount(1)
+				.verifyComplete();
+	}
+
+	private void updatePlanFeature(String feature, int value) {
+		StepVerifier.create(planService.updatePlan(TEST_PLAN, Plan.builder()
+						.attributes(List.of(
+								PlanAttribute.builder()
+										.feature(feature)
+										.value(value)
+										.build()))
+						.build()))
 				.expectNextCount(1)
 				.verifyComplete();
 	}
