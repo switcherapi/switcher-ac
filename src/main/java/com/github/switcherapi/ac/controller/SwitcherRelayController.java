@@ -84,6 +84,7 @@ public class SwitcherRelayController {
 	
 	@Operation(summary = "Perform account validation given input value")
 	@PostMapping(value = "/validate")
+	@Cacheable(value = "validateCache", key = "#request.payload().toString()")
 	public Mono<ResponseEntity<ResponseRelayDTO>> validate(@RequestBody RequestRelayDTO request) {
 		try {
 			var featureRequest = gson.fromJson(request.payload().toString(), FeaturePayload.class);
