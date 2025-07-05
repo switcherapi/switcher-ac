@@ -1,4 +1,9 @@
-FROM ubuntu:latest
+FROM mcr.microsoft.com/devcontainers/java:1-21-bullseye
+
+ARG INSTALL_MAVEN="true"
+ARG MAVEN_VERSION="3.9.9"
+ARG INSTALL_GRADLE="false"
+ARG GRADLE_VERSION=""
 
 # Configure apt and install packages
 RUN apt-get update \
@@ -9,6 +14,9 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
+RUN if [ "${INSTALL_MAVEN}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install maven \"${MAVEN_VERSION}\""; fi \
+    && if [ "${INSTALL_GRADLE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi
 
 # set up a nicer prompt
 RUN git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
