@@ -41,12 +41,13 @@ class PlanControllerTests extends ControllerTestUtils {
 	@Autowired JwtTokenService jwtService;
 	@Autowired PlanService planService;
 
+	private static final String GITHUB_ID = String.format("[PlanControllerTests]_github_id_%s", System.currentTimeMillis());
 	private String bearer;
 	private static Admin admin;
 	
 	@BeforeAll
 	static void setup(@Autowired AdminService adminService) {
-		admin = adminService.createAdminAccount("[PlanControllerTests]_admin");
+		admin = adminService.createAdminAccount(GITHUB_ID);
 	}
 	
 	@BeforeEach
