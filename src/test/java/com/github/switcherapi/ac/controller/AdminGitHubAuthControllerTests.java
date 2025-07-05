@@ -69,7 +69,6 @@ class AdminGitHubAuthControllerTests {
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM)
-	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldLoginWithGitHub() throws Exception {
 		// given
 		givenGitHubToken();
@@ -92,7 +91,6 @@ class AdminGitHubAuthControllerTests {
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
-	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotLoginWithGitHub_accountNotAllowed() throws Exception {
 		//given
 		givenGitHubToken();
@@ -140,7 +138,6 @@ class AdminGitHubAuthControllerTests {
 	}
 
 	@SwitcherTest(key = SwitcherFeatures.SWITCHER_AC_ADM, result = false)
-	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotLoginWithGitHub_invalidCode() {
 		//given
 		givenResponseInvalidCode();

@@ -11,8 +11,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -35,14 +33,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @AutoConfigureDataMongo
 @AutoConfigureWebTestClient
-@Execution(ExecutionMode.CONCURRENT)
 class AdminAuthControllerTests {
 
 	@Autowired AdminRepository adminRepository;
 	@Autowired JwtTokenService jwtTokenService;
 	@Autowired WebTestClient webTestClient;
 
-	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
+	private static final String GITHUB_ID = String.format("[AdminAuthControllerTests]_github_id_%s", System.currentTimeMillis());
 	private static Admin adminAccount;
 	private static Authentication authentication;
 	private Pair<String, String> tokens;
@@ -119,7 +116,6 @@ class AdminAuthControllerTests {
 	}
 
 	@SwitcherTest(key = "SWITCHER_AC_ADM", result = false)
-	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotRefreshToken_accountUnauthorized() {
 		webTestClient.post()
 				.uri(uriBuilder -> uriBuilder.path("/admin/v1/auth/refresh")

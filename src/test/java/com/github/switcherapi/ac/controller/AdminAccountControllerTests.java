@@ -44,8 +44,8 @@ class AdminAccountControllerTests {
 	@Autowired AccountService accountService;
 	@Autowired WebTestClient webTestClient;
 
-	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
-	private static final String ADMIN_ID = "mock_account1";
+	private static final String GITHUB_ID = String.format("[AdminAccountControllerTests]_github_id_%s", System.currentTimeMillis());
+	private static final String ADMIN_ID = "[AdminAccountControllerTests]_account1";
 	private static Admin adminAccount;
 	private static Authentication authentication;
 	private String bearer;
