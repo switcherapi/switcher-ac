@@ -31,7 +31,7 @@ class ApiResourcesTests {
 	@Autowired JwtTokenService jwtService;
 	@Autowired WebTestClient webTestClient;
 
-	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
+	private static final String GITHUB_ID = String.format("[ApiResourcesTests]_github_id_%s", System.currentTimeMillis());
 	private static Admin adminAccount;
 	private static Authentication authentication;
 	private String bearer;

@@ -41,7 +41,7 @@ class PlanControllerTests extends ControllerTestUtils {
 	@Autowired JwtTokenService jwtTokenService;
 	@Autowired PlanService planService;
 
-	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
+	private static final String GITHUB_ID = String.format("[PlanControllerTests]_github_id_%s", System.currentTimeMillis());
 	private static Admin adminAccount;
 	private static Authentication authentication;
 	private String bearer;
