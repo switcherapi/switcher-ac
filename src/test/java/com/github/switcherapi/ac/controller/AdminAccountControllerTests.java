@@ -42,7 +42,7 @@ class AdminAccountControllerTests {
 	@Autowired AccountService accountService;
 	@Autowired MockMvc mockMvc;
 
-	private static final String ADMIN_ID = "mock_account1";
+	private static final String ADMIN_ID = "[AdminAccountControllerTests]_account1";
 	private static Admin adminAccount;
 	private String bearer;
 

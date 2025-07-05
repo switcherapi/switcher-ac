@@ -10,13 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Slf4j
-@Getter
-@Setter
 @ConfigurationProperties(prefix = "switcher")
 public class SwitcherFeatures extends SwitcherContextBase implements SnapshotCallback {
 
 	public static final String SWITCHER_AC_ADM = "SWITCHER_AC_ADM";
 
+	@Getter
+	@Setter
 	private String relayCode;
 
 	@PostConstruct
@@ -27,7 +27,6 @@ public class SwitcherFeatures extends SwitcherContextBase implements SnapshotCal
 		super.configureClient();
 
 		scheduleSnapshotAutoUpdate(snapshot.getUpdateInterval(), this);
-		checkSwitchers();
 	}
 
 	@Override

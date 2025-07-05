@@ -9,8 +9,6 @@ import com.github.switcherapi.client.test.SwitcherTest;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
-@Execution(ExecutionMode.CONCURRENT)
 class AdminAuthControllerTests {
 	
 	@Autowired AdminRepository adminRepository;
@@ -40,7 +37,7 @@ class AdminAuthControllerTests {
 	@Autowired JwtTokenService jwtService;
 	@Autowired MockMvc mockMvc;
 
-	private static final String GITHUB_ID = String.format("mock_github_id_%s", System.currentTimeMillis());
+	private static final String GITHUB_ID = String.format("[AdminAuthControllerTests]_github_id_%s", System.currentTimeMillis());
 	private Pair<String, String> tokens;
 	
 	@BeforeEach
@@ -92,7 +89,6 @@ class AdminAuthControllerTests {
 	}
 
 	@SwitcherTest(key = "SWITCHER_AC_ADM", result = false)
-	@Execution(ExecutionMode.SAME_THREAD)
 	void shouldNotRefreshToken_accountUnauthorized() throws Exception {
 		this.mockMvc.perform(post("/admin/v1/auth/refresh")
 						.contentType(MediaType.APPLICATION_JSON)

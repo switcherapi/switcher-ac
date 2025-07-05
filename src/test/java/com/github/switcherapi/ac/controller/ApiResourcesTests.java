@@ -36,7 +36,7 @@ class ApiResourcesTests {
 	@BeforeAll
 	static void setup(
 			@Autowired AdminService adminService) {
-		adminAccount = adminService.createAdminAccount("123456");
+		adminAccount = adminService.createAdminAccount("[ApiResourcesTests]_admin");
 	}
 	
 	@BeforeEach

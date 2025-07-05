@@ -46,7 +46,7 @@ class PlanControllerTests extends ControllerTestUtils {
 	
 	@BeforeAll
 	static void setup(@Autowired AdminService adminService) {
-		admin = adminService.createAdminAccount("123456");
+		admin = adminService.createAdminAccount("[PlanControllerTests]_admin");
 	}
 	
 	@BeforeEach
