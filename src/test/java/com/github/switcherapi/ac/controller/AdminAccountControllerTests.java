@@ -42,6 +42,7 @@ class AdminAccountControllerTests {
 	@Autowired AccountService accountService;
 	@Autowired MockMvc mockMvc;
 
+	private static final String GITHUB_ID = String.format("[AdminAccountControllerTests]_github_id_%s", System.currentTimeMillis());
 	private static final String ADMIN_ID = "[AdminAccountControllerTests]_account1";
 	private static Admin adminAccount;
 	private String bearer;
@@ -51,7 +52,7 @@ class AdminAccountControllerTests {
 			@Autowired AccountService accountService,
 			@Autowired AdminService adminService) {
 		accountService.createAccount(ADMIN_ID);
-		adminAccount = adminService.createAdminAccount("123456");
+		adminAccount = adminService.createAdminAccount(GITHUB_ID);
 	}
 	
 	@BeforeEach

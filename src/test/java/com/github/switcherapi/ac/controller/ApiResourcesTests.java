@@ -29,14 +29,15 @@ class ApiResourcesTests {
 	@Autowired AdminService adminService;
 	@Autowired JwtTokenService jwtService;
 	@Autowired MockMvc mockMvc;
-	
+
+	private static final String GITHUB_ID = String.format("[ApiResourcesTests]_github_id_%s", System.currentTimeMillis());
 	private static Admin adminAccount;
 	private String bearer;
 	
 	@BeforeAll
 	static void setup(
 			@Autowired AdminService adminService) {
-		adminAccount = adminService.createAdminAccount("[ApiResourcesTests]_admin");
+		adminAccount = adminService.createAdminAccount(GITHUB_ID);
 	}
 	
 	@BeforeEach
