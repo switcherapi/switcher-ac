@@ -1,5 +1,10 @@
 FROM mcr.microsoft.com/devcontainers/java:1-21-bullseye
 
+# Create a non-root user
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
 ARG INSTALL_MAVEN="true"
 ARG MAVEN_VERSION="3.9.9"
 ARG INSTALL_GRADLE="false"
@@ -15,10 +20,15 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN if [ "${INSTALL_MAVEN}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install maven \"${MAVEN_VERSION}\""; fi \
-    && if [ "${INSTALL_GRADLE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi
+RUN if [ "${INSTALL_MAVEN}" = "true" ]; then \
+    su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install maven \"${MAVEN_VERSION}\""; fi \
+    && if [ "${INSTALL_GRADLE}" = "true" ]; then \
+    su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi
 
 # set up a nicer prompt
 RUN git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
 
 RUN echo "source $HOME/.bash-git-prompt/gitprompt.sh" >> ~/.bashrc
+
+# Switch to non-root user
+USER $USERNAME
