@@ -29,7 +29,7 @@ import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 		"service.cache.enabled=true",
 		"service.cache.duration=1"
 })
-class SwitcherRelayCacheLimiterControllerTests extends ControllerTestUtils {
+class SwitcherRelayCacheLimiterControllerTest extends ControllerTestUtils {
 
 	private static final String TEST_PLAN = "TEST";
 

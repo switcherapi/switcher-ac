@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
-class AdminPlanControllerErrorTests {
+class AdminPlanControllerErrorTest {
 
 	@Mock private PlanService mockPlanService;
 

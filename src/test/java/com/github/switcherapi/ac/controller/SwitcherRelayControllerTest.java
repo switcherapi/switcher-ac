@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
-class SwitcherRelayControllerTests extends ControllerTestUtils {
+class SwitcherRelayControllerTest extends ControllerTestUtils {
 	
 	@Autowired AccountService accountService;
 	@Autowired PlanService planService;

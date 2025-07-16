@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
-class ApiControllerTests {
+class ApiControllerTest {
 	
 	@Autowired MockMvc mockMvc;
 	
