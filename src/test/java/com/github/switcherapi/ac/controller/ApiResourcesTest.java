@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
-class ApiResourcesTests {
+class ApiResourcesTest {
 	
 	@Autowired AdminService adminService;
 	@Autowired JwtTokenService jwtService;

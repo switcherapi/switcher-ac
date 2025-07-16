@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
-class AdminAuthControllerTests {
+class AdminAuthControllerTest {
 	
 	@Autowired AdminRepository adminRepository;
 	@Autowired AdminService adminService;

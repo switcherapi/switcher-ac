@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
 @Execution(ExecutionMode.CONCURRENT)
-class AdminAccountControllerTests {
+class AdminAccountControllerTest {
 	
 	@Autowired AdminService adminService;
 	@Autowired JwtTokenService jwtService;

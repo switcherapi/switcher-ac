@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureDataMongo
 @AutoConfigureMockMvc
-class SwitcherRelayControllerErrorTests {
+class SwitcherRelayControllerErrorTest {
 
 	@Mock private AccountService mockAccountService;
 	@Mock private ValidatorBuilderService mockValidatorBuilderService;
