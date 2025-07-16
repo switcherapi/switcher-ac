@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @AutoConfigureDataMongo
 @AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
-class AdminAccountControllerTests {
+class AdminAccountControllerTest {
 
 	@Autowired JwtTokenService jwtTokenService;
 	@Autowired PlanService planService;

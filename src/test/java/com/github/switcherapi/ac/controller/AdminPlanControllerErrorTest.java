@@ -23,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 @AutoConfigureDataMongo
 @AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
-class AdminPlanControllerErrorTests {
+class AdminPlanControllerErrorTest {
 
 	@Mock private PlanService mockPlanService;
 

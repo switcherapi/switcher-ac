@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @AutoConfigureDataMongo
 @AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
-class SwitcherRelayControllerTests extends ControllerTestUtils {
+class SwitcherRelayControllerTest extends ControllerTestUtils {
 	
 	@Autowired AccountService accountService;
 	@Autowired PlanService planService;

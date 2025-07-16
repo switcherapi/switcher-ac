@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @AutoConfigureDataMongo
 @AutoConfigureWebTestClient
-class AdminAuthControllerTests {
+class AdminAuthControllerTest {
 
 	@Autowired AdminRepository adminRepository;
 	@Autowired JwtTokenService jwtTokenService;

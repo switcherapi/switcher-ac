@@ -1,45 +1,19 @@
 package com.github.switcherapi.ac.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.switcherapi.ac.model.GitHubDetail;
+import com.github.switcherapi.ac.AcMockWebServer;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
-import lombok.extern.slf4j.Slf4j;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.springframework.http.MediaType;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @Execution(ExecutionMode.CONCURRENT)
-public class GitHubServiceTest {
-
-	private final ObjectMapper mapper = new ObjectMapper();
-
-	public static MockWebServer mockBackend;
+class GitHubServiceTest extends AcMockWebServer {
 
 	private GitHubService gitHubService;
-
-	@BeforeAll
-	static void setup() throws IOException {
-		mockBackend = new MockWebServer();
-		mockBackend.start();
-	}
-
-	@AfterAll
-	static void tearDown() throws IOException {
-		mockBackend.shutdown();
-	}
 
 	@BeforeEach
 	void initialize() {
@@ -101,28 +75,6 @@ public class GitHubServiceTest {
 		var getGitHubDetail = failGitHubService.getGitHubDetail("code");
 		var ex = assertThrows(ResponseStatusException.class, getGitHubDetail::block);
 		assertEquals("401 UNAUTHORIZED \"Invalid GitHub account\"", ex.getMessage());
-	}
-
-	private void givenGitHubToken() {
-		mockBackend.enqueue(new MockResponse()
-				.setBody("{\"access_token\":\"123\",\"token_type\":\"bearer\",\"scope\":\"\"}")
-				.addHeader("Content-Type", MediaType.APPLICATION_JSON));
-	}
-
-	private void givenGitHubDetails() {
-		final var githubAccountDetail = new GitHubDetail("123", "UserName", "login", "http://avatar.com");
-
-		try {
-			mockBackend.enqueue(new MockResponse()
-					.setBody(mapper.writeValueAsString(githubAccountDetail))
-					.addHeader("Content-Type", MediaType.APPLICATION_JSON));
-		} catch (JsonProcessingException e) {
-			log.error("Error on parsing GitHubDetail", e);
-		}
-	}
-
-	private void givenGitHubTokenInvalid() {
-		mockBackend.enqueue(new MockResponse().setResponseCode(400));
 	}
 
 }

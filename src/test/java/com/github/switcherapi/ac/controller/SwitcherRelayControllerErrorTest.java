@@ -21,7 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureDataMongo
-class SwitcherRelayControllerErrorTests {
+class SwitcherRelayControllerErrorTest {
 
 	@Mock private AccountService mockAccountService;
 	@Mock private ValidatorBuilderService mockValidatorBuilderService;

@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureDataMongo
 @AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
-class PlanControllerTests extends ControllerTestUtils {
+class PlanControllerTest extends ControllerTestUtils {
 
 	@Autowired JwtTokenService jwtTokenService;
 	@Autowired PlanService planService;
