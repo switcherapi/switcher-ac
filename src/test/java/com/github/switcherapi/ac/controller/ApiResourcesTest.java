@@ -26,7 +26,7 @@ import java.util.Objects;
 @SpringBootTest
 @AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
-class ApiResourcesTests {
+class ApiResourcesTest {
 
 	@Autowired JwtTokenService jwtService;
 	@Autowired WebTestClient webTestClient;

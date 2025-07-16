@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
-class ApiControllerTests {
+class ApiControllerTest {
 	
 	@Autowired WebTestClient webTestClient;
 	
