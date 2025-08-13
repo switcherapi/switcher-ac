@@ -6,7 +6,7 @@ import com.github.switcherapi.ac.repository.AdminRepository;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.security.JwtTokenService;
 import com.github.switcherapi.ac.util.Roles;
-import com.github.switcherapi.client.test.SwitcherTest;
+import com.switcherapi.client.test.SwitcherTest;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

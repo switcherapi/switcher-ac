@@ -4,7 +4,7 @@ import com.github.switcherapi.ac.AcMockWebServer;
 import com.github.switcherapi.ac.config.SwitcherFeatures;
 import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
-import com.github.switcherapi.client.test.SwitcherTest;
+import com.switcherapi.client.test.SwitcherTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
