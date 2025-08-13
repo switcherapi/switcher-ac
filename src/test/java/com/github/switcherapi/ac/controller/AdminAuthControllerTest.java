@@ -5,7 +5,7 @@ import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.github.switcherapi.ac.repository.AdminRepository;
 import com.github.switcherapi.ac.service.AdminService;
 import com.github.switcherapi.ac.service.JwtTokenService;
-import com.github.switcherapi.client.test.SwitcherTest;
+import com.switcherapi.client.test.SwitcherTest;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -2,7 +2,7 @@ package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.AcMockWebServer;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
-import com.github.switcherapi.client.exception.SwitcherRemoteException;
+import com.switcherapi.client.exception.SwitcherRemoteException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package com.github.switcherapi.ac.model.mapper;
 
-import com.github.switcherapi.client.exception.SwitcherException;
+import com.switcherapi.client.exception.SwitcherException;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;

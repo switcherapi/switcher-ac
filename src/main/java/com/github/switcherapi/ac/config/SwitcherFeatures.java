@@ -1,8 +1,8 @@
 package com.github.switcherapi.ac.config;
 
 import com.github.switcherapi.ac.util.FileUtil;
-import com.github.switcherapi.client.SnapshotCallback;
-import com.github.switcherapi.client.SwitcherContextBase;
+import com.switcherapi.client.SnapshotCallback;
+import com.switcherapi.client.SwitcherContextBase;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
