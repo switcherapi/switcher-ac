@@ -1,8 +1,8 @@
 package com.github.switcherapi.ac.service;
 
 import com.github.switcherapi.ac.AcMockWebServer;
+import com.github.switcherapi.ac.exception.SwitcherAcException;
 import com.github.switcherapi.ac.service.facades.GitHubFacade;
-import com.switcherapi.client.exception.SwitcherRemoteException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,8 +41,8 @@ class GitHubServiceTest extends AcMockWebServer {
 		var failGitHubService = new GitHubService(
 				new GitHubFacade("clientId", "oauthSecret", "invalid", "invalid"));
 
-		var ex = assertThrows(SwitcherRemoteException.class, () -> failGitHubService.getToken("code"));
-		assertEquals("Something went wrong: It was not possible to reach the Switcher-API on this endpoint: invalid", ex.getMessage());
+		var ex = assertThrows(SwitcherAcException.class, () -> failGitHubService.getToken("code"));
+		assertEquals("Something went wrong trying with url: invalid", ex.getMessage());
 	}
 
 	@Test
@@ -67,8 +67,8 @@ class GitHubServiceTest extends AcMockWebServer {
 		var failGitHubService = new GitHubService(
 				new GitHubFacade("clientId", "oauthSecret", "invalid", "invalid"));
 
-		var ex = assertThrows(SwitcherRemoteException.class, () -> failGitHubService.getGitHubDetail("code"));
-		assertEquals("Something went wrong: It was not possible to reach the Switcher-API on this endpoint: invalid", ex.getMessage());
+		var ex = assertThrows(SwitcherAcException.class, () -> failGitHubService.getGitHubDetail("code"));
+		assertEquals("Something went wrong trying with url: invalid", ex.getMessage());
 	}
 
 }

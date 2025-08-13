@@ -1,7 +1,7 @@
 package com.github.switcherapi.ac.service.facades;
 
+import com.github.switcherapi.ac.exception.SwitcherAcException;
 import com.github.switcherapi.ac.model.GitHubDetail;
-import com.switcherapi.client.exception.SwitcherRemoteException;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -101,7 +101,7 @@ public class GitHubFacade {
 		if (e instanceof InterruptedException) {
 			Thread.currentThread().interrupt();
 		}
-		throw new SwitcherRemoteException(url, e);
+		throw new SwitcherAcException(url, e);
 	}
 
 }
