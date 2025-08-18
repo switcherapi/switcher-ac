@@ -1,0 +1,108 @@
+package com.switcherapi.ac.controller;
+
+import com.switcherapi.ac.model.domain.Admin;
+import com.switcherapi.ac.service.AdminService;
+import com.switcherapi.ac.service.JwtTokenService;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@Execution(ExecutionMode.CONCURRENT)
+class ApiResourcesTest {
+	
+	@Autowired AdminService adminService;
+	@Autowired JwtTokenService jwtService;
+	@Autowired MockMvc mockMvc;
+
+	private static final String GITHUB_ID = String.format("[ApiResourcesTests]_github_id_%s", System.currentTimeMillis());
+	private static Admin adminAccount;
+	private String bearer;
+	
+	@BeforeAll
+	static void setup(
+			@Autowired AdminService adminService) {
+		adminAccount = adminService.createAdminAccount(GITHUB_ID);
+	}
+	
+	@BeforeEach
+	void setup() {
+		final var token = jwtService.generateToken(adminAccount.getId()).getLeft();
+		adminService.updateAdminAccountToken(adminAccount, token);
+		bearer = String.format("Bearer %s", token);
+	}
+	
+	@Test
+	void shouldNotAccessActuator() throws Exception {
+		this.mockMvc.perform(get("/actuator")
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer INVALID_KEY")
+				.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+	}
+	
+	@Test
+	void shouldAccessActuator() throws Exception {
+		this.mockMvc.perform(get("/actuator")
+				.contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, bearer)
+				.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+	
+	@Test
+	void shouldAccessSwagger() throws Exception {
+		this.mockMvc.perform(get("/v3/api-docs")
+				.contentType(MediaType.APPLICATION_JSON)
+				.with(httpBasic("admin", "admin"))
+				.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+	
+	@Test
+	void shouldNotAccessSwagger() throws Exception {
+		this.mockMvc.perform(get("/v3/api-docs")
+				.contentType(MediaType.APPLICATION_JSON)
+				.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+	}
+	
+	@Test
+	void shouldAccessSwaggerUI() throws Exception {
+		this.mockMvc.perform(get("/swagger-ui/index.html")
+				.contentType(MediaType.APPLICATION_JSON)
+				.with(httpBasic("admin", "admin"))
+				.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+	
+	@Test
+	void shouldNotAccessSwaggerUI() throws Exception {
+		this.mockMvc.perform(get("/swagger-ui/index.html")
+				.contentType(MediaType.APPLICATION_JSON)
+				.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+	}
+
+}
