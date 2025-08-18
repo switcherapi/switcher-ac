@@ -1,6 +1,6 @@
-package com.github.switcherapi.ac.service.security;
+package com.switcherapi.ac.service.security;
 
-import com.github.switcherapi.ac.util.Roles;
+import com.switcherapi.ac.util.Roles;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

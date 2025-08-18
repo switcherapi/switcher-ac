@@ -1,8 +1,8 @@
-package com.github.switcherapi.ac.model.mapper;
+package com.switcherapi.ac.model.mapper;
 
-import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.model.dto.AdminDTO;
-import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
+import com.switcherapi.ac.model.domain.Admin;
+import com.switcherapi.ac.model.dto.AdminDTO;
+import com.switcherapi.ac.model.dto.GitHubAuthDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;

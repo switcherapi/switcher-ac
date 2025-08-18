@@ -1,9 +1,9 @@
-package com.github.switcherapi.ac.model.mapper;
+package com.switcherapi.ac.model.mapper;
 
-import com.github.switcherapi.ac.model.domain.Feature;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanAttribute;
-import com.github.switcherapi.ac.model.dto.PlanDTO;
+import com.switcherapi.ac.model.domain.Feature;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.domain.PlanAttribute;
+import com.switcherapi.ac.model.dto.PlanDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

@@ -1,7 +1,7 @@
-package com.github.switcherapi.ac.service.validator;
+package com.switcherapi.ac.service.validator;
 
-import com.github.switcherapi.ac.repository.AccountDao;
-import com.github.switcherapi.ac.repository.PlanDao;
+import com.switcherapi.ac.repository.AccountDao;
+import com.switcherapi.ac.repository.PlanDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,7 +17,7 @@ import java.util.Objects;
 @ConditionalOnProperty(value = "service.validators.native", havingValue = "false")
 public class ValidatorRuntimeBuilder extends ValidatorBuilderService {
 	
-	private static final String VALIDATORS_PATH = "com.github.switcherapi.ac.service.validator.beans";
+	private static final String VALIDATORS_PATH = "com.switcherapi.ac.service.validator.beans";
 
 	private final AutowireCapableBeanFactory autowireCapableBeanFactory;
 

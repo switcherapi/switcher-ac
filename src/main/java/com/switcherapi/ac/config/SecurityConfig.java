@@ -1,9 +1,9 @@
-package com.github.switcherapi.ac.config;
+package com.switcherapi.ac.config;
 
-import com.github.switcherapi.ac.repository.AdminRepository;
-import com.github.switcherapi.ac.service.security.JwtTokenAuthenticationFilter;
-import com.github.switcherapi.ac.service.security.JwtTokenService;
-import com.github.switcherapi.ac.util.Roles;
+import com.switcherapi.ac.repository.AdminRepository;
+import com.switcherapi.ac.service.security.JwtTokenAuthenticationFilter;
+import com.switcherapi.ac.service.security.JwtTokenService;
+import com.switcherapi.ac.util.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;

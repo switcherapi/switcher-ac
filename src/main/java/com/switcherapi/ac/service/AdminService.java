@@ -1,11 +1,11 @@
-package com.github.switcherapi.ac.service;
+package com.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
-import com.github.switcherapi.ac.model.mapper.GitHubAuthMapper;
-import com.github.switcherapi.ac.repository.AdminRepository;
-import com.github.switcherapi.ac.service.security.JwtTokenService;
-import com.github.switcherapi.ac.util.Roles;
+import com.switcherapi.ac.model.domain.Admin;
+import com.switcherapi.ac.model.dto.GitHubAuthDTO;
+import com.switcherapi.ac.model.mapper.GitHubAuthMapper;
+import com.switcherapi.ac.repository.AdminRepository;
+import com.switcherapi.ac.service.security.JwtTokenService;
+import com.switcherapi.ac.util.Roles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -18,9 +18,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Objects;
 
-import static com.github.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
-import static com.github.switcherapi.ac.config.SwitcherFeatures.getSwitcher;
-import static com.github.switcherapi.ac.util.Constants.BEARER;
+import static com.switcherapi.ac.config.SwitcherFeatures.SWITCHER_AC_ADM;
+import static com.switcherapi.ac.config.SwitcherFeatures.getSwitcher;
+import static com.switcherapi.ac.util.Constants.BEARER;
 
 @Slf4j
 @Service

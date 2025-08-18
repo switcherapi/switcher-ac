@@ -1,9 +1,9 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.AcMockWebServer;
-import com.github.switcherapi.ac.config.SwitcherFeatures;
-import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
-import com.github.switcherapi.ac.service.facades.GitHubFacade;
+import com.switcherapi.ac.AcMockWebServer;
+import com.switcherapi.ac.config.SwitcherFeatures;
+import com.switcherapi.ac.model.dto.GitHubAuthDTO;
+import com.switcherapi.ac.service.facades.GitHubFacade;
 import com.switcherapi.client.test.SwitcherTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

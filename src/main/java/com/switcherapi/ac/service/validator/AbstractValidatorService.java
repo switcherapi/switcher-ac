@@ -1,10 +1,10 @@
-package com.github.switcherapi.ac.service.validator;
+package com.switcherapi.ac.service.validator;
 
-import com.github.switcherapi.ac.model.domain.Account;
-import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
-import com.github.switcherapi.ac.repository.AccountDao;
-import com.github.switcherapi.ac.repository.PlanDao;
+import com.switcherapi.ac.model.domain.Account;
+import com.switcherapi.ac.model.domain.FeaturePayload;
+import com.switcherapi.ac.model.dto.ResponseRelayDTO;
+import com.switcherapi.ac.repository.AccountDao;
+import com.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
@@ -12,8 +12,8 @@ import reactor.core.publisher.Mono;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
-import static com.github.switcherapi.ac.util.Constants.ACCOUNT_NOT_FOUND;
+import static com.switcherapi.ac.service.validator.SwitcherValidatorParams.ADMINID;
+import static com.switcherapi.ac.util.Constants.ACCOUNT_NOT_FOUND;
 
 public abstract class AbstractValidatorService {
 

@@ -1,7 +1,7 @@
-package com.github.switcherapi.ac.service;
+package com.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
+import com.switcherapi.ac.model.domain.FeaturePayload;
+import com.switcherapi.ac.service.validator.ValidatorBuilderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
+import static com.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

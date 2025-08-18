@@ -1,11 +1,11 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
-import com.github.switcherapi.ac.repository.AdminRepository;
-import com.github.switcherapi.ac.service.AdminService;
-import com.github.switcherapi.ac.service.security.JwtTokenService;
-import com.github.switcherapi.ac.util.Roles;
+import com.switcherapi.ac.model.domain.Admin;
+import com.switcherapi.ac.model.dto.GitHubAuthDTO;
+import com.switcherapi.ac.repository.AdminRepository;
+import com.switcherapi.ac.service.AdminService;
+import com.switcherapi.ac.service.security.JwtTokenService;
+import com.switcherapi.ac.util.Roles;
 import com.switcherapi.client.test.SwitcherTest;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeAll;

@@ -1,6 +1,6 @@
-package com.github.switcherapi.ac.repository;
+package com.switcherapi.ac.repository;
 
-import com.github.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.domain.Plan;
 import com.mongodb.client.result.DeleteResult;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;

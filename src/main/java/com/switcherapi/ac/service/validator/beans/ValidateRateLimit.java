@@ -1,13 +1,13 @@
-package com.github.switcherapi.ac.service.validator.beans;
+package com.switcherapi.ac.service.validator.beans;
 
-import com.github.switcherapi.ac.model.domain.Account;
-import com.github.switcherapi.ac.model.domain.Feature;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.dto.Metadata;
-import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
-import com.github.switcherapi.ac.repository.AccountDao;
-import com.github.switcherapi.ac.repository.PlanDao;
-import com.github.switcherapi.ac.service.validator.SwitcherValidator;
+import com.switcherapi.ac.model.domain.Account;
+import com.switcherapi.ac.model.domain.Feature;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.dto.Metadata;
+import com.switcherapi.ac.model.dto.ResponseRelayDTO;
+import com.switcherapi.ac.repository.AccountDao;
+import com.switcherapi.ac.repository.PlanDao;
+import com.switcherapi.ac.service.validator.SwitcherValidator;
 import reactor.core.publisher.Mono;
 
 @SwitcherValidator(ValidateRateLimit.RATE_LIMIT_VALIDATOR)

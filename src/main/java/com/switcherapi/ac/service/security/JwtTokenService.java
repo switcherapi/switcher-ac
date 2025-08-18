@@ -1,7 +1,7 @@
-package com.github.switcherapi.ac.service.security;
+package com.switcherapi.ac.service.security;
 
-import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.repository.AdminRepository;
+import com.switcherapi.ac.model.domain.Admin;
+import com.switcherapi.ac.repository.AdminRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

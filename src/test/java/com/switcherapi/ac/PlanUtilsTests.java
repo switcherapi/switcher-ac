@@ -1,10 +1,10 @@
-package com.github.switcherapi.ac;
+package com.switcherapi.ac;
 
-import com.github.switcherapi.ac.model.domain.PlanAttribute;
-import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.dto.PlanDTO;
-import com.github.switcherapi.ac.model.mapper.PlanMapper;
+import com.switcherapi.ac.model.domain.PlanAttribute;
+import com.switcherapi.ac.model.domain.PlanType;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.dto.PlanDTO;
+import com.switcherapi.ac.model.mapper.PlanMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.github.switcherapi.ac.model.domain.Feature.*;
+import static com.switcherapi.ac.model.domain.Feature.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Execution(ExecutionMode.CONCURRENT)

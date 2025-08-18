@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.service.validator;
+package com.switcherapi.ac.service.validator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

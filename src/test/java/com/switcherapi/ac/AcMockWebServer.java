@@ -1,8 +1,8 @@
-package com.github.switcherapi.ac;
+package com.switcherapi.ac;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.switcherapi.ac.model.GitHubDetail;
+import com.switcherapi.ac.model.GitHubDetail;
 import lombok.extern.slf4j.Slf4j;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;

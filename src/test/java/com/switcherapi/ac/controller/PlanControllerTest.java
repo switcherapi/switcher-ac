@@ -1,13 +1,13 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.controller.fixture.ControllerTestUtils;
-import com.github.switcherapi.ac.model.domain.Admin;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.service.AdminService;
-import com.github.switcherapi.ac.service.PlanService;
-import com.github.switcherapi.ac.service.security.JwtTokenService;
-import com.github.switcherapi.ac.util.Roles;
+import com.switcherapi.ac.controller.fixture.ControllerTestUtils;
+import com.switcherapi.ac.model.domain.Admin;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.domain.PlanType;
+import com.switcherapi.ac.service.AdminService;
+import com.switcherapi.ac.service.PlanService;
+import com.switcherapi.ac.service.security.JwtTokenService;
+import com.switcherapi.ac.util.Roles;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import reactor.test.StepVerifier;
 import java.util.List;
 import java.util.Objects;
 
-import static com.github.switcherapi.ac.model.domain.Feature.HISTORY;
+import static com.switcherapi.ac.model.domain.Feature.HISTORY;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

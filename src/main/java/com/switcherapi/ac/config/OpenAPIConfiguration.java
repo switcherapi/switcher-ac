@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.config;
+package com.switcherapi.ac.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

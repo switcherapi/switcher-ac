@@ -1,9 +1,9 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.model.dto.AccountDTO;
-import com.github.switcherapi.ac.model.dto.GitHubAuthDTO;
-import com.github.switcherapi.ac.service.AccountService;
-import com.github.switcherapi.ac.service.AdminService;
+import com.switcherapi.ac.model.dto.AccountDTO;
+import com.switcherapi.ac.model.dto.GitHubAuthDTO;
+import com.switcherapi.ac.service.AccountService;
+import com.switcherapi.ac.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.http.HttpHeaders;

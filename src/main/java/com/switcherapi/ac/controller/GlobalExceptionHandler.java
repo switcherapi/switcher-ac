@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

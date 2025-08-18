@@ -1,7 +1,7 @@
-package com.github.switcherapi.ac;
+package com.switcherapi.ac;
 
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.service.PlanService;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.service.PlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-@ComponentScan(basePackages = { "com.github.switcherapi.ac" })
+@ComponentScan(basePackages = { "com.switcherapi.ac" })
 @Slf4j
 public class SwitcherAcApplication implements CommandLineRunner {
 

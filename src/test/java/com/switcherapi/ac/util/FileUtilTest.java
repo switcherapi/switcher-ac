@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.util;
+package com.switcherapi.ac.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;

@@ -1,10 +1,10 @@
-package com.github.switcherapi.ac.service;
+package com.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.domain.*;
-import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
-import com.github.switcherapi.ac.repository.AccountDao;
-import com.github.switcherapi.ac.repository.PlanDao;
-import com.github.switcherapi.ac.service.validator.AbstractValidatorService;
+import com.switcherapi.ac.model.domain.*;
+import com.switcherapi.ac.model.dto.ResponseRelayDTO;
+import com.switcherapi.ac.repository.AccountDao;
+import com.switcherapi.ac.repository.PlanDao;
+import com.switcherapi.ac.service.validator.AbstractValidatorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,8 +12,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
-import static com.github.switcherapi.ac.service.validator.SwitcherValidatorParams.*;
-import static com.github.switcherapi.ac.util.Constants.*;
+import static com.switcherapi.ac.service.validator.SwitcherValidatorParams.*;
+import static com.switcherapi.ac.util.Constants.*;
 
 @Slf4j
 @Service

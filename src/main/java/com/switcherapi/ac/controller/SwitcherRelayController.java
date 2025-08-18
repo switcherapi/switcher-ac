@@ -1,12 +1,12 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.config.SwitcherFeatures;
-import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
-import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
-import com.github.switcherapi.ac.service.AccountService;
-import com.github.switcherapi.ac.service.ValidatorBasicService;
-import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
+import com.switcherapi.ac.config.SwitcherFeatures;
+import com.switcherapi.ac.model.domain.FeaturePayload;
+import com.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.switcherapi.ac.model.dto.ResponseRelayDTO;
+import com.switcherapi.ac.service.AccountService;
+import com.switcherapi.ac.service.ValidatorBasicService;
+import com.switcherapi.ac.service.validator.ValidatorBuilderService;
 import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-import static com.github.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
+import static com.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 
 @RestController
 @RequestMapping("switcher/v1")

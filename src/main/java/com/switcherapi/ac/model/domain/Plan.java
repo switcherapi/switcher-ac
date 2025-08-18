@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.model.domain;
+package com.switcherapi.ac.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.github.switcherapi.ac.model.domain.Feature.*;
-import static com.github.switcherapi.ac.model.domain.PlanDefaults.*;
+import static com.switcherapi.ac.model.domain.Feature.*;
+import static com.switcherapi.ac.model.domain.PlanDefaults.*;
 
 @Generated
 @JsonInclude(Include.NON_NULL)

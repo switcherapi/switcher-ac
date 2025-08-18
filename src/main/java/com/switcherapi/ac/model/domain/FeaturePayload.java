@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.model.domain;
+package com.switcherapi.ac.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

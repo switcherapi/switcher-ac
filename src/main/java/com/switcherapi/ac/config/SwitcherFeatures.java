@@ -1,6 +1,6 @@
-package com.github.switcherapi.ac.config;
+package com.switcherapi.ac.config;
 
-import com.github.switcherapi.ac.util.FileUtil;
+import com.switcherapi.ac.util.FileUtil;
 import com.switcherapi.client.SnapshotCallback;
 import com.switcherapi.client.SwitcherContextBase;
 import jakarta.annotation.PostConstruct;

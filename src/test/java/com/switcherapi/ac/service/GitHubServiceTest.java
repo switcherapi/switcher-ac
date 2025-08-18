@@ -1,7 +1,7 @@
-package com.github.switcherapi.ac.service;
+package com.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.AcMockWebServer;
-import com.github.switcherapi.ac.service.facades.GitHubFacade;
+import com.switcherapi.ac.AcMockWebServer;
+import com.switcherapi.ac.service.facades.GitHubFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;

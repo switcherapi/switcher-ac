@@ -1,12 +1,12 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.controller.fixture.ControllerTestUtils;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanAttribute;
-import com.github.switcherapi.ac.model.dto.Metadata;
-import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
-import com.github.switcherapi.ac.service.AccountService;
-import com.github.switcherapi.ac.service.PlanService;
+import com.switcherapi.ac.controller.fixture.ControllerTestUtils;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.domain.PlanAttribute;
+import com.switcherapi.ac.model.dto.Metadata;
+import com.switcherapi.ac.model.dto.ResponseRelayDTO;
+import com.switcherapi.ac.service.AccountService;
+import com.switcherapi.ac.service.PlanService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -20,8 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.github.switcherapi.ac.model.domain.Feature.DOMAIN;
-import static com.github.switcherapi.ac.model.domain.Feature.SWITCHER;
+import static com.switcherapi.ac.model.domain.Feature.DOMAIN;
+import static com.switcherapi.ac.model.domain.Feature.SWITCHER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

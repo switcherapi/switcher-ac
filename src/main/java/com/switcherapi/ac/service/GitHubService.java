@@ -1,7 +1,7 @@
-package com.github.switcherapi.ac.service;
+package com.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.GitHubDetail;
-import com.github.switcherapi.ac.service.facades.GitHubFacade;
+import com.switcherapi.ac.model.GitHubDetail;
+import com.switcherapi.ac.service.facades.GitHubFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

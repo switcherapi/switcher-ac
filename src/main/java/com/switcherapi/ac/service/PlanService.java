@@ -1,16 +1,16 @@
-package com.github.switcherapi.ac.service;
+package com.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.mapper.PlanMapper;
-import com.github.switcherapi.ac.repository.PlanDao;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.domain.PlanType;
+import com.switcherapi.ac.model.mapper.PlanMapper;
+import com.switcherapi.ac.repository.PlanDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static com.github.switcherapi.ac.util.Constants.PLAN_NAME_NOT_FOUND;
+import static com.switcherapi.ac.util.Constants.PLAN_NAME_NOT_FOUND;
 
 @Service
 public class PlanService {

@@ -1,9 +1,9 @@
-package com.github.switcherapi.ac.service;
+package com.switcherapi.ac.service;
 
-import com.github.switcherapi.ac.model.domain.Feature;
-import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanAttribute;
+import com.switcherapi.ac.model.domain.Feature;
+import com.switcherapi.ac.model.domain.FeaturePayload;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.domain.PlanAttribute;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -17,9 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.github.switcherapi.ac.model.domain.Feature.*;
-import static com.github.switcherapi.ac.model.domain.PlanDefaults.*;
-import static com.github.switcherapi.ac.util.Constants.*;
+import static com.switcherapi.ac.model.domain.Feature.*;
+import static com.switcherapi.ac.model.domain.PlanDefaults.*;
+import static com.switcherapi.ac.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

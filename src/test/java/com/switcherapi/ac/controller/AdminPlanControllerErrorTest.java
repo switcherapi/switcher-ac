@@ -1,7 +1,7 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.service.PlanService;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.service.PlanService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,8 @@
-package com.github.switcherapi.ac.model.mapper;
+package com.switcherapi.ac.model.mapper;
 
-import com.github.switcherapi.ac.model.domain.Account;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.dto.AccountDTO;
+import com.switcherapi.ac.model.domain.Account;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.dto.AccountDTO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

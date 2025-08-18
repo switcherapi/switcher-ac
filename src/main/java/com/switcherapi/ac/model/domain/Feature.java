@@ -1,8 +1,8 @@
-package com.github.switcherapi.ac.model.domain;
+package com.switcherapi.ac.model.domain;
 
 import lombok.Getter;
 
-import static com.github.switcherapi.ac.util.Constants.MSG_INVALID_FEATURE;
+import static com.switcherapi.ac.util.Constants.MSG_INVALID_FEATURE;
 
 @Getter
 public enum Feature {

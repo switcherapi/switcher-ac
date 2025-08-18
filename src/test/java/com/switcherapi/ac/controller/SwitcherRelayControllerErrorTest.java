@@ -1,10 +1,10 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.config.SwitcherFeatures;
-import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
-import com.github.switcherapi.ac.service.AccountService;
-import com.github.switcherapi.ac.service.ValidatorBasicService;
-import com.github.switcherapi.ac.service.validator.ValidatorBuilderService;
+import com.switcherapi.ac.config.SwitcherFeatures;
+import com.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.switcherapi.ac.service.AccountService;
+import com.switcherapi.ac.service.ValidatorBasicService;
+import com.switcherapi.ac.service.validator.ValidatorBuilderService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
-package com.github.switcherapi.ac.service.facades;
+package com.switcherapi.ac.service.facades;
 
-import com.github.switcherapi.ac.model.GitHubDetail;
+import com.switcherapi.ac.model.GitHubDetail;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.github.switcherapi.ac.util.Sanitizer.*;
+import static com.switcherapi.ac.util.Sanitizer.*;
 
 @Component
 @Slf4j

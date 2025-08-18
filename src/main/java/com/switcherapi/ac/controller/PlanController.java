@@ -1,10 +1,10 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.dto.PlanDTO;
-import com.github.switcherapi.ac.model.mapper.DefaultMapper;
-import com.github.switcherapi.ac.model.mapper.PlanMapper;
-import com.github.switcherapi.ac.service.PlanService;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.dto.PlanDTO;
+import com.switcherapi.ac.model.mapper.DefaultMapper;
+import com.switcherapi.ac.model.mapper.PlanMapper;
+import com.switcherapi.ac.service.PlanService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.util;
+package com.switcherapi.ac.util;
 
 public enum Roles {
 	ADMIN, ROLE_ADMIN,

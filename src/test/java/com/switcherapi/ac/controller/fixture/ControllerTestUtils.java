@@ -1,14 +1,14 @@
-package com.github.switcherapi.ac.controller.fixture;
+package com.switcherapi.ac.controller.fixture;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.switcherapi.ac.model.domain.FeaturePayload;
-import com.github.switcherapi.ac.model.domain.Plan;
-import com.github.switcherapi.ac.model.domain.PlanType;
-import com.github.switcherapi.ac.model.dto.PlanDTO;
-import com.github.switcherapi.ac.model.dto.RequestRelayDTO;
-import com.github.switcherapi.ac.model.dto.ResponseRelayDTO;
-import com.github.switcherapi.ac.service.AccountService;
+import com.switcherapi.ac.model.domain.FeaturePayload;
+import com.switcherapi.ac.model.domain.Plan;
+import com.switcherapi.ac.model.domain.PlanType;
+import com.switcherapi.ac.model.dto.PlanDTO;
+import com.switcherapi.ac.model.dto.RequestRelayDTO;
+import com.switcherapi.ac.model.dto.ResponseRelayDTO;
+import com.switcherapi.ac.service.AccountService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.controller;
+package com.switcherapi.ac.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;

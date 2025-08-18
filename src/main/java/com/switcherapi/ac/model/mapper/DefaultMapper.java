@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.model.mapper;
+package com.switcherapi.ac.model.mapper;
 
 import com.switcherapi.client.exception.SwitcherException;
 import lombok.experimental.UtilityClass;

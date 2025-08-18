@@ -1,6 +1,6 @@
-package com.github.switcherapi.ac.repository;
+package com.switcherapi.ac.repository;
 
-import com.github.switcherapi.ac.model.domain.Account;
+import com.switcherapi.ac.model.domain.Account;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 

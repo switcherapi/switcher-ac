@@ -1,4 +1,4 @@
-package com.github.switcherapi.ac.config;
+package com.switcherapi.ac.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
