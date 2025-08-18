@@ -5,7 +5,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.switcherac</groupId>
+    <groupId>com.switcherac</groupId>
     <artifactId>switcher-ac</artifactId>
     <version>2.0.1-SNAPSHOT</version>
 
@@ -58,7 +58,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <switcher-client.version>2.4.0</switcher-client.version>
+        <switcher-client.version>2.4.1</switcher-client.version>
         <jsonwebtoken.version>0.12.6</jsonwebtoken.version>
         <joda-time.version>2.14.0</joda-time.version>
         <gson.version>2.13.1</gson.version>
@@ -103,7 +103,7 @@
                         <artifactId>native-maven-plugin</artifactId>
                         <version>${native-image-plugin.version}</version>
                         <configuration>
-                            <mainClass>com.github.switcherapi.ac.SwitcherAcApplication</mainClass>
+                            <mainClass>com.switcherapi.ac.SwitcherAcApplication</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>

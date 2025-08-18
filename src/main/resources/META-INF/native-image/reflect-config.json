@@ -1,6 +1,6 @@
 [
   {
-    "name": "com.github.switcherapi.ac.model.domain.FeaturePayload",
+    "name": "com.switcherapi.ac.model.domain.FeaturePayload",
     "allDeclaredFields": true,
     "allPublicMethods": true,
     "methods": [
@@ -15,7 +15,7 @@
     ]
   },
   {
-    "name": "com.github.switcherapi.ac.model.GitHubDetail",
+    "name": "com.switcherapi.ac.model.GitHubDetail",
     "allDeclaredFields": true,
     "allPublicMethods": true,
     "methods": [

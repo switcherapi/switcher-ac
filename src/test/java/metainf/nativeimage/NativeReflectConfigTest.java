@@ -27,7 +27,7 @@ class NativeReflectConfigTest {
 
 	@Test
 	void shouldReadReflectConfig() {
-		assertTrue(reflectContent.contains("com.github.switcherapi.ac"));
+		assertTrue(reflectContent.contains("com.switcherapi.ac"));
 	}
 
 	@Test
