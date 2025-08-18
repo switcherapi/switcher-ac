@@ -1,7 +1,6 @@
 package com.switcherapi.ac.service;
 
 import com.switcherapi.ac.model.domain.*;
-import com.switcherapi.ac.model.domain.*;
 import com.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.switcherapi.ac.repository.AccountDao;
 import com.switcherapi.ac.repository.PlanDao;
