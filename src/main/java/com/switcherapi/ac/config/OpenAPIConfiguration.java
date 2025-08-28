@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Configuration;
 public class OpenAPIConfiguration {
 	
 	private static final String SCHEME_NAME = "bearerScheme";
-	private static final String SCHEME = "Bearer";
+	private static final String BEARER_FORMAT = "JWT";
+	private static final String SCHEME = "bearer";
 
 	private final ServiceConfig.Docs docs;
 
@@ -70,9 +71,9 @@ public class OpenAPIConfiguration {
 
 	private SecurityScheme createSecurityScheme() {
 		return new SecurityScheme()
-				.name(SCHEME_NAME)
 				.type(SecurityScheme.Type.HTTP)
-				.scheme(SCHEME);
+				.scheme(SCHEME)
+				.bearerFormat(BEARER_FORMAT);
 	}
     
 }

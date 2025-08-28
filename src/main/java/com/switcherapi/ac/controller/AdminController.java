@@ -5,6 +5,7 @@ import com.switcherapi.ac.model.dto.GitHubAuthDTO;
 import com.switcherapi.ac.service.AccountService;
 import com.switcherapi.ac.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,14 @@ public class AdminController {
 	@Operation(summary = "Update JWT using your refresh token")
 	@PostMapping(value = "/auth/refresh")
 	public Mono<ResponseEntity<GitHubAuthDTO>> gitHubRefreshAuth(
-			@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam String refreshToken) {
+			@Parameter(hidden = true) @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+			@RequestParam String refreshToken) {
 		return adminService.refreshToken(token, refreshToken).map(ResponseEntity::ok);
 	}
-	
+
 	@PostMapping(value = "/logout")
-	public Mono<ResponseEntity<Object>> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+	public Mono<ResponseEntity<Object>> logout(
+			@Parameter(hidden = true) @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 		return adminService.logout(token).map(ResponseEntity::ok);
 	}
 	
