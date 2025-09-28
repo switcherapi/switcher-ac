@@ -5,6 +5,7 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
+ARG JAVA_VERSION="25-tem"
 ARG INSTALL_MAVEN="true"
 ARG MAVEN_VERSION="3.9.11"
 ARG INSTALL_GRADLE="false"
@@ -20,10 +21,13 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN if [ "${INSTALL_MAVEN}" = "true" ]; then \
-    su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install maven \"${MAVEN_VERSION}\""; fi \
-    && if [ "${INSTALL_GRADLE}" = "true" ]; then \
-    su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi
+RUN su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && \
+    if [ \"${INSTALL_MAVEN}\" = \"true\" ]; then sdk install maven \"${MAVEN_VERSION}\"; fi && \
+    if [ \"${INSTALL_GRADLE}\" = \"true\" ]; then sdk install gradle \"${GRADLE_VERSION}\"; fi && \
+    sdk install java \"${JAVA_VERSION}\" && \
+    sdk default java \"${JAVA_VERSION}\" && \
+    sdk flush archives && \
+    sdk flush temp"
 
 # set up a nicer prompt
 RUN git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
