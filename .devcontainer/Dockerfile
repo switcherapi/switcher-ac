@@ -5,6 +5,7 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
+ARG JAVA_VERSION="25"
 ARG INSTALL_MAVEN="true"
 ARG MAVEN_VERSION="3.9.11"
 ARG INSTALL_GRADLE="false"
@@ -23,7 +24,11 @@ RUN apt-get update \
 RUN if [ "${INSTALL_MAVEN}" = "true" ]; then \
     su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install maven \"${MAVEN_VERSION}\""; fi \
     && if [ "${INSTALL_GRADLE}" = "true" ]; then \
-    su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi
+    su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi \
+    && su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install java \"${JAVA_VERSION}\"" \
+    && su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk default java \"${JAVA_VERSION}\"" \
+    && su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk flush archives" \
+    && su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk flush temp"
 
 # set up a nicer prompt
 RUN git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
