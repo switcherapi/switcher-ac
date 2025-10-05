@@ -129,7 +129,7 @@ public class AdminService {
 						return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh tokens"));
 					});
 		} catch (Exception e) {
-			log.warn("Attempting to refresh token with Invalid refresh tokens");
+			log.warn("Attempting to refresh token with Invalid refresh tokens", e);
 		}
 
 		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh tokens");
