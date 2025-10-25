@@ -1,25 +1,23 @@
 {
-  "data": {
-    "domain": {
-      "name": "Switcher API",
-      "version": 1713498539215,
-      "group": [
-        {
-          "name": "Features",
-          "config": [
-            {
-              "key": "SWITCHER_AC_ADM",
-              "strategies": [],
-              "components": [
-                "switcher-ac"
-              ],
-              "activated": true
-            }
-          ],
-          "activated": true
-        }
-      ],
-      "activated": true
-    }
+  "domain": {
+    "name": "Switcher API",
+    "version": 1713498539215,
+    "group": [
+      {
+        "name": "Features",
+        "config": [
+          {
+            "key": "SWITCHER_AC_ADM",
+            "strategies": [],
+            "components": [
+              "switcher-ac"
+            ],
+            "activated": true
+          }
+        ],
+        "activated": true
+      }
+    ],
+    "activated": true
   }
 }
