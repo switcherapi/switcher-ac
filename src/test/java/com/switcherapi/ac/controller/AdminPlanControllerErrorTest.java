@@ -10,8 +10,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.data.mongodb.test.autoconfigure.AutoConfigureDataMongo;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootTest
 @AutoConfigureDataMongo
-@AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
 class AdminPlanControllerErrorTest {
 

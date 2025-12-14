@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.data.mongodb.test.autoconfigure.AutoConfigureDataMongo;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import reactor.test.StepVerifier;
@@ -24,7 +23,6 @@ import static com.switcherapi.ac.model.domain.Feature.RATE_LIMIT;
 
 @SpringBootTest
 @AutoConfigureDataMongo
-@AutoConfigureWebTestClient
 @Execution(ExecutionMode.CONCURRENT)
 @TestPropertySource(properties = {
 		"service.cache.enabled=true",
