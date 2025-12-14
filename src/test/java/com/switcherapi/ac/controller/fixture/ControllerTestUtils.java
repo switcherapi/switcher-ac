@@ -11,6 +11,7 @@ import com.switcherapi.ac.model.dto.ResponseRelayDTO;
 import com.switcherapi.ac.service.AccountService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@AutoConfigureWebTestClient
 public class ControllerTestUtils {
 
     @Autowired protected WebTestClient webTestClient;
