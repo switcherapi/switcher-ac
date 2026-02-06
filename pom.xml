@@ -50,7 +50,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-         <version>4.0.1</version>
+         <version>4.0.2</version>
     </parent>
 
     <properties>
@@ -62,18 +62,18 @@
         <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
         <joda-time.version>2.14.0</joda-time.version>
         <gson.version>2.13.2</gson.version>
-        <springdoc.version>3.0.0</springdoc.version>
+        <springdoc.version>3.0.1</springdoc.version>
 
         <!-- Test-->
-        <flapdoodle.embed.mongo.version>4.22.0</flapdoodle.embed.mongo.version>
+        <flapdoodle.embed.mongo.version>4.24.0</flapdoodle.embed.mongo.version>
         <okhttp.version>5.3.2</okhttp.version>
-        <reactor-test.version>3.8.1</reactor-test.version>
+        <reactor-test.version>3.8.2</reactor-test.version>
 
         <!-- Plugins -->
-        <native-image-plugin.version>0.11.3</native-image-plugin.version>
-        <maven-compiler.version>3.14.1</maven-compiler.version>
+        <native-image-plugin.version>0.11.4</native-image-plugin.version>
+        <maven-compiler.version>3.15.0</maven-compiler.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-        <sonar-maven-plugin.version>5.2.0.4988</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
         <jacoco.version>0.8.14</jacoco.version>
 
         <!-- Sonar -->
