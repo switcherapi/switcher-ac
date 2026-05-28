@@ -1,6 +1,7 @@
 package com.switcherapi.ac.service.security;
 
 import com.switcherapi.ac.util.Roles;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import reactor.util.annotation.NonNull;
 
 import java.util.List;
 import java.util.Map;
